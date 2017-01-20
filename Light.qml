@@ -5,9 +5,11 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.1
 
 Item {
-    id: item1
-    width: 640
-    height: 480
+    id: lightItem
+    width: window.width
+    /*anchors.right: parent.right
+    anchors.left: parent.left
+    anchors.top: parent.top*/
 
     //! [colordialog]
     ColorDialog {

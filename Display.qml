@@ -3,16 +3,20 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
 Item {
-    width: 640
-    height: 480
+    id: displayItem
+    width: window.width
+    /*anchors.right: parent.right
+    anchors.left: parent.left
+    anchors.top: parent.top*/
 
     RowLayout{
-        anchors.rightMargin: 20
-        anchors.leftMargin: 20
-        anchors.topMargin: 20
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
+        anchors.rightMargin: 20
+        anchors.leftMargin: 20
+        anchors.topMargin: 20
+
         GroupBox {
             GridLayout {
                 id: gridLayout
@@ -31,12 +35,12 @@ Item {
                     wheelEnabled: true
                     second.value: 1.0
                     first.value: 0.0
-                    width: 200
-                    Label {
+                    //width: 200
+                    /*Label {
                         id: label
                         horizontalAlignment: "AlignHCenter"
                         text: qsTr("Horizontal Range")
-                    }
+                    }*/
                 }
 
                 RangeSlider {
@@ -46,12 +50,11 @@ Item {
                     first.value: 0.25
                     orientation: "Vertical"
                     Layout.fillHeight: true
-                    Label {
+                    /*Label {
                         id: label2
-
                         rotation: -90
                         text: qsTr("Vertical Range")
-                    }
+                    }*/
                 }
 
                 Rectangle {
@@ -69,24 +72,30 @@ Item {
             Layout.fillHeight: true
             ColumnLayout {
                 SpinBox {
+                    editable: true
                     value: 1
                     stepSize: 1
                     Label {
                         id: depthLabel
+                        font.pixelSize: 12
                         text: qsTr("Depth")
                     }
                 }
 
                 SpinBox {
+                    id: spinSharpnessRadius
+                    editable: true
                     value: 0
                     Label {
                         id: sharpLabel
+                        font.pixelSize: 12
                         text: qsTr("Sharpeness radius")
                     }
                 }
 
                 SpinBox {
-                    id: spinbox
+                    id: spinSharpnessStep
+                    editable: true
                     from: 0
                     value: 110
                     to: 100 * 100
@@ -96,12 +105,12 @@ Item {
                     property real realValue: value / 100
 
                     validator: DoubleValidator {
-                        bottom: Math.min(spinbox.from, spinbox.to)
-                        top:  Math.max(spinbox.from, spinbox.to)
+                        bottom: Math.min(spinSharpnessStep.from, spinSharpnessStep.to)
+                        top:  Math.max(spinSharpnessStep.from, spinSharpnessStep.to)
                     }
 
                     textFromValue: function(value, locale) {
-                        return Number(value / 100).toLocaleString(locale, 'f', spinbox.decimals)
+                        return Number(value / 100).toLocaleString(locale, 'f', spinSharpnessStep.decimals)
                     }
 
                     valueFromText: function(text, locale) {
@@ -110,6 +119,7 @@ Item {
 
                     Label {
                         id: stepLabel
+                        font.pixelSize: 12
                         text: qsTr("Sharpeness steps")
                     }
                 }
