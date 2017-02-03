@@ -9,7 +9,9 @@ ApplicationWindow {
     id: window
     visible: true
     width: 640
-    height: 720
+    minimumWidth: 640
+    height: 800
+    minimumHeight: 800
     title: qsTr("Luna")
 
     header: ToolBar {
@@ -182,13 +184,13 @@ ApplicationWindow {
             anchors.rightMargin: 20
             anchors.leftMargin: 20
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            width: 600
-            height: 380
+            width: parent.width
+            height: width * 9 /16
             Image {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                 //anchors.fill: parent
                 asynchronous : true
-                width: 600
+                width: parent.width
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:images/screen.png"
             }
