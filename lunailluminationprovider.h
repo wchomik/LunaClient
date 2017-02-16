@@ -13,6 +13,7 @@ namespace luna {
         void configure(const struct LunaConfig & config) override;
         void start() override;
         void stop() override;
+        ColorMode colorMode() override;
 
         void setUpdateRate(int rate);
         Color mColor;

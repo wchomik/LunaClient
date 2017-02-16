@@ -4,12 +4,15 @@
 #include <QObject>
 #include <QTimer>
 
+#include "colormode.h"
+
 namespace luna {
     class LunaManager : public QObject
     {
         Q_OBJECT
     public:
         explicit LunaManager(QObject *parent = 0);
+        ~LunaManager();
 
     public slots:
         void onShutdown();
@@ -23,6 +26,8 @@ namespace luna {
         QTimer mConnectionTimer;
         class Luna * mLuna;
         class LunaProvider * mProvider;
+        class ColorProcessor * mColorProcessor;
+        void setColorMode(ColorMode mode);
     };
 }
 

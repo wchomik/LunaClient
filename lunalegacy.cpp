@@ -16,6 +16,7 @@ namespace luna {
         QObject::connect(&mSocket, &QUdpSocket::readyRead,
                          this, &LunaLegacy::datagramReceived);
         makeConfig();
+        mSocket.bind(port);
     }
 
     LunaLegacy::~LunaLegacy(){
@@ -27,12 +28,13 @@ namespace luna {
     }
 
     void LunaLegacy::connect(){
-        mSocket.bind(port);
         mSocket.writeDatagram(helloMessage, strlen(helloMessage), QHostAddress::Broadcast, port);
-        mSocket.connectToHost(QHostAddress::Any, port);
     }
 
     void LunaLegacy::disconnect(){
+        mBuffer.reset();
+        mBuffer << static_cast<uint8_t>(99);
+        send();
         mSocket.disconnectFromHost();
         mIsConnected = false;
         emit disconnected();
@@ -64,11 +66,11 @@ namespace luna {
         mBuffer << static_cast<uint8_t>(101);
         mBuffer << static_cast<uint8_t>(2);
         send();
+        disconnect();
     }
 
     void LunaLegacy::datagramReceived(){
         quint64 size = mSocket.pendingDatagramSize();
-        std::cout << "Got something " << size << std::endl;
         std::vector<char> data(size + 1);
         QHostAddress senderIp;
 
@@ -76,8 +78,7 @@ namespace luna {
         mSocket.readDatagram(data.data(), data.size(), &senderIp, &senderPort);
         if(strcmp(data.data(), helloMessage) != 0){
             qDebug() << senderIp.toString();
-            mSocket.disconnectFromHost();
-            mSocket.connectToHost(senderIp, port);
+            mSocket.connectToHost(senderIp, senderPort);
             mIsConnected = true;
             emit connected();
         }
@@ -90,7 +91,7 @@ namespace luna {
     void LunaLegacy::makeConfig()
     {
         LunaConfig::PixelStrandConfig strand;
-        strand.count = 120;
+        strand.count = pixelCount;
         strand.direction = LunaConfig::bottomToTop;
 
         strand.position = LunaConfig::left;

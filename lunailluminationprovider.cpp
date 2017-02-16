@@ -34,6 +34,11 @@ namespace luna {
         mTimer.stop();
     }
 
+    ColorMode LunaIlluminationProvider::colorMode()
+    {
+        return ColorMode::nativeWhiteBalancedGamma;
+    }
+
     void LunaIlluminationProvider::setUpdateRate(int rate){
         mTimer.setInterval(1000 / rate);
     }

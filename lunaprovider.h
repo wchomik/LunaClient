@@ -4,6 +4,7 @@
 #include <vector>
 #include <QObject>
 #include "colorutils.h"
+#include "colormode.h"
 
 namespace luna {
     class LunaProvider : public QObject
@@ -14,12 +15,12 @@ namespace luna {
         virtual ~LunaProvider();
 
         virtual void configure(const struct LunaConfig & config) = 0;
+        virtual ColorMode colorMode() = 0;
 
-
-        const std::vector<PixelStrand> & pixelStrands(){
+        std::vector<PixelStrand> & pixelStrands(){
             return mPixelStrands;
         }
-        const std::vector<ColorScalar> & whiteStrands(){
+        std::vector<ColorScalar> & whiteStrands(){
             return mWhiteStrands;
         }
 

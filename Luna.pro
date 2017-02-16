@@ -11,7 +11,9 @@ SOURCES += main.cpp \
     lunaworker.cpp \
     lunaprovider.cpp \
     lunailluminationprovider.cpp \
-    lunamanager.cpp
+    lunamanager.cpp \
+    colorspace.cpp \
+    colorprocessor.cpp
 
 RESOURCES += qml.qrc
 
@@ -46,4 +48,7 @@ HEADERS += \
     lunaprovider.h \
     lunaconfig.h \
     lunailluminationprovider.h \
-    lunamanager.h
+    lunamanager.h \
+    colorspace.h \
+    colormode.h \
+    colorprocessor.h
