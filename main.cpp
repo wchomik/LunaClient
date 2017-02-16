@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "lunaworker.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -10,5 +12,15 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 
-    return app.exec();
+    luna::LunaWorker worker;
+    worker.start();
+    QObject::connect(&app, &QGuiApplication::aboutToQuit,
+                     &worker, &luna::LunaWorker::shutdown);
+
+    int ret = app.exec();
+
+    worker.quit();
+    worker.wait();
+
+    return ret;
 }

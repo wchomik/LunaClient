@@ -1,8 +1,17 @@
 QT += qml quick
+QT += network
 
 CONFIG += c++11
 
-SOURCES += main.cpp
+INCLUDEPATH += $$(EIGEN)
+
+SOURCES += main.cpp \
+    luna.cpp \
+    lunalegacy.cpp \
+    lunaworker.cpp \
+    lunaprovider.cpp \
+    lunailluminationprovider.cpp \
+    lunamanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,3 +36,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+HEADERS += \
+    luna.h \
+    lunalegacy.h \
+    lunaworker.h \
+    colorutils.h \
+    binarystream.h \
+    lunaprovider.h \
+    lunaconfig.h \
+    lunailluminationprovider.h \
+    lunamanager.h
