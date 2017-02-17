@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     lunailluminationprovider.cpp \
     lunamanager.cpp \
     colorspace.cpp \
-    colorprocessor.cpp
+    colorprocessor.cpp \
+    lunaaudioprovider.cpp
 
 RESOURCES += qml.qrc
 
@@ -51,4 +52,13 @@ HEADERS += \
     lunamanager.h \
     colorspace.h \
     colormode.h \
-    colorprocessor.h
+    colorprocessor.h \
+    lunaaudioprovider.h
+
+win32 {
+    INCLUDEPATH += ./win32
+    SOURCES += ./win32/audiocapture.cpp
+    HEADERS += ./win32/audiocapture.h
+    LIBS += -lmmdevapi -lole32
+}
+

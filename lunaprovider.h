@@ -14,7 +14,7 @@ namespace luna {
         explicit LunaProvider(QObject * parent = nullptr);
         virtual ~LunaProvider();
 
-        virtual void configure(const struct LunaConfig & config) = 0;
+        virtual void configure(const struct LunaConfig & config);
         virtual ColorMode colorMode() = 0;
 
         std::vector<PixelStrand> & pixelStrands(){

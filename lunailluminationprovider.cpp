@@ -15,15 +15,7 @@ namespace luna {
     }
 
     void LunaIlluminationProvider::configure(const LunaConfig & config){
-        for(auto & strand : config.pixelStrands){
-            mPixelStrands.emplace_back(strand.count);
-            for(Color & pixel : mPixelStrands.back()){
-                pixel = Color::Zero();
-            }
-        }
-        for(auto strand : config.whiteStrands){
-            mWhiteStrands.emplace_back(0);
-        }
+        LunaProvider::configure(config);
     }
 
     void LunaIlluminationProvider::start(){

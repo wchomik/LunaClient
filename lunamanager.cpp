@@ -5,6 +5,7 @@
 
 #include "lunaprovider.h"
 #include "lunailluminationprovider.h"
+#include "lunaaudioprovider.h"
 
 #include "lunaconfig.h"
 #include "colorspace.h"
@@ -54,14 +55,16 @@ namespace luna {
     void LunaManager::onConnected(){
         mConnectionTimer.stop();
 
-        LunaIlluminationProvider * illum = new LunaIlluminationProvider(this);
+        /*LunaIlluminationProvider * illum = new LunaIlluminationProvider(this);
 
         illum->configure(mLuna->config());
         illum->setUpdateRate(10);
         illum->mColor = Color(0, 1, 0, 0);
-        illum->mWhiteness = 0.0f;
+        illum->mWhiteness = 0.0f;*/
+        LunaAudioProvider * audio = new LunaAudioProvider(this);
+        audio->configure(mLuna->config());
 
-        setProvider(illum);
+        setProvider(audio);
     }
 
     void LunaManager::onDisconnected(){
