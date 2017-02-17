@@ -2,11 +2,13 @@
 
 #include <comdef.h>
 #include <QDebug>
+#include "samplebuffer.h"
 
 namespace luna { namespace audio {
     AudioCapture::AudioCapture(QObject * parent) :
         QObject(parent),
         mTimer(this),
+        mBuffer(nullptr),
         mDevEnum(nullptr),
         mAudioDevice(nullptr),
         mAudioClient(nullptr),
@@ -65,6 +67,7 @@ namespace luna { namespace audio {
         fail(hr);
 
         mTimer.setInterval(static_cast<int>(1000 / updateRate));
+        mBuffer = new luna::SampleBuffer(1 << 13, outputChannels);
     }
 
     void AudioCapture::start()
@@ -92,7 +95,8 @@ namespace luna { namespace audio {
             DWORD flags;
             hr = mAudioCaptureClient->GetBuffer(&data, &framesAvailable, &flags, nullptr, nullptr);
 
-            // TODO copy stuff
+            mBuffer->readFrom(reinterpret_cast<float *>(data), framesAvailable);
+
             mAudioCaptureClient->ReleaseBuffer(framesAvailable);
             hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);
         }
@@ -108,6 +112,10 @@ namespace luna { namespace audio {
         release(mAudioClient);
         release(mAudioDevice);
         release(mDevEnum);
+        if(mBuffer != nullptr){
+            delete mBuffer;
+            mBuffer = nullptr;
+        }
     }
 
     void AudioCapture::fail(long hr)

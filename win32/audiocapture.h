@@ -6,6 +6,7 @@
 
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
+#include "samplebuffer.h"
 
 namespace luna { namespace audio {
     class AudioCapture : public QObject{
@@ -44,6 +45,7 @@ namespace luna { namespace audio {
         void panic(const char *msg = "");
 
         QTimer mTimer;
+        luna::SampleBuffer * mBuffer;
         float mUpdateRate;
         IMMDeviceEnumerator * mDevEnum;
         IMMDevice * mAudioDevice;

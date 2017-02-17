@@ -14,7 +14,9 @@ SOURCES += main.cpp \
     lunamanager.cpp \
     colorspace.cpp \
     colorprocessor.cpp \
-    lunaaudioprovider.cpp
+    lunaaudioprovider.cpp \
+    samplebuffer.cpp \
+    fft.cpp
 
 RESOURCES += qml.qrc
 
@@ -53,12 +55,18 @@ HEADERS += \
     colorspace.h \
     colormode.h \
     colorprocessor.h \
-    lunaaudioprovider.h
+    lunaaudioprovider.h \
+    samplebuffer.h \
+    fft.h
+
+LIBS += -L$$PWD/Lib/
+
+INCLUDEPATH += $$PWD/Include
+DEPENDPATH += $$PWD/Include
 
 win32 {
     INCLUDEPATH += ./win32
     SOURCES += ./win32/audiocapture.cpp
     HEADERS += ./win32/audiocapture.h
-    LIBS += -lmmdevapi -lole32
+    LIBS += -lmmdevapi -lole32 -llibfftw3f-3
 }
-
