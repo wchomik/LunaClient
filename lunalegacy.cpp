@@ -1,7 +1,5 @@
 #include "lunalegacy.h"
 
-#include <iostream>
-
 #include <QThread>
 
 
@@ -52,9 +50,13 @@ namespace luna {
         Color multiplier = Color::Constant(255);
         for(const PixelStrand & strand : pixelStrands){
             Color error = Color::Zero();
+            Color corrected;
+            Color clampedRounded;
             for(const Color & pixel : strand){
-                Eigen::Matrix<uint8_t, 4, 1> rgb =
-                    pixel.cwiseProduct(multiplier).cast<uint8_t>();
+                corrected = pixel.cwiseProduct(multiplier) + error;
+                clampedRounded = corrected.array().max(0).min(255).round().matrix();
+                error = corrected - clampedRounded;
+                Eigen::Matrix<uint8_t, 4, 1> rgb = clampedRounded.cast<uint8_t>();
                 mBuffer.write(rgb.data(), 3);
             }
         }

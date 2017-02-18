@@ -3,6 +3,7 @@
 
 #include "lunaworker.h"
 
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -14,11 +15,10 @@ int main(int argc, char *argv[])
 
     luna::LunaWorker worker;
     worker.start();
-    QObject::connect(&app, &QGuiApplication::aboutToQuit,
-                     &worker, &luna::LunaWorker::shutdown);
 
     int ret = app.exec();
 
+    worker.shutdown();
     worker.quit();
     worker.wait();
 

@@ -9,6 +9,7 @@ namespace luna { namespace audio {
     {
     public:
         enum Flag {
+            none = 0,
             magnitude = 1 << 0,
             phase = 1 << 1,
         };
@@ -18,6 +19,7 @@ namespace luna { namespace audio {
         Eigen::ArrayXf & input() { return mInput; }
         const Eigen::ArrayXf & magnitudes() { return mMagnitudes; }
         const Eigen::ArrayXf & phases() { return mPhases; }
+        size_t size(){ return mSize; }
     private:
         size_t mSize;
         float mScale;

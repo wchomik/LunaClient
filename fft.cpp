@@ -15,6 +15,11 @@ namespace luna { namespace audio {
             reinterpret_cast<float *>(mInput.data()),
             reinterpret_cast<fftwf_complex *>(mOutput.data()),\
             FFTW_ESTIMATE);
+
+        float alpha = 0.54f;
+        float beta = 1.0f - alpha;
+
+        mWindow = alpha - Eigen::ArrayXf::LinSpaced(mSize, 0, 2 * M_PI * (mSize - 1) / (mSize)).cos() * beta;
     }
 
     FFT::~FFT()
@@ -24,6 +29,8 @@ namespace luna { namespace audio {
 
     void FFT::compute()
     {
+        mInput = mInput * mWindow;
+
         fftwf_execute(mFftPlan);
         if(mFlags & magnitude){
             mMagnitudes = mOutput.abs() * mScale;

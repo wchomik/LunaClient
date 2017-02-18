@@ -9,17 +9,14 @@ namespace luna {
     private:
         class Channel{
         public:
-            Channel(float * begin, float * end, int stride) :
-                mBegin(begin), mEnd(end), mStride(stride) {}
-            float * begin(){ return mBegin; }
-            float * end(){ return mEnd; }
+            Channel(float * begin, int stride) :
+                mBegin(begin), mStride(stride) {}
             float & operator[](size_t index){
                 return mBegin[index * mStride];
             }
         private:
-            float * mBegin;
-            float * mEnd;
-            int mStride;
+            float * const mBegin;
+            const int mStride;
         };
     public:
         explicit SampleBuffer(size_t size, int channelCount);

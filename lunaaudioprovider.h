@@ -5,6 +5,8 @@
 
 #include "lunaprovider.h"
 #include "audiocapture.h"
+#include "fft.h"
+#include "audiochannelprocessor.h"
 
 namespace luna {
     class LunaAudioProvider : public LunaProvider
@@ -18,8 +20,12 @@ namespace luna {
         void start() override;
         void stop() override;
 
+    private slots:
+        void onSamplesReady();
     private:
         audio::AudioCapture mAudioCapture;
+        audio::FFT mFFT;
+        std::vector<audio::AudioChannelProcessor> mProcessors;
     };
 }
 

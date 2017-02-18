@@ -8,7 +8,9 @@ namespace luna {
         mChannelCount(channelCount),
         mData(new float[mSize * 2]),
         mPtr(mData)
-    {}
+    {
+        memset(mData, 0, mSize * 2 * sizeof(float));
+    }
 
     SampleBuffer::~SampleBuffer()
     {
@@ -19,11 +21,11 @@ namespace luna {
     {
         size_t writeCount = sampleCount * mChannelCount;
         float * pNext = mPtr + writeCount;
-        if(pNext > mData + mSize){
+        if(pNext >= mData + mSize){
             pNext = mData;
             size_t copyCount = mSize - writeCount;
-            memcpy(mData, mPtr + writeCount, copyCount);
-            memcpy(mData + copyCount, src, writeCount);
+            memcpy(mData, mPtr + writeCount, copyCount * sizeof(float));
+            memcpy(mData + copyCount, src, writeCount * sizeof(float));
             mPtr = mData;
         }else{
             memcpy(mPtr + mSize, src, writeCount * sizeof(float));
@@ -33,6 +35,6 @@ namespace luna {
 
     SampleBuffer::Channel SampleBuffer::channel(int index)
     {
-        return Channel(mPtr + index, mPtr + index + mSize, mChannelCount);
+        return Channel(mPtr + index, mChannelCount);
     }
 }

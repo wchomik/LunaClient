@@ -10,6 +10,8 @@ namespace luna {
     typedef float ColorScalar;
     typedef Eigen::Matrix<ColorScalar, 4, 1> Color;
     typedef std::vector<Color, Eigen::aligned_allocator<Color>> PixelStrand;
+
+    void hsvToRgb(Color & ret, const Color & hsv);
 }
 
 #endif // COLORUTILS_H

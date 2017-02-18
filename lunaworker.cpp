@@ -1,7 +1,6 @@
 #include "lunaworker.h"
 
 #include <QTimer>
-#include <iostream>
 
 #include "lunamanager.h"
 

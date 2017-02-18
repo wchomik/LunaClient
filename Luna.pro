@@ -16,7 +16,9 @@ SOURCES += main.cpp \
     colorprocessor.cpp \
     lunaaudioprovider.cpp \
     samplebuffer.cpp \
-    fft.cpp
+    fft.cpp \
+    colorutils.cpp \
+    audiochannelprocessor.cpp
 
 RESOURCES += qml.qrc
 
@@ -57,7 +59,8 @@ HEADERS += \
     colorprocessor.h \
     lunaaudioprovider.h \
     samplebuffer.h \
-    fft.h
+    fft.h \
+    audiochannelprocessor.h
 
 LIBS += -L$$PWD/Lib/
 
@@ -69,4 +72,5 @@ win32 {
     SOURCES += ./win32/audiocapture.cpp
     HEADERS += ./win32/audiocapture.h
     LIBS += -lmmdevapi -lole32 -llibfftw3f-3
+    DEFINES += _USE_MATH_DEFINES
 }

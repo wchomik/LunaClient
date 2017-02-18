@@ -16,6 +16,8 @@ namespace luna { namespace audio {
         ~AudioCapture();
 
         void configure(int outputChannels, float updateRate);
+        luna::SampleBuffer * sampleBuffer(){ return mBuffer; }
+        int sampleRate(){ return mFormat->nSamplesPerSec; }
     public slots:
         void start();
         void stop();
