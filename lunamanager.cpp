@@ -6,6 +6,7 @@
 #include "lunaprovider.h"
 #include "lunailluminationprovider.h"
 #include "lunaaudioprovider.h"
+#include "lunascreenprovider.h"
 
 #include "lunaconfig.h"
 #include "colorspace.h"
@@ -56,15 +57,20 @@ namespace luna {
         mConnectionTimer.stop();
 
         LunaIlluminationProvider * illum = new LunaIlluminationProvider(this);
-
         illum->configure(mLuna->config());
         illum->setUpdateRate(10);
         illum->mColor = Color(0, 1, 0, 0);
         illum->mWhiteness = 0.0f;
+
         LunaAudioProvider * audio = new LunaAudioProvider(this);
         audio->configure(mLuna->config());
 
-        setProvider(audio);
+        LunaScreenProvider * screen = new LunaScreenProvider(this);
+        screen->configure(mLuna->config());
+        ScreenBounds bounds = { 0.0f, 1.0f, 0.0f, 0.8f };
+        screen->setBounds(bounds);
+
+        setProvider(screen);
     }
 
     void LunaManager::onDisconnected(){
@@ -96,7 +102,7 @@ namespace luna {
         // TODO read white balance from config
         // TODO read luna colorspace from config
         ColorScalar mGamma = 2.2;
-        Color mWhiteBalance(1, 1, 1, 1);
+        Color mWhiteBalance(0.9f, 1, 0.6f, 1);
         ColorSpace mColorSpace = ColorSpace::ws2812();
         switch(mode){
         case ColorMode::nativeDirectGamma:

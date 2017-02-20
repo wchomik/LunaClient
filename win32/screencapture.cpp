@@ -58,15 +58,15 @@ namespace luna { namespace graphics {
 
         D3D11_INPUT_ELEMENT_DESC elems[]{
             {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-            {"TEXTURE_COORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+            {"TEXTURE_COORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
         };
         hr = mDevice->CreateInputLayout(elems, 2, vertexCode, sizeof(vertexCode), mInputLayout.GetAddressOf());
         testHR(hr);
 
         float vertexData[]{
-            0, 0, 0, 1, 0, 0,
-            2, 0, 0, 1, 2, 0,
-            0, 2, 0, 1, 0, 2
+            -1,  1, 0, 1,  0, 0,
+            3,   1, 0, 1,  2, 0,
+            -1, -3, 0, 1,  0, 2
         };
         D3D11_BUFFER_DESC vertexBufferDesc{
             sizeof(vertexData),
@@ -127,6 +127,11 @@ namespace luna { namespace graphics {
         mContext->RSSetState(mRasterizerState.Get());
     }
 
+    ScreenCapture::~ScreenCapture()
+    {
+        if(isRunning()) stop();
+    }
+
     void ScreenCapture::configure(const unsigned width, const unsigned height)
     {
         QMutexLocker mutex(&mDuplicationMutex);
@@ -173,13 +178,13 @@ namespace luna { namespace graphics {
 
     void ScreenCapture::run()
     {
+        HRESULT hr;
         while(mShouldRun){
             bool acquired = false;
             ComPtr<IDXGIResource> desktopResource;
             {
                 QMutexLocker mutex(&mDuplicationMutex);
 
-                HRESULT hr;
                 if(mHasOutput){
                     DXGI_OUTDUPL_FRAME_INFO frameInfo;
                     hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
@@ -196,6 +201,8 @@ namespace luna { namespace graphics {
             }
             if(acquired){
                 processFrame(desktopResource);
+                hr = mOutputDuplication->ReleaseFrame();
+                testHR(hr);
             }else if(!mHasOutput){
                 QThread::msleep(100);
             }
@@ -210,19 +217,13 @@ namespace luna { namespace graphics {
         hr = desktopResource.As<ID3D11Texture2D>(&original);
         testHR(hr);
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
-        viewDesc.Format = mOutputFormat;
-        viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        viewDesc.Texture2D.MostDetailedMip = 0;
-        viewDesc.Texture2D.MipLevels = 1;
-
-        //ComPtr<ID3D11ShaderResourceView> outputView;
-        //hr = mDevice->CreateShaderResourceView(original.Get(), &viewDesc, outputView.GetAddressOf());
-        //testHR(hr);
-
-        mContext->CopyResource(mMipTexture.Get(), original.Get());
-        //blitTexture(mMipTextureRenderView.Get(), outputView.Get(), mPointSampler.Get(), mOutputWidth, mOutputHeight);
+        mContext->CopySubresourceRegion(
+            mMipTexture.Get(), 0,
+            0, 0, 0,
+            original.Get(), 0,
+            nullptr);
         mContext->GenerateMips(mMipTextureShaderView.Get());
+
         blitTexture(mScaledTextureRenderView.Get(), mMipTextureShaderView.Get(), mMipSampler.Get(), mPixels.columns(), mPixels.rows());
 
         mContext->CopyResource(mCPUTexture.Get(), mScaledTexture.Get());
@@ -231,9 +232,9 @@ namespace luna { namespace graphics {
         testHR(hr);
 
         uint8_t * src = reinterpret_cast<uint8_t *>(resource.pData);
+        size_t srcPitch = resource.RowPitch;
         uint8_t * dst = reinterpret_cast<uint8_t *>(mPixels.data());
         size_t dstPitch = mPixels.columns() * sizeof(Color);
-        size_t srcPitch = resource.RowPitch;
         if(srcPitch != dstPitch){
             for(size_t i = 0; i < mPixels.rows(); ++i){
                 memcpy(dst, src, dstPitch);

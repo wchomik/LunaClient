@@ -9,10 +9,15 @@ namespace luna {
     LunaLegacy::LunaLegacy(QObject * parent) :
         Luna(parent),
         mIsConnected(false),
-        mSocket(this)
+        mSocket(this),
+        mKeepAliveTimer(this)
     {
         QObject::connect(&mSocket, &QUdpSocket::readyRead,
                          this, &LunaLegacy::datagramReceived);
+        QObject::connect(&mKeepAliveTimer, &QTimer::timeout,
+                         this, &LunaLegacy::keepAliveTimeout);
+
+        mKeepAliveTimer.setInterval(1000);
         makeConfig();
         mSocket.bind(port);
     }
@@ -35,6 +40,7 @@ namespace luna {
     }
 
     void LunaLegacy::disconnect(){
+        mKeepAliveTimer.stop();
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(99);
         send();
@@ -92,8 +98,15 @@ namespace luna {
             qDebug() << senderIp.toString();
             mSocket.connectToHost(senderIp, senderPort);
             mIsConnected = true;
+            mKeepAliveTimer.start();
             emit connected();
         }
+    }
+
+    void LunaLegacy::keepAliveTimeout()
+    {
+        mBuffer.reset();
+        send();
     }
 
     void LunaLegacy::send(){

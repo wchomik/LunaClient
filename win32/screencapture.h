@@ -17,7 +17,9 @@ namespace luna { namespace graphics {
     {
         Q_OBJECT
     public:
-        ScreenCapture(QObject * parent = nullptr);
+        explicit ScreenCapture(QObject * parent = nullptr);
+        ~ScreenCapture();
+
         void configure(const unsigned width, const unsigned height);
 
         Array2D<Color> & pixels(){ return mPixels; }

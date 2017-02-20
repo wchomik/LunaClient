@@ -2,6 +2,7 @@
 #define LUNALEGACY_H
 
 #include <QUdpSocket>
+#include <QTimer>
 #include "luna.h"
 #include "binarystream.h"
 
@@ -24,6 +25,7 @@ namespace luna {
 
     protected slots:
         void datagramReceived();
+        void keepAliveTimeout();
     private:
         enum {
             pixelCount = 120,
@@ -32,6 +34,7 @@ namespace luna {
         };
         bool mIsConnected;
         QUdpSocket mSocket;
+        QTimer mKeepAliveTimer;
         BinaryStream<bufferSize> mBuffer;
 
         static const char * helloMessage;
