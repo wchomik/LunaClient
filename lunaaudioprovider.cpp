@@ -24,7 +24,7 @@ namespace luna {
         audioConf.fLow = 100;
         audioConf.fHigh = 16000;
         audioConf.sampleRate = mAudioCapture.sampleRate();
-        audioConf.unitsPerDecade = 0.5f;
+        audioConf.unitsPerDecade = 8.0f;
         mProcessors.clear();
         for(int i = 0; i < config.pixelStrands.size(); ++i){
             audioConf.count = config.pixelStrands[i].count;
@@ -34,7 +34,7 @@ namespace luna {
 
     ColorMode LunaAudioProvider::colorMode()
     {
-        return ColorMode::nativeWhiteBalancedGamma;
+        return ColorMode::nativeWhiteBalanced;
     }
 
     void LunaAudioProvider::start()

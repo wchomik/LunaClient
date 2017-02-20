@@ -10,7 +10,8 @@ namespace luna { namespace audio {
         mSums(mCount),
         mFilter(mCount),
         mBaseColors(mCount),
-        mLogMul(0.5f / std::log(config.logarithmBase) * config.unitsPerDecade)
+        mLogMul(0.5f / std::log(config.logarithmBase) * config.unitsPerDecade),
+        mFilteredNorm(0)
     {
         float octaveCount = std::log2(config.fHigh / config.fLow);
         float step = octaveCount / mCount;
@@ -38,12 +39,14 @@ namespace luna { namespace audio {
             int i1 = mIndices[i + 1];
             mSums[i] = input.segment(i0, i1 - i0).sum();
         }
-        mSums = ((mSums + 1e-12f).log());
+        float norm = std::log(mSums.maxCoeff() + 1e-12f) - 1.0f;
+        float t = 0.97f;
+        mFilteredNorm = mFilteredNorm * t + norm * (1 - t);
+        mSums = (((mSums + 1e-12f).log() - mFilteredNorm) * mLogMul);
 
 
         float decay = 0.05f;
-        // TODO smarter normalization
-        mFilter = (mFilter - decay).max(mSums + 4.5f).max(0);
+        mFilter = (mFilter - decay).max(mSums).max(0);
         for(int i = 0; i < mCount; ++i){
             output[i] = mBaseColors[i] * mFilter[i];
         }

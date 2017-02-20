@@ -12,12 +12,16 @@ namespace luna {
         explicit LunaLegacy(QObject * parent = nullptr);
         virtual ~LunaLegacy();
 
-        virtual bool isConnected() override;
-        virtual void connect() override;
-        virtual void disconnect() override;
-        virtual void update(const std::vector<PixelStrand> & pixelStrands,
-                            const std::vector<ColorScalar> & whiteStrands) override;
-        virtual void shutdown() override;
+        bool isConnected() override;
+        QAbstractListModel * devices() override;
+
+        void connect() override;
+        void disconnect() override;
+        void update(const std::vector<PixelStrand> & pixelStrands,
+                    const std::vector<ColorScalar> & whiteStrands) override;
+        void shutdown() override;
+        void discover() override;
+
     protected slots:
         void datagramReceived();
     private:
@@ -34,6 +38,8 @@ namespace luna {
 
         void send();
         void makeConfig();
+
+        // Luna interface
     };
 }
 #endif // LUNALEGACY_H

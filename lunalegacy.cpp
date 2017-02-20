@@ -25,6 +25,11 @@ namespace luna {
         return mIsConnected;
     }
 
+    QAbstractListModel * LunaLegacy::devices(){
+        return nullptr;
+    }
+
+
     void LunaLegacy::connect(){
         mSocket.writeDatagram(helloMessage, strlen(helloMessage), QHostAddress::Broadcast, port);
     }
@@ -69,6 +74,11 @@ namespace luna {
         mBuffer << static_cast<uint8_t>(2);
         send();
         disconnect();
+    }
+
+    void LunaLegacy::discover()
+    {
+
     }
 
     void LunaLegacy::datagramReceived(){

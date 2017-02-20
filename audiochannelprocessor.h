@@ -30,6 +30,7 @@ namespace luna { namespace audio {
         Eigen::ArrayXf mFilter;
         PixelStrand mBaseColors;
         const float mLogMul;
+        float mFilteredNorm;
     };
 }}
 

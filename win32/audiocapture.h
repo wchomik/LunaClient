@@ -1,9 +1,12 @@
 #ifndef AUDIOCAPTURE_H
 #define AUDIOCAPTURE_H
 
+#include <memory>
+
 #include <QObject>
 #include <QTimer>
 
+#include <wrl.h>
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
 #include "samplebuffer.h"
@@ -16,7 +19,7 @@ namespace luna { namespace audio {
         ~AudioCapture();
 
         void configure(int outputChannels, float updateRate);
-        luna::SampleBuffer * sampleBuffer(){ return mBuffer; }
+        luna::SampleBuffer * sampleBuffer(){ return mBuffer.get(); }
         int sampleRate(){ return mFormat->nSamplesPerSec; }
     public slots:
         void start();
@@ -27,33 +30,18 @@ namespace luna { namespace audio {
         void samplesReady();
 
     private:
-        template<typename T>
-        static void release(T *& obj){
-            if(obj != nullptr){
-                obj->Release();
-                obj = nullptr;
-            }
-        }
-        template<typename T>
-        static void free(T *& obj){
-            if(obj != nullptr){
-                CoTaskMemFree(obj);
-                obj = nullptr;
-            }
-        }
-
-        void cleanup();
-        void fail(long hr);
         void panic(const char *msg = "");
 
         QTimer mTimer;
-        luna::SampleBuffer * mBuffer;
+        std::unique_ptr<luna::SampleBuffer> mBuffer;
         float mUpdateRate;
-        IMMDeviceEnumerator * mDevEnum;
-        IMMDevice * mAudioDevice;
-        IAudioClient * mAudioClient;
-        WAVEFORMATEX * mFormat;
-        IAudioCaptureClient * mAudioCaptureClient;
+
+        Microsoft::WRL::ComPtr<IMMDeviceEnumerator> mDevEnum;
+        Microsoft::WRL::ComPtr<IMMDevice> mAudioDevice;
+        Microsoft::WRL::ComPtr<IAudioClient> mAudioClient;
+        Microsoft::WRL::ComPtr<IAudioCaptureClient> mAudioCaptureClient;
+        typedef std::unique_ptr<WAVEFORMATEX, decltype(&CoTaskMemFree)> formatPtr_t;
+        formatPtr_t mFormat;
     };
 }}
 

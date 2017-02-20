@@ -1,19 +1,15 @@
+
 #include "audiocapture.h"
 
-#include <comdef.h>
 #include <QDebug>
 #include "samplebuffer.h"
+#include "win32errorhandling.h"
 
 namespace luna { namespace audio {
     AudioCapture::AudioCapture(QObject * parent) :
         QObject(parent),
         mTimer(this),
-        mBuffer(nullptr),
-        mDevEnum(nullptr),
-        mAudioDevice(nullptr),
-        mAudioClient(nullptr),
-        mFormat(nullptr),
-        mAudioCaptureClient(nullptr)
+        mFormat(nullptr, &CoTaskMemFree)
     {
         QObject::connect(&mTimer, &QTimer::timeout, this, &AudioCapture::readSamples);
         CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -21,37 +17,39 @@ namespace luna { namespace audio {
 
     AudioCapture::~AudioCapture()
     {
-        cleanup();
         CoUninitialize();
     }
 
     void AudioCapture::configure(int outputChannels, float updateRate)
     {
-        cleanup();
         HRESULT hr;
         hr = CoCreateInstance(
             __uuidof(MMDeviceEnumerator),
             NULL,
             CLSCTX_ALL,
             __uuidof(IMMDeviceEnumerator),
-            (void**)&mDevEnum);
-        fail(hr);
+            (void**)mDevEnum.ReleaseAndGetAddressOf());
+        testHR(hr);
 
-        hr = mDevEnum->GetDefaultAudioEndpoint(eRender, eMultimedia, &mAudioDevice);
-        fail(hr);
+        hr = mDevEnum->GetDefaultAudioEndpoint(eRender, eMultimedia,
+            mAudioDevice.ReleaseAndGetAddressOf());
+        testHR(hr);
 
-        mAudioDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL, (void**)&mAudioClient);
-        fail(hr);
+        mAudioDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL,
+            (void**)mAudioClient.ReleaseAndGetAddressOf());
+        testHR(hr);
 
-        hr = mAudioClient->GetMixFormat(&mFormat);
-        fail(hr);
+        WAVEFORMATEX * tempFormat;
+        hr = mAudioClient->GetMixFormat(&tempFormat);
+        mFormat = formatPtr_t(tempFormat, &CoTaskMemFree);
+        testHR(hr);
 
         // TODO add channel mixing
         if(mFormat->nChannels != outputChannels) panic();
         // TODO support non floating point formats
         if(mFormat->wFormatTag != WAVE_FORMAT_IEEE_FLOAT){
             if(mFormat->wFormatTag != WAVE_FORMAT_EXTENSIBLE) panic();
-            WAVEFORMATEXTENSIBLE * format = reinterpret_cast<WAVEFORMATEXTENSIBLE *>(mFormat);
+            WAVEFORMATEXTENSIBLE * format = reinterpret_cast<WAVEFORMATEXTENSIBLE *>(mFormat.get());
             if(format->SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT) panic();
         }
 
@@ -60,14 +58,15 @@ namespace luna { namespace audio {
             AUDCLNT_SHAREMODE_SHARED,
             AUDCLNT_STREAMFLAGS_LOOPBACK,
             length,
-            0, mFormat, NULL);
-        fail(hr);
+            0, mFormat.get(), NULL);
+        testHR(hr);
 
-        hr = mAudioClient->GetService(__uuidof(IAudioCaptureClient), (void**)&mAudioCaptureClient);
-        fail(hr);
+        hr = mAudioClient->GetService(__uuidof(IAudioCaptureClient),
+            (void**)mAudioCaptureClient.ReleaseAndGetAddressOf());
+        testHR(hr);
 
         mTimer.setInterval(static_cast<int>(1000 / updateRate));
-        mBuffer = new luna::SampleBuffer(1 << 13, outputChannels);
+        mBuffer = std::unique_ptr<luna::SampleBuffer>(new luna::SampleBuffer(1 << 13, outputChannels));
     }
 
     void AudioCapture::start()
@@ -87,7 +86,7 @@ namespace luna { namespace audio {
         HRESULT hr;
         uint32_t packetSize;
         hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);
-
+        testHR(hr);
         while (packetSize != 0)
         {
             uint32_t framesAvailable;
@@ -99,39 +98,15 @@ namespace luna { namespace audio {
 
             mAudioCaptureClient->ReleaseBuffer(framesAvailable);
             hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);
+            testHR(hr);
         }
 
         emit samplesReady();
     }
 
 
-    void AudioCapture::cleanup()
-    {
-        release(mAudioCaptureClient);
-        free(mFormat);
-        release(mAudioClient);
-        release(mAudioDevice);
-        release(mDevEnum);
-        if(mBuffer != nullptr){
-            delete mBuffer;
-            mBuffer = nullptr;
-        }
-    }
-
-    void AudioCapture::fail(long hr)
-    {
-        if(FAILED(hr)) {
-            _com_error err(hr);
-            LPCTSTR errMsg = err.ErrorMessage();
-            char msg[128];
-            wcstombs(msg, errMsg, 128);
-            panic(msg);
-        }
-    }
-
     void AudioCapture::panic(const char * msg)
     {
-        cleanup();
         throw std::runtime_error(msg);
     }
 }}

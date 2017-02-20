@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     samplebuffer.cpp \
     fft.cpp \
     colorutils.cpp \
-    audiochannelprocessor.cpp
+    audiochannelprocessor.cpp \
+    lunascreenprovider.cpp
 
 RESOURCES += qml.qrc
 
@@ -60,7 +61,9 @@ HEADERS += \
     lunaaudioprovider.h \
     samplebuffer.h \
     fft.h \
-    audiochannelprocessor.h
+    audiochannelprocessor.h \
+    array2d.h \
+    lunascreenprovider.h
 
 LIBS += -L$$PWD/Lib/
 
@@ -69,8 +72,13 @@ DEPENDPATH += $$PWD/Include
 
 win32 {
     INCLUDEPATH += ./win32
-    SOURCES += ./win32/audiocapture.cpp
-    HEADERS += ./win32/audiocapture.h
-    LIBS += -lmmdevapi -lole32 -llibfftw3f-3
+    SOURCES += ./win32/audiocapture.cpp \
+        win32/screencapture.cpp \
+        win32/win32errorhandling.cpp
+    HEADERS += ./win32/audiocapture.h \
+        win32/screencapture.h \
+        win32/win32errorhandling.h \
+        win32/shaders.h
+    LIBS += -lmmdevapi -lole32 -llibfftw3f-3 -ld3d11 -ldxgi
     DEFINES += _USE_MATH_DEFINES
 }
