@@ -3,12 +3,9 @@
 
 namespace luna {
     enum class ColorMode {
-        nativeDirect,
-        nativeWhiteBalanced,
-        nativeDirectGamma,
-        nativeWhiteBalancedGamma,
-        sRgb,
-        rec2020,
+        fullDirect,
+        fullWhiteBalanced,
+        colorSpaceConversion,
     };
 }
 

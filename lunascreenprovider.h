@@ -20,7 +20,7 @@ namespace luna {
 
         void configure(const LunaConfig & config) override;
         void setBounds(const ScreenBounds & bounds);
-        ColorMode colorMode() override;
+        ColorMode colorMode(class ColorSpace * outColorSpace) override;
 
         void start() override;
         void stop() override;

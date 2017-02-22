@@ -2,6 +2,8 @@
 
 #include "lunaconfig.h"
 
+#include "colorspace.h"
+
 namespace luna {
 
     LunaScreenProvider::LunaScreenProvider(QObject * parent) :
@@ -29,10 +31,11 @@ namespace luna {
         configureScreenCaptureAndMappings();
     }
 
-    ColorMode LunaScreenProvider::colorMode()
+    ColorMode LunaScreenProvider::colorMode(ColorSpace * outColorSpace)
     {
         // TODO find a way to read system colorspace
-        return ColorMode::sRgb;
+        *outColorSpace = ColorSpace::sRGB();
+        return ColorMode::colorSpaceConversion;
     }
 
     void LunaScreenProvider::start()

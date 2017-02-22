@@ -14,27 +14,17 @@ namespace luna {
         explicit Luna(QObject * parent = nullptr);
         virtual ~Luna();
         virtual bool isConnected() = 0;
-        virtual QAbstractListModel * devices() = 0;
-
         virtual void update(const std::vector<PixelStrand> & pixelStrands,
                             const std::vector<ColorScalar> & whiteStrands) = 0;
 
-
-        const LunaConfig & config(){
-            return mConfig;
-        }
-
+        virtual void getConfig(struct LunaConfig * config) = 0;
     public slots:
         virtual void connect() = 0;
         virtual void disconnect() = 0;
         virtual void shutdown() = 0;
-        virtual void discover() = 0;
     signals:
         void connected();
         void disconnected();
-
-    protected:
-        LunaConfig mConfig;
     };
 }
 #endif // LUNA_H

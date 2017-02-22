@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     fft.cpp \
     colorutils.cpp \
     audiochannelprocessor.cpp \
-    lunascreenprovider.cpp
+    lunascreenprovider.cpp \
+    lunaproviderfactory.cpp
 
 RESOURCES += qml.qrc
 
@@ -63,7 +64,8 @@ HEADERS += \
     fft.h \
     audiochannelprocessor.h \
     array2d.h \
-    lunascreenprovider.h
+    lunascreenprovider.h \
+    lunaproviderfactory.h
 
 LIBS += -L$$PWD/Lib/
 

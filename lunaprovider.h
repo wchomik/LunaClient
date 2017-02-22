@@ -15,7 +15,7 @@ namespace luna {
         virtual ~LunaProvider();
 
         virtual void configure(const struct LunaConfig & config);
-        virtual ColorMode colorMode() = 0;
+        virtual ColorMode colorMode(class ColorSpace * outColorSpace) = 0;
 
         std::vector<PixelStrand> & pixelStrands(){
             return mPixelStrands;

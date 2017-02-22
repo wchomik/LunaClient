@@ -12,13 +12,15 @@
 #include "colorspace.h"
 #include "colorprocessor.h"
 
+#include <QDebug>
+
 namespace luna {
     LunaManager::LunaManager(QObject *parent) :
         QObject(parent),
+        mWhiteBalance(1, 1, 1, 1),
         mConnectionTimer(this),
         mLuna(nullptr),
-        mProvider(nullptr),
-        mColorProcessor(nullptr)
+        mCurrentProviderType(LunaProviderType::illumination)
     {
         mLuna = new LunaLegacy(this);
 
@@ -33,99 +35,95 @@ namespace luna {
 
     LunaManager::~LunaManager()
     {
-        if(mColorProcessor) delete mColorProcessor;
+        QObject::disconnect(mLuna, &Luna::disconnected,
+                            this, &LunaManager::onDisconnected);
+        mLuna->shutdown();
     }
 
-    void LunaManager::onShutdown()
+    void LunaManager::setWhiteBalance(const Color &color)
     {
-        QObject::disconnect(mLuna, &Luna::disconnected,this, &LunaManager::onDisconnected);
-        mLuna->shutdown();
+        mWhiteBalance = color;
+        updateColorMode();
     }
 
     void LunaManager::onDataReady()
     {
-        if(mLuna->isConnected()){
-            for(PixelStrand & strand : mProvider->pixelStrands()){
+        if(mLuna->isConnected() && mActiveProvider){
+            for(PixelStrand & strand : mActiveProvider->pixelStrands()){
                 mColorProcessor->process(strand);
             }
-            mLuna->update(mProvider->pixelStrands(),
-                          mProvider->whiteStrands());
+            mLuna->update(mActiveProvider->pixelStrands(),
+                          mActiveProvider->whiteStrands());
         }
     }
 
     void LunaManager::onConnected(){
+        mLuna->getConfig(&mLunaConfig);
+        // TODO read colorspace from LunaConfig
+        mDestinationColorSpace = ColorSpace::ws2812();
         mConnectionTimer.stop();
-
-        LunaIlluminationProvider * illum = new LunaIlluminationProvider(this);
-        illum->configure(mLuna->config());
-        illum->setUpdateRate(10);
-        illum->mColor = Color(0, 1, 0, 0);
-        illum->mWhiteness = 0.0f;
-
-        LunaAudioProvider * audio = new LunaAudioProvider(this);
-        audio->configure(mLuna->config());
-
-        LunaScreenProvider * screen = new LunaScreenProvider(this);
-        screen->configure(mLuna->config());
-        ScreenBounds bounds = { 0.0f, 1.0f, 0.0f, 0.8f };
-        screen->setBounds(bounds);
-
-        setProvider(screen);
+        activateProvider();
     }
 
     void LunaManager::onDisconnected(){
+        deactivateProvider();
         mConnectionTimer.start();
     }
 
-    void LunaManager::setProvider(LunaProvider * provider)
+    void LunaManager::activateProvider()
     {
-        if(mProvider){
-            mProvider->stop();
-            QObject::disconnect(mProvider, &LunaProvider::dataReady,
-                                this, &LunaManager::onDataReady);
-        }
-        mProvider = provider;
-        if(provider){
-            QObject::connect(mProvider, &LunaProvider::dataReady,
+        mActiveProvider = mProviderFactory.make(mCurrentProviderType, this);
+        if(mActiveProvider){
+            mActiveProvider->configure(mLunaConfig);
+            QObject::connect(mActiveProvider.get(), &LunaProvider::dataReady,
                          this, &LunaManager::onDataReady);
-            mProvider->start();
-            setColorMode(mProvider->colorMode());
+            ColorSpace colorSpace;
+            ColorMode mode = mActiveProvider->colorMode(&colorSpace);
+            setColorMode(mode, colorSpace);
+            mActiveProvider->start();
         }
     }
 
-    void LunaManager::setColorMode(ColorMode mode)
+    void LunaManager::deactivateProvider()
     {
-        if(mColorProcessor){
-            delete mColorProcessor;
+        if(mActiveProvider){
+            mActiveProvider->stop();
+            QObject::disconnect(mActiveProvider.get(), &LunaProvider::dataReady,
+                                this, &LunaManager::onDataReady);
+            mActiveProvider = std::unique_ptr<LunaProvider>();
         }
-        // TODO read gamma from config
-        // TODO read white balance from config
-        // TODO read luna colorspace from config
-        ColorScalar mGamma = 2.2;
-        Color mWhiteBalance(0.9f, 1, 0.6f, 1);
-        ColorSpace mColorSpace = ColorSpace::ws2812();
-        switch(mode){
-        case ColorMode::nativeDirectGamma:
-            mColorProcessor = new ColorProcessorDirectGamma(mGamma);
+    }
+
+    void LunaManager::updateColorMode()
+    {
+        switch(mCurrentColorMode){
+        case ColorMode::fullWhiteBalanced:
+            mColorProcessor = std::make_unique<ColorProcessorWhiteBalanced>(mWhiteBalance);
             break;
-        case ColorMode::nativeWhiteBalanced:
-            mColorProcessor = new ColorProcessorWhiteBalanced(mWhiteBalance);
+        case ColorMode::colorSpaceConversion:
+            mColorProcessor = std::make_unique<ColorProcessorColorSpace>(
+                mSourceColorSpace, mDestinationColorSpace, mWhiteBalance);
             break;
-        case ColorMode::nativeWhiteBalancedGamma:
-            mColorProcessor = new ColorProcessorWhiteBalancedGamma(mWhiteBalance, mGamma);
-            break;
-        case ColorMode::rec2020:
-            mColorProcessor = new ColorProcessorColorSpace(
-                ColorSpace::rec2020(), mColorSpace, mWhiteBalance);
-            break;
-        case ColorMode::sRgb:
-            mColorProcessor = new ColorProcessorColorSpace(
-                ColorSpace::sRGB(), mColorSpace, mWhiteBalance);
-            break;
-        case ColorMode::nativeDirect:
+        case ColorMode::fullDirect:
         default:
-            mColorProcessor = new ColorProcessorDirect();
+            mColorProcessor = std::make_unique<ColorProcessorDirect>();
             break;
         }
+    }
+
+    void LunaManager::setMode(LunaProviderType type)
+    {
+        deactivateProvider();
+        mCurrentProviderType = type;
+        if(mLuna->isConnected()){
+            activateProvider();
+        }
+    }
+
+    void LunaManager::setColorMode(ColorMode mode, const ColorSpace & colorSpace)
+    {
+        mCurrentColorMode = mode;
+        mSourceColorSpace = colorSpace;
+        updateColorMode();
     }
 }

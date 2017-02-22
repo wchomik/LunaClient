@@ -6,8 +6,8 @@ namespace luna {
     LunaIlluminationProvider::LunaIlluminationProvider(QObject * parent) :
         LunaProvider(parent),
         mTimer(this),
-        mColor(Color::Zero()),
-        mWhiteness(0)
+        mColor(1, 1, 1, 1),
+        mWhiteness(0.0)
     {
         mTimer.setInterval(20);
         connect(&mTimer, &QTimer::timeout,
@@ -26,9 +26,9 @@ namespace luna {
         mTimer.stop();
     }
 
-    ColorMode LunaIlluminationProvider::colorMode()
+    ColorMode LunaIlluminationProvider::colorMode(class ColorSpace * outColorSpace)
     {
-        return ColorMode::nativeWhiteBalancedGamma;
+        return ColorMode::fullWhiteBalanced;
     }
 
     void LunaIlluminationProvider::setUpdateRate(int rate){

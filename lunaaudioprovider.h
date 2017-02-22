@@ -15,7 +15,7 @@ namespace luna {
         explicit LunaAudioProvider(QObject * parent = 0);
 
         void configure(const LunaConfig & config) override;
-        ColorMode colorMode() override;
+        ColorMode colorMode(class ColorSpace * outColorSpace) override;
 
         void start() override;
         void stop() override;

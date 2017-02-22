@@ -14,14 +14,13 @@ namespace luna {
         virtual ~LunaLegacy();
 
         bool isConnected() override;
-        QAbstractListModel * devices() override;
 
         void connect() override;
         void disconnect() override;
         void update(const std::vector<PixelStrand> & pixelStrands,
                     const std::vector<ColorScalar> & whiteStrands) override;
         void shutdown() override;
-        void discover() override;
+        void getConfig(struct LunaConfig * config) override;
 
     protected slots:
         void datagramReceived();
@@ -40,9 +39,6 @@ namespace luna {
         static const char * helloMessage;
 
         void send();
-        void makeConfig();
-
-        // Luna interface
     };
 }
 #endif // LUNALEGACY_H

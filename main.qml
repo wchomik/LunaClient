@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles.Flat 1.0 as Flat
 import QtQuick.Extras 1.4
 import QtQuick.Extras.Private 1.0
+import luna.LunaWorker 1.0
+
 
 ApplicationWindow {
     id: window
@@ -13,6 +15,10 @@ ApplicationWindow {
     height: 800
     minimumHeight: 800
     title: qsTr("Luna")
+
+    Component.onCompleted: {
+        LunaWorker.start()
+    }
 
     header: ToolBar {
         RowLayout {
@@ -122,8 +128,11 @@ ApplicationWindow {
                     Slider {
                         id: redWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: 0.5
+                        value: LunaWorker.redBalance
                         wheelEnabled: true
+                        onPositionChanged: {
+                            LunaWorker.redBalance = position
+                        }
 
                         Label {
                             id: label
@@ -134,8 +143,11 @@ ApplicationWindow {
                     Slider {
                         id: greenWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: 0.5
+                        value: LunaWorker.greenBalance
                         wheelEnabled: true
+                        onPositionChanged: {
+                            LunaWorker.greenBalance = position
+                        }
 
                         Label {
                             id: label1
@@ -146,8 +158,11 @@ ApplicationWindow {
                     Slider {
                         id: blueWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: 0.5
+                        value: LunaWorker.blueBalance
                         wheelEnabled: true
+                        onPositionChanged: {
+                            LunaWorker.blueBalance = position
+                        }
 
                         Label {
                             id: label2

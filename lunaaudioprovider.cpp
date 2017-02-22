@@ -32,9 +32,9 @@ namespace luna {
         }
     }
 
-    ColorMode LunaAudioProvider::colorMode()
+    ColorMode LunaAudioProvider::colorMode(class ColorSpace * outColorSpace)
     {
-        return ColorMode::nativeWhiteBalanced;
+        return ColorMode::fullWhiteBalanced;
     }
 
     void LunaAudioProvider::start()

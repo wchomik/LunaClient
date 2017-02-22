@@ -3,6 +3,11 @@
 #include <Eigen/Dense>
 
 namespace luna {
+    ColorSpace::ColorSpace()
+    {
+
+    }
+
     ColorSpace::ColorSpace(const cieCoord_t & white, const cieCoord_t & red,
                            const cieCoord_t & green, const cieCoord_t & blue)
     {

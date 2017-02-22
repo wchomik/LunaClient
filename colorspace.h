@@ -10,6 +10,7 @@ namespace luna {
     {
         typedef Eigen::Matrix<ColorScalar, 2, 1> cieCoord_t;
     public:
+        ColorSpace();
         ColorSpace(const cieCoord_t & white, const cieCoord_t & red,
                    const cieCoord_t & green, const cieCoord_t & blue);
 
