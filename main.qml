@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles.Flat 1.0 as Flat
 import QtQuick.Extras 1.4
 import QtQuick.Extras.Private 1.0
-import luna.LunaWorker 1.0
 
 
 ApplicationWindow {
@@ -15,10 +14,6 @@ ApplicationWindow {
     height: 800
     minimumHeight: 800
     title: qsTr("Luna")
-
-    Component.onCompleted: {
-        LunaWorker.start()
-    }
 
     header: ToolBar {
         RowLayout {
@@ -88,8 +83,6 @@ ApplicationWindow {
                 ListElement { title: "Room" }//; source: "qrc:/pages/ButtonPage.qml" }
                 ListElement { title: "Fridge" }//; source: "qrc:/pages/CheckBoxPage.qml" }
             }
-
-            //ScrollIndicator.vertical: ScrollIndicator { }
         }
     }
 
@@ -128,10 +121,10 @@ ApplicationWindow {
                     Slider {
                         id: redWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: LunaWorker.redBalance
+                        value: Luna.redBalance
                         wheelEnabled: true
                         onPositionChanged: {
-                            LunaWorker.redBalance = position
+                            Luna.redBalance = position
                         }
 
                         Label {
@@ -143,10 +136,10 @@ ApplicationWindow {
                     Slider {
                         id: greenWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: LunaWorker.greenBalance
+                        value: Luna.greenBalance
                         wheelEnabled: true
                         onPositionChanged: {
-                            LunaWorker.greenBalance = position
+                            Luna.greenBalance = position
                         }
 
                         Label {
@@ -158,10 +151,10 @@ ApplicationWindow {
                     Slider {
                         id: blueWhiteBalanceslider
                         Layout.fillWidth: true
-                        value: LunaWorker.blueBalance
+                        value: Luna.blueBalance
                         wheelEnabled: true
                         onPositionChanged: {
-                            LunaWorker.blueBalance = position
+                            Luna.blueBalance = position
                         }
 
                         Label {
@@ -203,7 +196,6 @@ ApplicationWindow {
             height: width * 9 /16
             Image {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                //anchors.fill: parent
                 asynchronous : true
                 width: parent.width
                 fillMode: Image.PreserveAspectFit
@@ -217,18 +209,24 @@ ApplicationWindow {
             SwipeView {
                 Layout.fillWidth: true
                 id: swipeView
-                //clip: true
-                //Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                //anchors.fill: parent
                 currentIndex: tabBar.currentIndex
 
                 Light {
+                    ListView.onCurrentItemChanged: {
+                        if(ListView.isCurrentItem){ Luna.provider = "Light" }
+                    }
                 }
 
                 Display {
+                    ListView.onCurrentItemChanged: {
+                        if(ListView.isCurrentItem){ Luna.provider = "Display" }
+                    }
                 }
 
                 Light {
+                    ListView.onCurrentItemChanged: {
+                        if(ListView.isCurrentItem){ Luna.provider = "Audio" }
+                    }
                 }
             }
         }

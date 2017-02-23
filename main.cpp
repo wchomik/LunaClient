@@ -1,30 +1,28 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 #include "luna/worker.h"
-
-
-
-static QObject *lunaWorkerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    luna::Worker *example = new luna::Worker();
-    return example;
-}
+#include "model/settings.h"
 
 int main(int argc, char *argv[])
 {
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     qputenv("QT_QUICK_CONTROLS_1_STYLE", "Flat");
     QGuiApplication app(argc, argv);
 
-    qmlRegisterSingletonType<luna::Worker>("luna.LunaWorker", 1, 0, "LunaWorker", lunaWorkerProvider);
+    luna::Worker worker;
+    model::Settings settings;
+    settings.setLunaManager(worker.lunaManager());
+    worker.start();
 
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("Luna", &settings);
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 
-    return app.exec();
+    int ret = app.exec();
+
+    worker.quit();
+    worker.wait();
+    return ret;
 }

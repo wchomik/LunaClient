@@ -5,45 +5,45 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QMutex>
 
 #include <Eigen/Core>
 #include "colorutils.h"
 #include "colormode.h"
-#include "colorprocessor.h"
 #include "colorspace.h"
 
 #include "providerfactory.h"
 #include "config.h"
 
 namespace luna {
-
     class Manager : public QObject
     {
         Q_OBJECT
     public:
         explicit Manager(QObject * parent = 0);
         ~Manager();
+        Manager(const Manager &) = delete;
+        Manager & operator=(const Manager &) = delete;
 
-        void setWhiteBalance(const Color & color);
-        void setMode(ProviderType type);
+        Provider * currentProvider();
     public slots:
-        void updateColorMode();
-
+        void setWhiteBalance(const Color & color);
+        void setMode(luna::ProviderType type);
     private slots:
         void onDataReady();
         void onConnected();
         void onDisconnected();
     private:
+        void updateColorMode();
         void activateProvider();
         void deactivateProvider();
-        void setColorMode(ColorMode mode, const class ColorSpace & colorSpace);
 
         // color management
         Color mWhiteBalance;
         ColorSpace mSourceColorSpace;
         ColorSpace mDestinationColorSpace;
         ColorMode mCurrentColorMode;
-        std::unique_ptr<ColorProcessor> mColorProcessor;
+        std::unique_ptr<class ColorProcessor> mColorProcessor;
 
         // connection management
         class Connection * mLuna;
@@ -52,8 +52,10 @@ namespace luna {
         // provider management
         ProviderFactory mProviderFactory;
         ProviderType mCurrentProviderType;
-        std::unique_ptr<Provider> mActiveProvider;
+        std::unique_ptr<class Provider> mActiveProvider;
         Config mLunaConfig;
+
+        QMutex mMutex;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

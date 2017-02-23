@@ -6,7 +6,7 @@
 #include "provider.h"
 
 namespace luna {
-    enum class ProviderType {
+    enum class ProviderType : int {
         none,
         illumination,
         audio,

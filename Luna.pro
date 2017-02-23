@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     luna/provider.cpp \
     luna/worker.cpp \
     luna/screenprovider.cpp \
-    luna/providerfactory.cpp
+    luna/providerfactory.cpp \
+    model/settings.cpp
 
 RESOURCES += qml.qrc
 
@@ -65,7 +66,8 @@ HEADERS += \
     luna/illuminationprovider.h \
     luna/config.h \
     luna/audioprovider.h \
-    luna/connection.h
+    luna/connection.h \
+    model/settings.h
 
 LIBS += -L$$PWD/Lib/
 
@@ -73,6 +75,7 @@ INCLUDEPATH += $$PWD/Include
 DEPENDPATH += $$PWD/Include
 
 win32 {
+    QMAKE_CXXFLAGS += -arch:AVX
     INCLUDEPATH += ./win32
     SOURCES += ./win32/audiocapture.cpp \
         win32/screencapture.cpp \

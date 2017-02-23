@@ -3,16 +3,14 @@
 #include "connection.h"
 #include "connectionlegacy.h"
 
-#include "provider.h"
-#include "illuminationprovider.h"
-#include "audioprovider.h"
-#include "screenprovider.h"
+#include "providerfactory.h"
 
 #include "config.h"
 #include "colorspace.h"
 #include "colorprocessor.h"
 
 #include <QDebug>
+#include <QMutexLocker>
 
 namespace luna {
     Manager::Manager(QObject *parent) :
@@ -42,12 +40,14 @@ namespace luna {
 
     void Manager::setWhiteBalance(const Color &color)
     {
+        QMutexLocker lock(&mMutex);
         mWhiteBalance = color;
         updateColorMode();
     }
 
     void Manager::onDataReady()
     {
+        QMutexLocker lock(&mMutex);
         if(mLuna->isConnected() && mActiveProvider){
             for(PixelStrand & strand : mActiveProvider->pixelStrands()){
                 mColorProcessor->process(strand);
@@ -58,6 +58,7 @@ namespace luna {
     }
 
     void Manager::onConnected(){
+        QMutexLocker lock(&mMutex);
         mLuna->getConfig(&mLunaConfig);
         // TODO read colorspace from LunaConfig
         mDestinationColorSpace = ColorSpace::ws2812();
@@ -66,6 +67,7 @@ namespace luna {
     }
 
     void Manager::onDisconnected(){
+        QMutexLocker lock(&mMutex);
         deactivateProvider();
         mConnectionTimer.start();
     }
@@ -77,9 +79,9 @@ namespace luna {
             mActiveProvider->configure(mLunaConfig);
             QObject::connect(mActiveProvider.get(), &Provider::dataReady,
                          this, &Manager::onDataReady);
-            ColorSpace colorSpace;
-            ColorMode mode = mActiveProvider->colorMode(&colorSpace);
-            setColorMode(mode, colorSpace);
+
+            mCurrentColorMode = mActiveProvider->colorMode(&mSourceColorSpace);
+            updateColorMode();
             mActiveProvider->start();
         }
     }
@@ -113,17 +115,11 @@ namespace luna {
 
     void Manager::setMode(ProviderType type)
     {
+        QMutexLocker lock(&mMutex);
         deactivateProvider();
         mCurrentProviderType = type;
         if(mLuna->isConnected()){
             activateProvider();
         }
-    }
-
-    void Manager::setColorMode(ColorMode mode, const ColorSpace & colorSpace)
-    {
-        mCurrentColorMode = mode;
-        mSourceColorSpace = colorSpace;
-        updateColorMode();
     }
 }

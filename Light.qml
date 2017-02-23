@@ -2,30 +2,26 @@ import QtQml 2.2
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.2
 
 Item {
     id: lightItem
     width: window.width
-    /*anchors.right: parent.right
-    anchors.left: parent.left
-    anchors.top: parent.top*/
+    property color color
+    onColorChanged: {
+        //Luna.
+    }
 
-    //! [colordialog]
     ColorDialog {
         id: colorDialog
-        //visible: colorDialogVisible.checked
-        //modality: colorDialogModal.checked ? Qt.WindowModal : Qt.NonModal
         title: "Choose a color"
-        color: "white"
-        //showAlphaChannel: colorDialogAlpha.checked
-        /*onAccepted: {
-            redSlider.value = color.r
-            greenSlider.value = color.g
-            blueSlider.value = color.b
-        }*/
+        width: 400
+        height: 400
+        color: lightItem.color
+        onCurrentColorChanged: {
+            lightItem.color = currentColor
+        }
     }
-    //! [colordialog]
 
     GridLayout {
         id: gridLayout
@@ -43,7 +39,7 @@ Item {
             width: 100
             Layout.fillHeight: true
             Layout.rowSpan: 3
-            color: Qt.rgba(redSlider.position, greenSlider.position, blueSlider.position)//colorDialog.color
+            color: lightItem.color
             MouseArea {
                 anchors.fill: parent
                 onClicked: colorDialog.open()
@@ -53,33 +49,48 @@ Item {
         Slider {
             id: redSlider
             Layout.fillWidth: true
-            value: colorDialog.color.r
+            value: lightItem.color.r
             wheelEnabled: true
             Label {
                 id: label
                 text: qsTr("Red")
+            }
+            onPositionChanged: {
+                if(lightItem.color.r !== position){
+                    lightItem.color.r = position
+                }
             }
         }
 
         Slider {
             id: greenSlider
             Layout.fillWidth: true
-            value: colorDialog.color.g
+            value: lightItem.color.g
             wheelEnabled: true
             Label {
                 id: label1
                 text: qsTr("Green")
+            }
+            onPositionChanged: {
+                if(lightItem.color.g !== position){
+                    lightItem.color.g = position
+                }
             }
         }
 
         Slider {
             id: blueSlider
             Layout.fillWidth: true
-            value: colorDialog.color.b
+            value: lightItem.color.b
             wheelEnabled: true
             Label {
                 id: label2
                 text: qsTr("Blue")
+            }
+            onPositionChanged: {
+                if(lightItem.color.b !== position){
+                    lightItem.color.b = position
+                }
             }
         }
 

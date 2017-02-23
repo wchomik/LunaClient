@@ -17,16 +17,6 @@ namespace luna {
         void process(PixelStrand & strand) override;
     };
 
-    class ColorProcessorDirectGamma : public ColorProcessor {
-    public:
-        ColorProcessorDirectGamma(ColorScalar gamma = 2.2);
-        void gamma(ColorScalar value);
-        ColorScalar gamma();
-        void process(PixelStrand & strand) override;
-    private:
-        ColorScalar mGamma;
-    };
-
     class ColorProcessorWhiteBalanced : public ColorProcessor {
     public:
         ColorProcessorWhiteBalanced(const Color & scale);
@@ -34,18 +24,6 @@ namespace luna {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     private:
         Color mScale;
-    };
-
-    class ColorProcessorWhiteBalancedGamma : public ColorProcessor {
-    public:
-        ColorProcessorWhiteBalancedGamma(const Color & scale, ColorScalar gamma);
-        void gamma(ColorScalar value);
-        ColorScalar gamma();
-        void process(PixelStrand & strand) override;
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    private:
-        Color mScale;
-        ColorScalar mGamma;
     };
 
     class ColorProcessorColorSpace : public ColorProcessor {
