@@ -9,7 +9,7 @@
 #include <wrl.h>
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
-#include "samplebuffer.h"
+#include "luna/samplebuffer.h"
 
 namespace luna { namespace audio {
     class AudioCapture : public QObject{

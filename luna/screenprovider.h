@@ -1,9 +1,9 @@
 #ifndef LUNASCREENPROVIDER_H
 #define LUNASCREENPROVIDER_H
 
-#include "lunaprovider.h"
+#include "provider.h"
 #include "screencapture.h"
-#include "lunaconfig.h"
+#include "config.h"
 
 namespace luna {
     struct ScreenBounds {
@@ -13,12 +13,12 @@ namespace luna {
         float yHigh;
     };
 
-    class LunaScreenProvider : public LunaProvider
+    class ScreenProvider : public Provider
     {
     public:
-        explicit LunaScreenProvider(QObject * parent = nullptr);
+        explicit ScreenProvider(QObject * parent = nullptr);
 
-        void configure(const LunaConfig & config) override;
+        void configure(const Config & config) override;
         void setBounds(const ScreenBounds & bounds);
         ColorMode colorMode(class ColorSpace * outColorSpace) override;
 
@@ -47,7 +47,7 @@ namespace luna {
         int mStrandWidth;
         int mStrandHeight;
         ScreenBounds mBounds;
-        LunaConfig mLunaConfig;
+        Config mLunaConfig;
     };
 }
 

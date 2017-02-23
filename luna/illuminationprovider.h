@@ -2,15 +2,15 @@
 #define LUNAILLUMINATIONPROVIDER_H
 
 #include <QTimer>
-#include "lunaprovider.h"
+#include "provider.h"
 
 namespace luna {
-    class LunaIlluminationProvider : public LunaProvider
+    class IlluminationProvider : public Provider
     {
     public:
-        explicit LunaIlluminationProvider(QObject * parent = nullptr);
+        explicit IlluminationProvider(QObject * parent = nullptr);
 
-        void configure(const struct LunaConfig & config) override;
+        void configure(const struct Config & config) override;
         void start() override;
         void stop() override;
         ColorMode colorMode(class ColorSpace * outColorSpace) override;

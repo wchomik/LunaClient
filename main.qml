@@ -33,7 +33,7 @@ ApplicationWindow {
                     source: "qrc:/images/drawer.png"
                 }
                 onClicked: {
-                        drawerDevices.open()
+                    drawerDevices.open()
                 }
             }
 
@@ -227,6 +227,9 @@ ApplicationWindow {
 
                 Display {
                 }
+
+                Light {
+                }
             }
         }
     }
@@ -240,6 +243,9 @@ ApplicationWindow {
         }
         TabButton {
             text: qsTr("Display")
+        }
+        TabButton {
+            text: qsTr("Audio")
         }
     }
 }

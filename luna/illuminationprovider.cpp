@@ -1,41 +1,41 @@
-#include "lunailluminationprovider.h"
+#include "illuminationprovider.h"
 
-#include "lunaconfig.h"
+#include "config.h"
 
 namespace luna {
-    LunaIlluminationProvider::LunaIlluminationProvider(QObject * parent) :
-        LunaProvider(parent),
+    IlluminationProvider::IlluminationProvider(QObject * parent) :
+        Provider(parent),
         mTimer(this),
         mColor(1, 1, 1, 1),
         mWhiteness(0.0)
     {
         mTimer.setInterval(20);
         connect(&mTimer, &QTimer::timeout,
-                this, &LunaIlluminationProvider::update);
+                this, &IlluminationProvider::update);
     }
 
-    void LunaIlluminationProvider::configure(const LunaConfig & config){
-        LunaProvider::configure(config);
+    void IlluminationProvider::configure(const Config & config){
+        Provider::configure(config);
     }
 
-    void LunaIlluminationProvider::start(){
+    void IlluminationProvider::start(){
         mTimer.start();
     }
 
-    void LunaIlluminationProvider::stop(){
+    void IlluminationProvider::stop(){
         mTimer.stop();
     }
 
-    ColorMode LunaIlluminationProvider::colorMode(class ColorSpace * outColorSpace)
+    ColorMode IlluminationProvider::colorMode(class ColorSpace * outColorSpace)
     {
         return ColorMode::fullWhiteBalanced;
     }
 
-    void LunaIlluminationProvider::setUpdateRate(int rate){
+    void IlluminationProvider::setUpdateRate(int rate){
         mTimer.setInterval(1000 / rate);
     }
 
-    void LunaIlluminationProvider::update(){
+    void IlluminationProvider::update(){
         for(PixelStrand & strand : mPixelStrands){
             for(Color & pixel : strand){
                 pixel = mColor;

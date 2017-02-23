@@ -2,22 +2,21 @@
 #define LUNA_H
 
 #include <QObject>
-#include <QAbstractListModel>
 #include "colorutils.h"
-#include "lunaconfig.h"
+#include "config.h"
 
 namespace luna {
-    class Luna : public QObject
+    class Connection : public QObject
     {
         Q_OBJECT
     public:
-        explicit Luna(QObject * parent = nullptr);
-        virtual ~Luna();
+        explicit Connection(QObject * parent = nullptr);
+        virtual ~Connection();
         virtual bool isConnected() = 0;
         virtual void update(const std::vector<PixelStrand> & pixelStrands,
                             const std::vector<ColorScalar> & whiteStrands) = 0;
 
-        virtual void getConfig(struct LunaConfig * config) = 0;
+        virtual void getConfig(struct Config * config) = 0;
     public slots:
         virtual void connect() = 0;
         virtual void disconnect() = 0;

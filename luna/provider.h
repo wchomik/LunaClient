@@ -7,14 +7,14 @@
 #include "colormode.h"
 
 namespace luna {
-    class LunaProvider : public QObject
+    class Provider : public QObject
     {
         Q_OBJECT
     public:
-        explicit LunaProvider(QObject * parent = nullptr);
-        virtual ~LunaProvider();
+        explicit Provider(QObject * parent = nullptr);
+        virtual ~Provider();
 
-        virtual void configure(const struct LunaConfig & config);
+        virtual void configure(const struct Config & config);
         virtual ColorMode colorMode(class ColorSpace * outColorSpace) = 0;
 
         std::vector<PixelStrand> & pixelStrands(){

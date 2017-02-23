@@ -5,10 +5,10 @@
 #include <QColor>
 #include <QSettings>
 
-#include "lunamanager.h"
+#include "manager.h"
 
 namespace luna {
-    class LunaWorker : public QThread
+    class Worker : public QThread
     {
         Q_OBJECT
         Q_PROPERTY(qreal redBalance READ redBalance WRITE setRedBalance NOTIFY redBalanceChanged)
@@ -16,8 +16,8 @@ namespace luna {
         Q_PROPERTY(qreal blueBalance READ blueBalance WRITE setBlueBalance NOTIFY blueBalanceChanged)
 
     public:
-        explicit LunaWorker(QObject * parent = nullptr);
-        ~LunaWorker();
+        explicit Worker(QObject * parent = nullptr);
+        ~Worker();
 
         qreal redBalance(){ return mRedBalance; }
         void setRedBalance(qreal value);
@@ -36,7 +36,7 @@ namespace luna {
     private:
         void updateWhiteBalance();
 
-        class LunaManager * mLunaManager;
+        class Manager * mLunaManager;
 
         QSettings mSettings;
 

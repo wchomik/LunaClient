@@ -8,9 +8,8 @@
 #include <d3d11.h>
 #include <dxgi1_5.h>
 
-#include <colorutils.h>
-
-#include "array2d.h"
+#include "luna/colorutils.h"
+#include "luna/array2d.h"
 
 namespace luna { namespace graphics {
     class ScreenCapture : public QThread

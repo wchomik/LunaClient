@@ -8,7 +8,7 @@
 
 #include "shaders.h"
 
-#include "lunaconfig.h"
+#include "luna/config.h"
 #include "win32errorhandling.h"
 
 

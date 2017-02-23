@@ -1,39 +1,39 @@
-#include "lunalegacy.h"
+#include "connectionlegacy.h"
 
 #include <QThread>
 
 
 namespace luna {
-    const char * LunaLegacy::helloMessage = "\x01LunaDaemon";
+    const char * ConnectionLegacy::helloMessage = "\x01LunaDaemon";
 
-    LunaLegacy::LunaLegacy(QObject * parent) :
-        Luna(parent),
+    ConnectionLegacy::ConnectionLegacy(QObject * parent) :
+        Connection(parent),
         mIsConnected(false),
         mSocket(this),
         mKeepAliveTimer(this)
     {
         QObject::connect(&mSocket, &QUdpSocket::readyRead,
-                         this, &LunaLegacy::datagramReceived);
+                         this, &ConnectionLegacy::datagramReceived);
         QObject::connect(&mKeepAliveTimer, &QTimer::timeout,
-                         this, &LunaLegacy::keepAliveTimeout);
+                         this, &ConnectionLegacy::keepAliveTimeout);
 
         mKeepAliveTimer.setInterval(1000);
         mSocket.bind(port);
     }
 
-    LunaLegacy::~LunaLegacy(){
+    ConnectionLegacy::~ConnectionLegacy(){
 
     }
 
-    bool LunaLegacy::isConnected(){
+    bool ConnectionLegacy::isConnected(){
         return mIsConnected;
     }
 
-    void LunaLegacy::connect(){
+    void ConnectionLegacy::connect(){
         mSocket.writeDatagram(helloMessage, strlen(helloMessage), QHostAddress::Broadcast, port);
     }
 
-    void LunaLegacy::disconnect(){
+    void ConnectionLegacy::disconnect(){
         mKeepAliveTimer.stop();
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(99);
@@ -43,7 +43,7 @@ namespace luna {
         disconnected();
     }
 
-    void LunaLegacy::update(const std::vector<PixelStrand> & pixelStrands,
+    void ConnectionLegacy::update(const std::vector<PixelStrand> & pixelStrands,
                             const std::vector<ColorScalar> & whiteStrands){
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(101);
@@ -68,7 +68,7 @@ namespace luna {
         send();
     }
 
-    void LunaLegacy::shutdown(){
+    void ConnectionLegacy::shutdown(){
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(101);
         mBuffer << static_cast<uint8_t>(2);
@@ -76,25 +76,25 @@ namespace luna {
         disconnect();
     }
 
-    void LunaLegacy::getConfig(LunaConfig * config)
+    void ConnectionLegacy::getConfig(Config * config)
     {
-        LunaConfig::PixelStrandConfig strand;
+        Config::PixelStrandConfig strand;
         strand.count = pixelCount;
-        strand.direction = LunaConfig::bottomToTop;
+        strand.direction = Config::bottomToTop;
 
         config->pixelStrands.clear();
         config->whiteStrands.clear();
 
-        strand.position = LunaConfig::left;
+        strand.position = Config::left;
         config->pixelStrands.push_back(strand);
-        strand.position = LunaConfig::right;
+        strand.position = Config::right;
         config->pixelStrands.push_back(strand);
 
-        config->whiteStrands.push_back(LunaConfig::left);
-        config->whiteStrands.push_back(LunaConfig::right);
+        config->whiteStrands.push_back(Config::left);
+        config->whiteStrands.push_back(Config::right);
     }
 
-    void LunaLegacy::datagramReceived(){
+    void ConnectionLegacy::datagramReceived(){
         quint64 size = mSocket.pendingDatagramSize();
         std::vector<char> data(size + 1);
         QHostAddress senderIp;
@@ -109,13 +109,13 @@ namespace luna {
         }
     }
 
-    void LunaLegacy::keepAliveTimeout()
+    void ConnectionLegacy::keepAliveTimeout()
     {
         mBuffer.reset();
         send();
     }
 
-    void LunaLegacy::send(){
+    void ConnectionLegacy::send(){
         mSocket.write(mBuffer.data(), mBuffer.count());
     }
 }

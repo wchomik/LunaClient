@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace luna {
-    struct LunaConfig {
+    struct Config {
         enum Position {
             top,
             right,

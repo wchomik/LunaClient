@@ -1,16 +1,16 @@
-#include "lunaprovider.h"
+#include "provider.h"
 
-#include "lunaconfig.h"
+#include "config.h"
 
 namespace luna {
-    LunaProvider::LunaProvider(QObject * parent) :
+    Provider::Provider(QObject * parent) :
         QObject(parent)
     {}
 
-    LunaProvider::~LunaProvider()
+    Provider::~Provider()
     {}
 
-    void LunaProvider::configure(const LunaConfig &config)
+    void Provider::configure(const Config &config)
     {
         mPixelStrands.clear();
         mWhiteStrands.clear();

@@ -6,21 +6,21 @@ CONFIG += c++11
 INCLUDEPATH += $$(EIGEN)
 
 SOURCES += main.cpp \
-    luna.cpp \
-    lunalegacy.cpp \
-    lunaworker.cpp \
-    lunaprovider.cpp \
-    lunailluminationprovider.cpp \
-    lunamanager.cpp \
-    colorspace.cpp \
-    colorprocessor.cpp \
-    lunaaudioprovider.cpp \
-    samplebuffer.cpp \
-    fft.cpp \
-    colorutils.cpp \
-    audiochannelprocessor.cpp \
-    lunascreenprovider.cpp \
-    lunaproviderfactory.cpp
+    luna/audiochannelprocessor.cpp \
+    luna/colorprocessor.cpp \
+    luna/colorspace.cpp \
+    luna/colorutils.cpp \
+    luna/fft.cpp \
+    luna/samplebuffer.cpp \
+    luna/audioprovider.cpp \
+    luna/connection.cpp \
+    luna/connectionlegacy.cpp \
+    luna/illuminationprovider.cpp \
+    luna/manager.cpp \
+    luna/provider.cpp \
+    luna/worker.cpp \
+    luna/screenprovider.cpp \
+    luna/providerfactory.cpp
 
 RESOURCES += qml.qrc
 
@@ -47,25 +47,25 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    luna.h \
-    lunalegacy.h \
-    lunaworker.h \
-    colorutils.h \
-    binarystream.h \
-    lunaprovider.h \
-    lunaconfig.h \
-    lunailluminationprovider.h \
-    lunamanager.h \
-    colorspace.h \
-    colormode.h \
-    colorprocessor.h \
-    lunaaudioprovider.h \
-    samplebuffer.h \
-    fft.h \
-    audiochannelprocessor.h \
-    array2d.h \
-    lunascreenprovider.h \
-    lunaproviderfactory.h
+    luna/array2d.h \
+    luna/audiochannelprocessor.h \
+    luna/binarystream.h \
+    luna/colormode.h \
+    luna/colorprocessor.h \
+    luna/colorspace.h \
+    luna/colorutils.h \
+    luna/fft.h \
+    luna/samplebuffer.h \
+    luna/providerfactory.h \
+    luna/screenprovider.h \
+    luna/worker.h \
+    luna/provider.h \
+    luna/manager.h \
+    luna/connectionlegacy.h \
+    luna/illuminationprovider.h \
+    luna/config.h \
+    luna/audioprovider.h \
+    luna/connection.h
 
 LIBS += -L$$PWD/Lib/
 

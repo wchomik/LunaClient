@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "lunaprovider.h"
+#include "provider.h"
 
 namespace luna {
-    enum class LunaProviderType {
+    enum class ProviderType {
         none,
         illumination,
         audio,
@@ -16,14 +16,14 @@ namespace luna {
         COUNT,
     };
 
-    class LunaProviderFactory
+    class ProviderFactory
     {
     public:
-        LunaProviderFactory();
+        ProviderFactory();
 
-        std::unique_ptr<LunaProvider> make(LunaProviderType type, class QObject * parent);
+        std::unique_ptr<Provider> make(ProviderType type, class QObject * parent);
     private:
-        typedef std::unique_ptr<LunaProvider>(* creator_t)(class QObject *);
+        typedef std::unique_ptr<Provider>(* creator_t)(class QObject *);
         template<typename ElemT, typename IndexT, IndexT count>
         class EnumArray {
         public:
@@ -35,7 +35,7 @@ namespace luna {
             ElemT mData[static_cast<size_t>(count)];
         };
 
-        EnumArray<creator_t, LunaProviderType, LunaProviderType::COUNT> mCreators;
+        EnumArray<creator_t, ProviderType, ProviderType::COUNT> mCreators;
     };
 }
 

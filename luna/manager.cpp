@@ -1,52 +1,52 @@
-#include "lunamanager.h"
+#include "manager.h"
 
-#include "luna.h"
-#include "lunalegacy.h"
+#include "connection.h"
+#include "connectionlegacy.h"
 
-#include "lunaprovider.h"
-#include "lunailluminationprovider.h"
-#include "lunaaudioprovider.h"
-#include "lunascreenprovider.h"
+#include "provider.h"
+#include "illuminationprovider.h"
+#include "audioprovider.h"
+#include "screenprovider.h"
 
-#include "lunaconfig.h"
+#include "config.h"
 #include "colorspace.h"
 #include "colorprocessor.h"
 
 #include <QDebug>
 
 namespace luna {
-    LunaManager::LunaManager(QObject *parent) :
+    Manager::Manager(QObject *parent) :
         QObject(parent),
         mWhiteBalance(1, 1, 1, 1),
         mConnectionTimer(this),
         mLuna(nullptr),
-        mCurrentProviderType(LunaProviderType::illumination)
+        mCurrentProviderType(ProviderType::illumination)
     {
-        mLuna = new LunaLegacy(this);
+        mLuna = new ConnectionLegacy(this);
 
         mConnectionTimer.setInterval(100);
 
-        QObject::connect(&mConnectionTimer, &QTimer::timeout, mLuna, &Luna::connect);
-        QObject::connect(mLuna, &Luna::connected, this, &LunaManager::onConnected);
-        QObject::connect(mLuna, &Luna::disconnected,this, &LunaManager::onDisconnected);
+        QObject::connect(&mConnectionTimer, &QTimer::timeout, mLuna, &Connection::connect);
+        QObject::connect(mLuna, &Connection::connected, this, &Manager::onConnected);
+        QObject::connect(mLuna, &Connection::disconnected,this, &Manager::onDisconnected);
 
         mConnectionTimer.start();
     }
 
-    LunaManager::~LunaManager()
+    Manager::~Manager()
     {
-        QObject::disconnect(mLuna, &Luna::disconnected,
-                            this, &LunaManager::onDisconnected);
+        QObject::disconnect(mLuna, &Connection::disconnected,
+                            this, &Manager::onDisconnected);
         mLuna->shutdown();
     }
 
-    void LunaManager::setWhiteBalance(const Color &color)
+    void Manager::setWhiteBalance(const Color &color)
     {
         mWhiteBalance = color;
         updateColorMode();
     }
 
-    void LunaManager::onDataReady()
+    void Manager::onDataReady()
     {
         if(mLuna->isConnected() && mActiveProvider){
             for(PixelStrand & strand : mActiveProvider->pixelStrands()){
@@ -57,7 +57,7 @@ namespace luna {
         }
     }
 
-    void LunaManager::onConnected(){
+    void Manager::onConnected(){
         mLuna->getConfig(&mLunaConfig);
         // TODO read colorspace from LunaConfig
         mDestinationColorSpace = ColorSpace::ws2812();
@@ -65,18 +65,18 @@ namespace luna {
         activateProvider();
     }
 
-    void LunaManager::onDisconnected(){
+    void Manager::onDisconnected(){
         deactivateProvider();
         mConnectionTimer.start();
     }
 
-    void LunaManager::activateProvider()
+    void Manager::activateProvider()
     {
         mActiveProvider = mProviderFactory.make(mCurrentProviderType, this);
         if(mActiveProvider){
             mActiveProvider->configure(mLunaConfig);
-            QObject::connect(mActiveProvider.get(), &LunaProvider::dataReady,
-                         this, &LunaManager::onDataReady);
+            QObject::connect(mActiveProvider.get(), &Provider::dataReady,
+                         this, &Manager::onDataReady);
             ColorSpace colorSpace;
             ColorMode mode = mActiveProvider->colorMode(&colorSpace);
             setColorMode(mode, colorSpace);
@@ -84,17 +84,17 @@ namespace luna {
         }
     }
 
-    void LunaManager::deactivateProvider()
+    void Manager::deactivateProvider()
     {
         if(mActiveProvider){
             mActiveProvider->stop();
-            QObject::disconnect(mActiveProvider.get(), &LunaProvider::dataReady,
-                                this, &LunaManager::onDataReady);
-            mActiveProvider = std::unique_ptr<LunaProvider>();
+            QObject::disconnect(mActiveProvider.get(), &Provider::dataReady,
+                                this, &Manager::onDataReady);
+            mActiveProvider = std::unique_ptr<Provider>();
         }
     }
 
-    void LunaManager::updateColorMode()
+    void Manager::updateColorMode()
     {
         switch(mCurrentColorMode){
         case ColorMode::fullWhiteBalanced:
@@ -111,7 +111,7 @@ namespace luna {
         }
     }
 
-    void LunaManager::setMode(LunaProviderType type)
+    void Manager::setMode(ProviderType type)
     {
         deactivateProvider();
         mCurrentProviderType = type;
@@ -120,7 +120,7 @@ namespace luna {
         }
     }
 
-    void LunaManager::setColorMode(ColorMode mode, const ColorSpace & colorSpace)
+    void Manager::setColorMode(ColorMode mode, const ColorSpace & colorSpace)
     {
         mCurrentColorMode = mode;
         mSourceColorSpace = colorSpace;

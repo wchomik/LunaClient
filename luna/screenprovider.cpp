@@ -1,60 +1,60 @@
-#include "lunascreenprovider.h"
+#include "screenprovider.h"
 
-#include "lunaconfig.h"
+#include "config.h"
 
 #include "colorspace.h"
 
 namespace luna {
 
-    LunaScreenProvider::LunaScreenProvider(QObject * parent) :
-        LunaProvider(parent),
+    ScreenProvider::ScreenProvider(QObject * parent) :
+        Provider(parent),
         mScreenCapture(this),
         mBounds{0, 1, 0, 1}
     {
         QObject::connect(&mScreenCapture, &graphics::ScreenCapture::dataReady,
-                         this, &LunaScreenProvider::onDataReady);
+                         this, &ScreenProvider::onDataReady);
         setDepth(20);
     }
 
-    void LunaScreenProvider::configure(const LunaConfig &config)
+    void ScreenProvider::configure(const Config &config)
     {
-        LunaProvider::configure(config);
+        Provider::configure(config);
         mLunaConfig = config;
         readStrandDimensions();
 
         configureScreenCaptureAndMappings();
     }
 
-    void LunaScreenProvider::setBounds(const ScreenBounds &bounds)
+    void ScreenProvider::setBounds(const ScreenBounds &bounds)
     {
         mBounds = bounds;
         configureScreenCaptureAndMappings();
     }
 
-    ColorMode LunaScreenProvider::colorMode(ColorSpace * outColorSpace)
+    ColorMode ScreenProvider::colorMode(ColorSpace * outColorSpace)
     {
         // TODO find a way to read system colorspace
         *outColorSpace = ColorSpace::sRGB();
         return ColorMode::colorSpaceConversion;
     }
 
-    void LunaScreenProvider::start()
+    void ScreenProvider::start()
     {
         mScreenCapture.start();
     }
 
-    void LunaScreenProvider::stop()
+    void ScreenProvider::stop()
     {
         mScreenCapture.stop();
     }
 
-    void LunaScreenProvider::setDepth(int depth)
+    void ScreenProvider::setDepth(int depth)
     {
         mDepthWeights = Eigen::ArrayXf::LinSpaced(depth, 1.0f, 1.0f / depth);
         mDepthWeights = mDepthWeights / mDepthWeights.sum();
     }
 
-    void LunaScreenProvider::onDataReady()
+    void ScreenProvider::onDataReady()
     {
         Color * pixels = mScreenCapture.pixels().data();
         const int depth = mDepthWeights.rows();
@@ -77,13 +77,13 @@ namespace luna {
         emit dataReady();
     }
 
-    void LunaScreenProvider::readStrandDimensions()
+    void ScreenProvider::readStrandDimensions()
     {
         float width = -1;
         float height = -1;
         for(const auto & strand : mLunaConfig.pixelStrands){
-            if(strand.position == LunaConfig::bottom ||
-                strand.position == LunaConfig::top)
+            if(strand.position == Config::bottom ||
+                strand.position == Config::top)
             {
                 if(-1 == width){
                     width = strand.count;
@@ -93,8 +93,8 @@ namespace luna {
                         "Bottom and top strides must have same pixel count.";
                     throw std::runtime_error(msg);
                 }
-            }else if(strand.position == LunaConfig::left ||
-                strand.position == LunaConfig::right)
+            }else if(strand.position == Config::left ||
+                strand.position == Config::right)
             {
                 if(-1 == height){
                     height = strand.count;
@@ -123,7 +123,7 @@ namespace luna {
         mStrandHeight = height;
     }
 
-    void LunaScreenProvider::configureScreenCaptureAndMappings()
+    void ScreenProvider::configureScreenCaptureAndMappings()
     {
         const int width = mStrandWidth * (mBounds.xHigh - mBounds.xLow);
         const int height = mStrandHeight * (mBounds.yHigh - mBounds.yLow);
@@ -144,16 +144,16 @@ namespace luna {
             const auto pos = strand.position;
             const auto dir = strand.direction;
             PixelMapping pm{0, 0, 0, 0, 0};
-            if(pos == LunaConfig::top || pos == LunaConfig::bottom){
+            if(pos == Config::top || pos == Config::bottom){
                 pm.stride = colStride;
                 pm.depthStride = rowStride;
-                if(pos == LunaConfig::bottom){
+                if(pos == Config::bottom){
                     pm.begin = rowStride * (height - 1);
                     pm.depthStride *= -1;
                     pm.startPixel = xLow;
                     pm.endPixel = xHigh;
                 }
-                if(dir == LunaConfig::rightToLeft){
+                if(dir == Config::rightToLeft){
                     pm.begin += width - 1;
                     pm.stride *= -1;
                     pm.startPixel = mStrandWidth - xHigh;
@@ -162,13 +162,13 @@ namespace luna {
             }else{
                 pm.stride = rowStride;
                 pm.depthStride = colStride;
-                if(pos == LunaConfig::right){
+                if(pos == Config::right){
                     pm.begin = width - 1;
                     pm.depthStride *= -1;
                     pm.startPixel = yLow;
                     pm.endPixel = yHigh;
                 }
-                if(dir == LunaConfig::bottomToTop){
+                if(dir == Config::bottomToTop){
                     pm.begin += rowStride * (height - 1);
                     pm.stride *= -1;
                     pm.startPixel = mStrandHeight - yHigh;

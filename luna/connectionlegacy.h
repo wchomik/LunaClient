@@ -3,15 +3,15 @@
 
 #include <QUdpSocket>
 #include <QTimer>
-#include "luna.h"
+#include "connection.h"
 #include "binarystream.h"
 
 namespace luna {
-    class LunaLegacy : public Luna
+    class ConnectionLegacy : public Connection
     {
     public:
-        explicit LunaLegacy(QObject * parent = nullptr);
-        virtual ~LunaLegacy();
+        explicit ConnectionLegacy(QObject * parent = nullptr);
+        virtual ~ConnectionLegacy();
 
         bool isConnected() override;
 
@@ -20,7 +20,7 @@ namespace luna {
         void update(const std::vector<PixelStrand> & pixelStrands,
                     const std::vector<ColorScalar> & whiteStrands) override;
         void shutdown() override;
-        void getConfig(struct LunaConfig * config) override;
+        void getConfig(struct Config * config) override;
 
     protected slots:
         void datagramReceived();

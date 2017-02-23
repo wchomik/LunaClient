@@ -3,18 +3,18 @@
 
 #include <QTimer>
 
-#include "lunaprovider.h"
+#include "provider.h"
 #include "audiocapture.h"
 #include "fft.h"
 #include "audiochannelprocessor.h"
 
 namespace luna {
-    class LunaAudioProvider : public LunaProvider
+    class AudioProvider : public Provider
     {
     public:
-        explicit LunaAudioProvider(QObject * parent = 0);
+        explicit AudioProvider(QObject * parent = 0);
 
-        void configure(const LunaConfig & config) override;
+        void configure(const Config & config) override;
         ColorMode colorMode(class ColorSpace * outColorSpace) override;
 
         void start() override;

@@ -1,16 +1,16 @@
-#include "lunaworker.h"
+#include "worker.h"
 
 #include <QTimer>
 
-#include "lunamanager.h"
+#include "manager.h"
 
 namespace luna {
-    LunaWorker::LunaWorker(QObject * parent) :
+    Worker::Worker(QObject * parent) :
         QThread(parent),
         mLunaManager(nullptr),
         mSettings("Luna", "Luna")
     {
-        mLunaManager = new LunaManager();
+        mLunaManager = new Manager();
         mLunaManager->moveToThread(this);
 
         mRedBalance = mSettings.value("redBalance", 1.0).toReal();
@@ -19,7 +19,7 @@ namespace luna {
         updateWhiteBalance();
     }
 
-    LunaWorker::~LunaWorker()
+    Worker::~Worker()
     {
         quit();
         wait();
@@ -29,7 +29,7 @@ namespace luna {
         mSettings.sync();
     }
 
-    void LunaWorker::setRedBalance(qreal value)
+    void Worker::setRedBalance(qreal value)
     {
         if(mRedBalance != value){
             mRedBalance = value;
@@ -38,7 +38,7 @@ namespace luna {
         }
     }
 
-    void LunaWorker::setGreenBalance(qreal value)
+    void Worker::setGreenBalance(qreal value)
     {
         if(mGreenBalance != value){
             mGreenBalance = value;
@@ -47,7 +47,7 @@ namespace luna {
         }
     }
 
-    void LunaWorker::setBlueBalance(qreal value)
+    void Worker::setBlueBalance(qreal value)
     {
         if(mBlueBalance != value){
             mBlueBalance = value;
@@ -56,15 +56,15 @@ namespace luna {
         }
     }
 
-    void LunaWorker::run(){
+    void Worker::run(){
         QThread::exec();
         delete mLunaManager;
         mLunaManager = nullptr;
     }
 
-    void LunaWorker::updateWhiteBalance()
+    void Worker::updateWhiteBalance()
     {
         mLunaManager->setWhiteBalance(Color(mRedBalance, mGreenBalance, mBlueBalance, 1));
-        QTimer::singleShot(0, mLunaManager, &LunaManager::updateColorMode);
+        QTimer::singleShot(0, mLunaManager, &Manager::updateColorMode);
     }
 }

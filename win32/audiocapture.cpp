@@ -2,7 +2,7 @@
 #include "audiocapture.h"
 
 #include <QDebug>
-#include "samplebuffer.h"
+#include "luna/samplebuffer.h"
 #include "win32errorhandling.h"
 
 namespace luna { namespace audio {

@@ -12,20 +12,20 @@
 #include "colorprocessor.h"
 #include "colorspace.h"
 
-#include "lunaproviderfactory.h"
-#include "lunaconfig.h"
+#include "providerfactory.h"
+#include "config.h"
 
 namespace luna {
 
-    class LunaManager : public QObject
+    class Manager : public QObject
     {
         Q_OBJECT
     public:
-        explicit LunaManager(QObject * parent = 0);
-        ~LunaManager();
+        explicit Manager(QObject * parent = 0);
+        ~Manager();
 
         void setWhiteBalance(const Color & color);
-        void setMode(LunaProviderType type);
+        void setMode(ProviderType type);
     public slots:
         void updateColorMode();
 
@@ -46,14 +46,14 @@ namespace luna {
         std::unique_ptr<ColorProcessor> mColorProcessor;
 
         // connection management
-        class Luna * mLuna;
+        class Connection * mLuna;
         QTimer mConnectionTimer;
 
-        // pprovider management
-        LunaProviderFactory mProviderFactory;
-        LunaProviderType mCurrentProviderType;
-        std::unique_ptr<LunaProvider> mActiveProvider;
-        LunaConfig mLunaConfig;
+        // provider management
+        ProviderFactory mProviderFactory;
+        ProviderType mCurrentProviderType;
+        std::unique_ptr<Provider> mActiveProvider;
+        Config mLunaConfig;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

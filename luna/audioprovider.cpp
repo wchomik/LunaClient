@@ -1,22 +1,22 @@
-#include "lunaaudioprovider.h"
+#include "audioprovider.h"
 
-#include "lunaconfig.h"
+#include "config.h"
 
 namespace luna {
     using namespace audio;
 
-    LunaAudioProvider::LunaAudioProvider(QObject * parent) :
-        LunaProvider(parent),
+    AudioProvider::AudioProvider(QObject * parent) :
+        Provider(parent),
         mAudioCapture(this),
         mFFT(1 << 13, FFT::magnitude)
     {
         QObject::connect(&mAudioCapture, &audio::AudioCapture::samplesReady,
-                         this, &LunaAudioProvider::onSamplesReady);
+                         this, &AudioProvider::onSamplesReady);
     }
 
-    void LunaAudioProvider::configure(const LunaConfig &config)
+    void AudioProvider::configure(const Config &config)
     {
-        LunaProvider::configure(config);
+        Provider::configure(config);
         mAudioCapture.configure(config.pixelStrands.size(), 100.0);
 
         audio::AudioChannelConfig audioConf;
@@ -32,22 +32,22 @@ namespace luna {
         }
     }
 
-    ColorMode LunaAudioProvider::colorMode(class ColorSpace * outColorSpace)
+    ColorMode AudioProvider::colorMode(class ColorSpace * outColorSpace)
     {
         return ColorMode::fullWhiteBalanced;
     }
 
-    void LunaAudioProvider::start()
+    void AudioProvider::start()
     {
         mAudioCapture.start();
     }
 
-    void LunaAudioProvider::stop()
+    void AudioProvider::stop()
     {
         mAudioCapture.stop();
     }
 
-    void LunaAudioProvider::onSamplesReady()
+    void AudioProvider::onSamplesReady()
     {
         auto & fftIn = mFFT.input();
         for(int i = 0; i < 2; ++i){
