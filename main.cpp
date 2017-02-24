@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "luna/worker.h"
+#include "luna/manager.h"
 #include "model/settings.h"
 
 int main(int argc, char *argv[])
@@ -11,18 +11,17 @@ int main(int argc, char *argv[])
     qputenv("QT_QUICK_CONTROLS_1_STYLE", "Flat");
     QGuiApplication app(argc, argv);
 
-    luna::Worker worker;
-    model::Settings settings;
-    settings.setLunaManager(worker.lunaManager());
-    worker.start();
+    //model::Settings settings;
+    //settings.setLunaManager(worker.lunaManager());
+
+    luna::Manager manager;
+    manager.setMode(luna::ProviderType::audio);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("Luna", &settings);
+    //engine.rootContext()->setContextProperty("Luna", &settings);
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 
     int ret = app.exec();
 
-    worker.quit();
-    worker.wait();
     return ret;
 }

@@ -19,7 +19,7 @@ namespace luna {
             const int mStride;
         };
     public:
-        explicit SampleBuffer(size_t size, int channelCount);
+        SampleBuffer(size_t size, int channelCount);
         ~SampleBuffer();
         size_t size() { return mSize; }
         void readFrom(float * src, size_t sampleCount);

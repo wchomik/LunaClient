@@ -15,9 +15,7 @@
 using namespace Microsoft::WRL;
 
 namespace luna { namespace graphics {
-    ScreenCapture::ScreenCapture(QObject *parent) :
-        QThread(parent),
-        mShouldRun(true),
+    ScreenCapture::ScreenCapture() :
         mHasOutput(false),
         mOutputWidth(0),
         mOutputHeight(0)
@@ -39,9 +37,9 @@ namespace luna { namespace graphics {
         D3D_FEATURE_LEVEL featureLevel;
         hr = D3D11CreateDevice(
             nullptr,//mAdapter.Get(),
-            D3D_DRIVER_TYPE_HARDWARE,
+            D3D_DRIVER_TYPE_HARDWARE,//D3D_DRIVER_TYPE_UNKNOWN
             nullptr,
-            D3D11_CREATE_DEVICE_DEBUG,
+            D3D11_CREATE_DEVICE_DEBUG,//0
             featureLevels,
             4,
             D3D11_SDK_VERSION,
@@ -128,13 +126,10 @@ namespace luna { namespace graphics {
     }
 
     ScreenCapture::~ScreenCapture()
-    {
-        if(isRunning()) stop();
-    }
+    {}
 
     void ScreenCapture::configure(const unsigned width, const unsigned height)
     {
-        QMutexLocker mutex(&mDuplicationMutex);
         HRESULT hr;
         if(width != mPixels.columns() || height != mPixels.rows()){
             obtainScreen();
@@ -171,43 +166,33 @@ namespace luna { namespace graphics {
         }
     }
 
-    void ScreenCapture::stop(){
-        mShouldRun = false;
-        wait();
-    }
-
-    void ScreenCapture::run()
+    bool ScreenCapture::getNextFrame()
     {
         HRESULT hr;
-        while(mShouldRun){
-            bool acquired = false;
-            ComPtr<IDXGIResource> desktopResource;
-            {
-                QMutexLocker mutex(&mDuplicationMutex);
-
-                if(mHasOutput){
-                    DXGI_OUTDUPL_FRAME_INFO frameInfo;
-                    hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
-                    if(DXGI_ERROR_WAIT_TIMEOUT == hr){
-                        continue;
-                    }else if(FAILED(hr)){
-                        mHasOutput = false;
-                    }else{
-                        acquired = true;
-                    }
+        bool acquired = false;
+        ComPtr<IDXGIResource> desktopResource;
+        {
+            if(mHasOutput){
+                DXGI_OUTDUPL_FRAME_INFO frameInfo;
+                hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
+                if(DXGI_ERROR_WAIT_TIMEOUT == hr){
+                    // TODO fix this nested return
+                    return false;
+                }else if(FAILED(hr)){
+                    mHasOutput = false;
                 }else{
-                    mHasOutput = obtainScreen();
+                    acquired = true;
                 }
-            }
-            if(acquired){
-                processFrame(desktopResource);
-                hr = mOutputDuplication->ReleaseFrame();
-                testHR(hr);
-            }else if(!mHasOutput){
-                QThread::msleep(100);
+            }else{
+                mHasOutput = obtainScreen();
             }
         }
-        mShouldRun = true;
+        if(acquired){
+            processFrame(desktopResource);
+            hr = mOutputDuplication->ReleaseFrame();
+            testHR(hr);
+        }
+        return acquired;
     }
 
     void ScreenCapture::processFrame(ComPtr<IDXGIResource> &desktopResource)
@@ -246,8 +231,6 @@ namespace luna { namespace graphics {
         }
 
         mContext->Unmap(mCPUTexture.Get(), 0);
-
-        emit dataReady();
     }
 
     void ScreenCapture::blitTexture(ID3D11RenderTargetView * dst, ID3D11ShaderResourceView * src, ID3D11SamplerState * sampler, size_t width, size_t height)
@@ -340,5 +323,7 @@ namespace luna { namespace graphics {
             return true;
         }
     }
+
+
 }}
 

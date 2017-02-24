@@ -10,7 +10,7 @@ namespace luna {
         mLunaManager(nullptr)
     {
         mLunaManager = new Manager();
-        mLunaManager->moveToThread(this);
+        //mLunaManager->moveToThread(this);
     }
 
     void Worker::run(){

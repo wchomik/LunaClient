@@ -16,14 +16,13 @@ namespace luna {
     class ScreenProvider : public Provider
     {
     public:
-        explicit ScreenProvider(QObject * parent = nullptr);
+        ScreenProvider();
 
         void configure(const Config & config) override;
         void setBounds(const ScreenBounds & bounds);
         ColorMode colorMode(class ColorSpace * outColorSpace) override;
-
-        void start() override;
-        void stop() override;
+        bool getData(std::vector<PixelStrand> & pixelStrands,
+                    std::vector<ColorScalar> & whiteStrands) override;
 
         void setDepth(int depth);
     private slots:

@@ -12,28 +12,19 @@
 #include "luna/array2d.h"
 
 namespace luna { namespace graphics {
-    class ScreenCapture : public QThread
+    class ScreenCapture
     {
-        Q_OBJECT
     public:
-        explicit ScreenCapture(QObject * parent = nullptr);
+        ScreenCapture();
         ~ScreenCapture();
 
         void configure(const unsigned width, const unsigned height);
-
         Array2D<Color> & pixels(){ return mPixels; }
-
-        void stop();
-
-    signals:
-        void dataReady();
-    protected:
-        void run() override;
+        bool getNextFrame();
     private:
         void processFrame(Microsoft::WRL::ComPtr<IDXGIResource> & desktopResource);
         void blitTexture(ID3D11RenderTargetView * dst, ID3D11ShaderResourceView * src, ID3D11SamplerState * sampler, size_t width, size_t height);
         bool obtainScreen();
-        bool mShouldRun;
         bool mHasOutput;
 
         Microsoft::WRL::ComPtr<IDXGIFactory2> mFactory;

@@ -1,17 +1,14 @@
-
 #include "audiocapture.h"
 
-#include <QDebug>
+#include <stdexcept>
+
 #include "luna/samplebuffer.h"
 #include "win32errorhandling.h"
 
 namespace luna { namespace audio {
-    AudioCapture::AudioCapture(QObject * parent) :
-        QObject(parent),
-        mTimer(this),
+    AudioCapture::AudioCapture() :
         mFormat(nullptr, &CoTaskMemFree)
     {
-        QObject::connect(&mTimer, &QTimer::timeout, this, &AudioCapture::readSamples);
         CoInitializeEx(0, COINIT_MULTITHREADED);
     }
 
@@ -20,7 +17,7 @@ namespace luna { namespace audio {
         CoUninitialize();
     }
 
-    void AudioCapture::configure(int outputChannels, float updateRate)
+    void AudioCapture::configure(int outputChannels)
     {
         HRESULT hr;
         hr = CoCreateInstance(
@@ -53,7 +50,7 @@ namespace luna { namespace audio {
             if(format->SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT) panic();
         }
 
-        REFERENCE_TIME length = static_cast<REFERENCE_TIME>(10000000 * 1.2f / updateRate);
+        REFERENCE_TIME length = static_cast<REFERENCE_TIME>(10000000 * 1.2 / 100);
         mAudioClient->Initialize(
             AUDCLNT_SHAREMODE_SHARED,
             AUDCLNT_STREAMFLAGS_LOOPBACK,
@@ -65,24 +62,13 @@ namespace luna { namespace audio {
             (void**)mAudioCaptureClient.ReleaseAndGetAddressOf());
         testHR(hr);
 
-        mTimer.setInterval(static_cast<int>(1000 / updateRate));
-        mBuffer = std::unique_ptr<luna::SampleBuffer>(new luna::SampleBuffer(1 << 13, outputChannels));
+        hr = mAudioClient->Start();
+        testHR(hr);
     }
 
-    void AudioCapture::start()
+    int AudioCapture::readSamples(luna::SampleBuffer * buffer)
     {
-        mAudioClient->Start();
-        mTimer.start();
-    }
-
-    void AudioCapture::stop()
-    {
-        mTimer.stop();
-        mAudioClient->Stop();
-    }
-
-    void AudioCapture::readSamples()
-    {
+        int total = 0;
         HRESULT hr;
         uint32_t packetSize;
         hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);
@@ -94,14 +80,14 @@ namespace luna { namespace audio {
             DWORD flags;
             hr = mAudioCaptureClient->GetBuffer(&data, &framesAvailable, &flags, nullptr, nullptr);
 
-            mBuffer->readFrom(reinterpret_cast<float *>(data), framesAvailable);
+            total += framesAvailable;
+            buffer->readFrom(reinterpret_cast<float *>(data), framesAvailable);
 
             mAudioCaptureClient->ReleaseBuffer(framesAvailable);
             hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);
             testHR(hr);
         }
-
-        emit samplesReady();
+        return total;
     }
 
 

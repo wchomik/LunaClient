@@ -5,20 +5,14 @@
 #include "colorspace.h"
 
 namespace luna {
-
-    ScreenProvider::ScreenProvider(QObject * parent) :
-        Provider(parent),
-        mScreenCapture(this),
+    ScreenProvider::ScreenProvider() :
         mBounds{0, 1, 0, 1}
     {
-        QObject::connect(&mScreenCapture, &graphics::ScreenCapture::dataReady,
-                         this, &ScreenProvider::onDataReady);
         setDepth(20);
     }
 
     void ScreenProvider::configure(const Config &config)
     {
-        Provider::configure(config);
         mLunaConfig = config;
         readStrandDimensions();
 
@@ -38,43 +32,36 @@ namespace luna {
         return ColorMode::colorSpaceConversion;
     }
 
-    void ScreenProvider::start()
-    {
-        mScreenCapture.start();
-    }
-
-    void ScreenProvider::stop()
-    {
-        mScreenCapture.stop();
-    }
-
     void ScreenProvider::setDepth(int depth)
     {
         mDepthWeights = Eigen::ArrayXf::LinSpaced(depth, 1.0f, 1.0f / depth);
         mDepthWeights = mDepthWeights / mDepthWeights.sum();
     }
 
-    void ScreenProvider::onDataReady()
+    bool ScreenProvider::getData(std::vector<PixelStrand> & pixelStrands,
+                                 std::vector<ColorScalar> & whiteStrands)
     {
-        Color * pixels = mScreenCapture.pixels().data();
-        const int depth = mDepthWeights.rows();
-        for(int i = 0; i < mMappings.size(); ++i){
-            PixelStrand & strand = mPixelStrands[i];
-            const PixelMapping & mapping = mMappings[i];
-            const int count = strand.size();
-            for(int x = mapping.startPixel; x < mapping.endPixel; ++x){
-                Color color(0, 0, 0, 0);
-                for(int d = 0; d < depth; ++d){
-                    int index = mapping.begin +
-                                x * mapping.stride +
-                                d * mapping.depthStride;
-                    color += pixels[index] * mDepthWeights[d];
+        bool hasNextFrame = mScreenCapture.getNextFrame();
+        if(hasNextFrame){
+            Color * pixels = mScreenCapture.pixels().data();
+            const int depth = mDepthWeights.rows();
+            for(int i = 0; i < mMappings.size(); ++i){
+                PixelStrand & strand = pixelStrands[i];
+                const PixelMapping & mapping = mMappings[i];
+                const int count = strand.size();
+                for(int x = mapping.startPixel; x < mapping.endPixel; ++x){
+                    Color color(0, 0, 0, 0);
+                    for(int d = 0; d < depth; ++d){
+                        int index = mapping.begin +
+                                    x * mapping.stride +
+                                    d * mapping.depthStride;
+                        color += pixels[index] * mDepthWeights[d];
+                    }
+                    strand[x] = color;
                 }
-                strand[x] = color;
             }
         }
-
-        emit dataReady();
+        return hasNextFrame;
     }
 
     void ScreenProvider::readStrandDimensions()

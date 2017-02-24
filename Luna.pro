@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     luna/worker.cpp \
     luna/screenprovider.cpp \
     luna/providerfactory.cpp \
-    model/settings.cpp
+    model/settings.cpp \
+    luna/socket.cpp
 
 RESOURCES += qml.qrc
 
@@ -67,7 +68,8 @@ HEADERS += \
     luna/config.h \
     luna/audioprovider.h \
     luna/connection.h \
-    model/settings.h
+    model/settings.h \
+    luna/socket.h
 
 LIBS += -L$$PWD/Lib/
 
@@ -84,6 +86,6 @@ win32 {
         win32/screencapture.h \
         win32/win32errorhandling.h \
         win32/shaders.h
-    LIBS += -lmmdevapi -lole32 -llibfftw3f-3 -ld3d11 -ldxgi
+    LIBS += -lmmdevapi -lole32 -llibfftw3f-3 -ld3d11 -ldxgi -lWs2_32
     DEFINES += _USE_MATH_DEFINES
 }

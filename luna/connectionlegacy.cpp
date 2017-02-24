@@ -1,46 +1,86 @@
 #include "connectionlegacy.h"
 
-#include <QThread>
-
+#include <cstdint>
+#include <iostream>
+#include <limits>
 
 namespace luna {
     const char * ConnectionLegacy::helloMessage = "\x01LunaDaemon";
 
-    ConnectionLegacy::ConnectionLegacy(QObject * parent) :
-        Connection(parent),
+    ConnectionLegacy::ConnectionLegacy() :
         mIsConnected(false),
-        mSocket(this),
-        mKeepAliveTimer(this)
+        mSocket(0)
     {
-        QObject::connect(&mSocket, &QUdpSocket::readyRead,
-                         this, &ConnectionLegacy::datagramReceived);
-        QObject::connect(&mKeepAliveTimer, &QTimer::timeout,
-                         this, &ConnectionLegacy::keepAliveTimeout);
+        sockInit();
+        mSocket = socket(AF_INET, SOCK_DGRAM, 0);
+        sockaddr_in address;
+        address.sin_family = AF_INET;
+        address.sin_port = htons(PORT);
+        address.sin_addr.s_addr = htonl (INADDR_ANY);
 
-        mKeepAliveTimer.setInterval(1000);
-        mSocket.bind(port);
+        if (bind (mSocket, (sockaddr *) &address, sizeof(sockaddr_in))) {
+            std::cout << "Could not bind." << std::endl;
+            sockClose(mSocket);
+            throw std::system_error(errno, std::system_category());
+        }
+        int val;
+        if(setsockopt(mSocket, SOL_SOCKET, SO_BROADCAST,
+                      reinterpret_cast<const char *>(&val), sizeof(int))){
+            std::cout << "Could not set broadcast." << std::endl;
+            sockClose(mSocket);
+            throw std::system_error(errno, std::system_category());
+        }
     }
 
-    ConnectionLegacy::~ConnectionLegacy(){
 
+    ConnectionLegacy::~ConnectionLegacy(){
+        if(mIsConnected){
+            mBuffer.reset();
+            mBuffer << static_cast<uint8_t>(101);
+            mBuffer << static_cast<uint8_t>(2);
+            send();
+            disconnect();
+        }
     }
 
     bool ConnectionLegacy::isConnected(){
         return mIsConnected;
     }
 
-    void ConnectionLegacy::connect(){
-        mSocket.writeDatagram(helloMessage, strlen(helloMessage), QHostAddress::Broadcast, port);
+    bool ConnectionLegacy::connect(){
+        sockaddr_in address;
+        address.sin_family = AF_INET;
+        address.sin_port = htons(PORT);
+        address.sin_addr.s_addr = htonl (INADDR_BROADCAST);
+        ::sendto(mSocket, helloMessage, strlen(helloMessage), 0,
+                 reinterpret_cast<const sockaddr *>(&address), sizeof(sockaddr_in));
+
+        char inbuf[128];
+        sockaddr_in fromAddr;
+        int fromAddrLen = sizeof(fromAddr);
+        int len;
+        // TODO handle failure
+        while(true){
+            len = recvfrom(mSocket, inbuf, 128, 0,  (sockaddr *) &fromAddr, &fromAddrLen);
+            inbuf[len] = 0;
+            std::cout << inbuf << std::endl;
+            if(len != strlen(helloMessage)) break;
+        }
+        ::connect(mSocket, (sockaddr *) &fromAddr, fromAddrLen);
+        std::cout << "Connected to " << std::endl;
+        mIsConnected = true;
+        return true;
     }
 
     void ConnectionLegacy::disconnect(){
-        mKeepAliveTimer.stop();
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(99);
         send();
-        mSocket.disconnectFromHost();
+
+        sockaddr_in address = {0};
+        address.sin_family = AF_UNSPEC;
+        ::connect(mSocket, (sockaddr *) &address, sizeof(sockaddr_in));
         mIsConnected = false;
-        disconnected();
     }
 
     void ConnectionLegacy::update(const std::vector<PixelStrand> & pixelStrands,
@@ -68,18 +108,10 @@ namespace luna {
         send();
     }
 
-    void ConnectionLegacy::shutdown(){
-        mBuffer.reset();
-        mBuffer << static_cast<uint8_t>(101);
-        mBuffer << static_cast<uint8_t>(2);
-        send();
-        disconnect();
-    }
-
     void ConnectionLegacy::getConfig(Config * config)
     {
         Config::PixelStrandConfig strand;
-        strand.count = pixelCount;
+        strand.count = PIXEL_COUNT;
         strand.direction = Config::bottomToTop;
 
         config->pixelStrands.clear();
@@ -94,28 +126,7 @@ namespace luna {
         config->whiteStrands.push_back(Config::right);
     }
 
-    void ConnectionLegacy::datagramReceived(){
-        quint64 size = mSocket.pendingDatagramSize();
-        std::vector<char> data(size + 1);
-        QHostAddress senderIp;
-
-        quint16 senderPort;
-        mSocket.readDatagram(data.data(), data.size(), &senderIp, &senderPort);
-        if(strcmp(data.data(), helloMessage) != 0){
-            mSocket.connectToHost(senderIp, senderPort);
-            mIsConnected = true;
-            mKeepAliveTimer.start();
-            connected();
-        }
-    }
-
-    void ConnectionLegacy::keepAliveTimeout()
-    {
-        mBuffer.reset();
-        send();
-    }
-
     void ConnectionLegacy::send(){
-        mSocket.write(mBuffer.data(), mBuffer.count());
+        ::send(mSocket, mBuffer.data(), mBuffer.count(), 0);
     }
 }

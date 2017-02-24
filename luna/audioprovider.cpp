@@ -5,19 +5,15 @@
 namespace luna {
     using namespace audio;
 
-    AudioProvider::AudioProvider(QObject * parent) :
-        Provider(parent),
-        mAudioCapture(this),
+    AudioProvider::AudioProvider() :
         mFFT(1 << 13, FFT::magnitude)
-    {
-        QObject::connect(&mAudioCapture, &audio::AudioCapture::samplesReady,
-                         this, &AudioProvider::onSamplesReady);
-    }
+    {}
 
     void AudioProvider::configure(const Config &config)
     {
-        Provider::configure(config);
-        mAudioCapture.configure(config.pixelStrands.size(), 100.0);
+        const int channelCount = config.pixelStrands.size();
+        mBuffer = std::make_unique<SampleBuffer>(1 << 13, channelCount);
+        mAudioCapture.configure(channelCount);
 
         audio::AudioChannelConfig audioConf;
         audioConf.fft = &mFFT;
@@ -26,7 +22,7 @@ namespace luna {
         audioConf.sampleRate = mAudioCapture.sampleRate();
         audioConf.unitsPerDecade = 8.0f;
         mProcessors.clear();
-        for(int i = 0; i < config.pixelStrands.size(); ++i){
+        for(int i = 0; i < channelCount; ++i){
             audioConf.count = config.pixelStrands[i].count;
             mProcessors.emplace_back(audioConf);
         }
@@ -37,30 +33,23 @@ namespace luna {
         return ColorMode::fullWhiteBalanced;
     }
 
-    void AudioProvider::start()
+    bool AudioProvider::getData(std::vector<PixelStrand> &pixelStrands, std::vector<ColorScalar> &whiteStrands)
     {
-        mAudioCapture.start();
-    }
-
-    void AudioProvider::stop()
-    {
-        mAudioCapture.stop();
-    }
-
-    void AudioProvider::onSamplesReady()
-    {
+        int count = mAudioCapture.readSamples(mBuffer.get());
+        if(count == 0){
+            return false;
+        }
         auto & fftIn = mFFT.input();
         for(int i = 0; i < 2; ++i){
-            auto channel = mAudioCapture.sampleBuffer()->channel(i);
+            auto channel = mBuffer->channel(i);
             for(int j = 0; j < mFFT.size(); ++j){
                 fftIn[j] = channel[j];
             }
             mFFT.compute();
             auto & processor = mProcessors[i];
-            auto & strand = mPixelStrands[i];
+            auto & strand = pixelStrands[i];
             processor.process(strand, mFFT.magnitudes());
         }
-
-        emit dataReady();
+        return true;
     }
 }

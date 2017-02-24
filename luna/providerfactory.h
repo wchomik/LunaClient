@@ -21,9 +21,9 @@ namespace luna {
     public:
         ProviderFactory();
 
-        std::unique_ptr<Provider> make(ProviderType type, class QObject * parent);
+        std::unique_ptr<Provider> make(ProviderType type);
     private:
-        typedef std::unique_ptr<Provider>(* creator_t)(class QObject *);
+        using creator_t = std::unique_ptr<Provider>(*)();
         template<typename ElemT, typename IndexT, IndexT count>
         class EnumArray {
         public:

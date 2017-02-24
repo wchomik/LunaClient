@@ -3,38 +3,23 @@
 
 #include <memory>
 
-#include <QObject>
-#include <QTimer>
-
 #include <wrl.h>
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
+
 #include "luna/samplebuffer.h"
 
 namespace luna { namespace audio {
-    class AudioCapture : public QObject{
-        Q_OBJECT
+    class AudioCapture {
     public:
-        explicit AudioCapture(QObject * parent = 0);
+        AudioCapture();
         ~AudioCapture();
 
-        void configure(int outputChannels, float updateRate);
-        luna::SampleBuffer * sampleBuffer(){ return mBuffer.get(); }
+        void configure(int outputChannels);
         int sampleRate(){ return mFormat->nSamplesPerSec; }
-    public slots:
-        void start();
-        void stop();
-    private slots:
-        void readSamples();
-    signals:
-        void samplesReady();
-
+        int readSamples(luna::SampleBuffer * buffer);
     private:
         void panic(const char *msg = "");
-
-        QTimer mTimer;
-        std::unique_ptr<luna::SampleBuffer> mBuffer;
-        float mUpdateRate;
 
         Microsoft::WRL::ComPtr<IMMDeviceEnumerator> mDevEnum;
         Microsoft::WRL::ComPtr<IMMDevice> mAudioDevice;

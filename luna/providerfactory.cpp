@@ -6,12 +6,12 @@
 
 namespace luna {
     template<typename T>
-    std::unique_ptr<Provider> createProvider(QObject * parent){
-        return std::make_unique<T>(parent);
+    std::unique_ptr<Provider> createProvider(){
+        return std::make_unique<T>();
     }
 
     template<>
-    std::unique_ptr<Provider> createProvider<Provider>(QObject * parent){
+    std::unique_ptr<Provider> createProvider<Provider>(){
         return std::unique_ptr<Provider>();
     }
 
@@ -24,9 +24,9 @@ namespace luna {
         mCreators[ProviderType::screen] = createProvider<ScreenProvider>;
     }
 
-    std::unique_ptr<Provider> ProviderFactory::make(ProviderType type, QObject *parent)
+    std::unique_ptr<Provider> ProviderFactory::make(ProviderType type)
     {
-        return mCreators[type](parent);
+        return mCreators[type]();
     }
 
 }
