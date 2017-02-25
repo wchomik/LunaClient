@@ -48,7 +48,6 @@ namespace luna {
             for(int i = 0; i < mMappings.size(); ++i){
                 PixelStrand & strand = pixelStrands[i];
                 const PixelMapping & mapping = mMappings[i];
-                const int count = strand.size();
                 for(int x = mapping.startPixel; x < mapping.endPixel; ++x){
                     Color color(0, 0, 0, 0);
                     for(int d = 0; d < depth; ++d){
@@ -59,6 +58,9 @@ namespace luna {
                     }
                     strand[x] = color;
                 }
+            }
+            for(auto & white : whiteStrands){
+                white = 0;
             }
         }
         return hasNextFrame;

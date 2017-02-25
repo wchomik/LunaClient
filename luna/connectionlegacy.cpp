@@ -5,31 +5,24 @@
 #include <limits>
 
 namespace luna {
-    const char * ConnectionLegacy::helloMessage = "\x01LunaDaemon";
+    static int constexpr cstrlen(const char * str)
+    {
+        return *str ? 1 + cstrlen(str + 1) : 0;
+    }
+
+
+    static constexpr char helloMessage[] = "\x01LunaDaemon";
+    static constexpr int helloLen = cstrlen(helloMessage);
 
     ConnectionLegacy::ConnectionLegacy() :
-        mIsConnected(false),
-        mSocket(0)
+        mIsConnected(false)
     {
-        sockInit();
-        mSocket = socket(AF_INET, SOCK_DGRAM, 0);
-        sockaddr_in address;
-        address.sin_family = AF_INET;
-        address.sin_port = htons(PORT);
-        address.sin_addr.s_addr = htonl (INADDR_ANY);
+        mHostList.emplace_back(std::make_shared<Host>("Default"));
 
-        if (bind (mSocket, (sockaddr *) &address, sizeof(sockaddr_in))) {
-            std::cout << "Could not bind." << std::endl;
-            sockClose(mSocket);
-            throw std::system_error(errno, std::system_category());
-        }
-        int val;
-        if(setsockopt(mSocket, SOL_SOCKET, SO_BROADCAST,
-                      reinterpret_cast<const char *>(&val), sizeof(int))){
-            std::cout << "Could not set broadcast." << std::endl;
-            sockClose(mSocket);
-            throw std::system_error(errno, std::system_category());
-        }
+        mSocket.setBroadcast(true);
+        mSocket.setNonBlock(true);
+        net::Address any(net::Address::ANY, PORT);
+        mSocket.bind(any);
     }
 
 
@@ -47,29 +40,36 @@ namespace luna {
         return mIsConnected;
     }
 
-    bool ConnectionLegacy::connect(){
-        sockaddr_in address;
-        address.sin_family = AF_INET;
-        address.sin_port = htons(PORT);
-        address.sin_addr.s_addr = htonl (INADDR_BROADCAST);
-        ::sendto(mSocket, helloMessage, strlen(helloMessage), 0,
-                 reinterpret_cast<const sockaddr *>(&address), sizeof(sockaddr_in));
-
-        char inbuf[128];
-        sockaddr_in fromAddr;
-        int fromAddrLen = sizeof(fromAddr);
-        int len;
-        // TODO handle failure
-        while(true){
-            len = recvfrom(mSocket, inbuf, 128, 0,  (sockaddr *) &fromAddr, &fromAddrLen);
-            inbuf[len] = 0;
-            std::cout << inbuf << std::endl;
-            if(len != strlen(helloMessage)) break;
+    void ConnectionLegacy::update()
+    {
+        if(!mIsConnected){
+            net::Address broadcast(net::Address::BROADCAST, PORT);
+            mSocket.sendTo(helloMessage, helloLen, broadcast);
         }
-        ::connect(mSocket, (sockaddr *) &fromAddr, fromAddrLen);
-        std::cout << "Connected to " << std::endl;
-        mIsConnected = true;
-        return true;
+        bool shouldConnect = false;
+        net::Address from;
+        for(;;){
+            char inbuf[128];
+            int len = mSocket.receiveFrom(inbuf, sizeof(inbuf), from);
+            if(len < 0) break;
+
+            inbuf[len] = 0;
+            // TODO add some sort of validation
+            if(helloLen != len) {
+                mIsConnected = true;
+                shouldConnect = true;
+                break;
+            }
+        }
+        if(shouldConnect){
+            mSocket.connect(from);
+        }
+    }
+
+    void ConnectionLegacy::connect(const Host * host){
+        if(host != nullptr){
+
+        }
     }
 
     void ConnectionLegacy::disconnect(){
@@ -77,13 +77,11 @@ namespace luna {
         mBuffer << static_cast<uint8_t>(99);
         send();
 
-        sockaddr_in address = {0};
-        address.sin_family = AF_UNSPEC;
-        ::connect(mSocket, (sockaddr *) &address, sizeof(sockaddr_in));
+        mSocket.disconnect();
         mIsConnected = false;
     }
 
-    void ConnectionLegacy::update(const std::vector<PixelStrand> & pixelStrands,
+    void ConnectionLegacy::sendPixels(const std::vector<PixelStrand> & pixelStrands,
                             const std::vector<ColorScalar> & whiteStrands){
         mBuffer.reset();
         mBuffer << static_cast<uint8_t>(101);
@@ -108,6 +106,11 @@ namespace luna {
         send();
     }
 
+    const std::vector<std::shared_ptr<Host> > &ConnectionLegacy::getHosts()
+    {
+        return mHostList;
+    }
+
     void ConnectionLegacy::getConfig(Config * config)
     {
         Config::PixelStrandConfig strand;
@@ -124,9 +127,11 @@ namespace luna {
 
         config->whiteStrands.push_back(Config::left);
         config->whiteStrands.push_back(Config::right);
+
+        config->colorSpace = ColorSpace::ws2812();
     }
 
     void ConnectionLegacy::send(){
-        ::send(mSocket, mBuffer.data(), mBuffer.count(), 0);
+        mSocket.send(mBuffer.data(), mBuffer.count());
     }
 }

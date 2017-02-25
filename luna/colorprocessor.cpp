@@ -2,7 +2,7 @@
 
 namespace luna {
     // direct
-    void ColorProcessorDirect::process(luna::PixelStrand & strand)
+    void ColorProcessorDirect::process(luna::PixelStrand &)
     {}
 
     // white balanced

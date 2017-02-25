@@ -2,6 +2,7 @@
 #define LUNACONFIG_H
 
 #include <vector>
+#include "colorspace.h"
 
 namespace luna {
     struct Config {
@@ -24,8 +25,12 @@ namespace luna {
             Direction direction;
         };
 
+        ColorSpace colorSpace;
         std::vector<PixelStrandConfig> pixelStrands;
         std::vector<Position> whiteStrands;
+
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
 }
 

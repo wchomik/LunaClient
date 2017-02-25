@@ -16,6 +16,8 @@ namespace ch = std::chrono;
 namespace luna {
     Manager::Manager() :
         mWhiteBalance(1, 1, 1, 1),
+        mSourceColorSpace(ColorSpace::sRGB()),
+        mDestinationColorSpace(ColorSpace::sRGB()),
         mLuna(std::make_unique<ConnectionLegacy>()),
         mCurrentProviderType(ProviderType::illumination),
         mShouldRun(true),
@@ -39,15 +41,17 @@ namespace luna {
         ch::steady_clock::time_point nextPeriod =
             ch::steady_clock::now() + ch::milliseconds(10);
         while(mShouldRun){
+            mLuna->update();
             if(mLuna->isConnected()){
                 if(mActiveProvider->getData(mPixelStrands, mWhiteStands)){
                     for(PixelStrand & strand : mPixelStrands){
                         mColorProcessor->process(strand);
                     }
-                    mLuna->update(mPixelStrands,mWhiteStands);
+                    mLuna->sendPixels(mPixelStrands, mWhiteStands);
                 }
             }else{
-                if(mLuna->connect()){
+                //mLuna->connect()
+                if(false){
                     mLuna->getConfig(&mLunaConfig);
                     mPixelStrands.clear();
                     mWhiteStands.clear();
@@ -57,16 +61,19 @@ namespace luna {
                     for(auto & conf : mLunaConfig.whiteStrands){
                         mWhiteStands.emplace_back(0);
                     }
-                    // TODO read colorspace from LunaConfig
-                    mDestinationColorSpace = ColorSpace::ws2812();
-                    updateColorMode();
+                    mDestinationColorSpace = mLunaConfig.colorSpace;
                     activateProvider();
                 }
             }
-            ch::duration<double, std::milli> diff;
-            while((diff = ch::steady_clock::now() - nextPeriod).count() < -1){
+
+            ch::steady_clock::duration diff;
+            while((diff = ch::steady_clock::now() - nextPeriod) < ch::milliseconds(-1)){
                 std::this_thread::sleep_until(nextPeriod);
             }
+
+            if(nextPeriod - ch::steady_clock::now() > ch::milliseconds(0))
+                nextPeriod = ch::steady_clock::now();
+
             nextPeriod += ch::milliseconds(10);
         }
     }

@@ -8,11 +8,10 @@ namespace luna {
         mWhiteness(0.0)
     {}
 
-    void IlluminationProvider::configure(const Config & config){
-    }
+    void IlluminationProvider::configure(const Config &){}
 
 
-    ColorMode IlluminationProvider::colorMode(class ColorSpace * outColorSpace)
+    ColorMode IlluminationProvider::colorMode(class ColorSpace *)
     {
         return ColorMode::fullWhiteBalanced;
     }

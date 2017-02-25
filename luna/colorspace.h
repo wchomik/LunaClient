@@ -24,6 +24,8 @@ namespace luna {
     private:
         Transformation mRgbToXyz;
         Transformation mXyzToRgb;
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
 }
 #endif // COLORSPACE_H

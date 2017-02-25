@@ -28,7 +28,7 @@ namespace luna {
         }
     }
 
-    ColorMode AudioProvider::colorMode(class ColorSpace * outColorSpace)
+    ColorMode AudioProvider::colorMode(class ColorSpace *)
     {
         return ColorMode::fullWhiteBalanced;
     }
@@ -40,7 +40,7 @@ namespace luna {
             return false;
         }
         auto & fftIn = mFFT.input();
-        for(int i = 0; i < 2; ++i){
+        for(int i = 0; i < mProcessors.size(); ++i){
             auto channel = mBuffer->channel(i);
             for(int j = 0; j < mFFT.size(); ++j){
                 fftIn[j] = channel[j];
@@ -49,6 +49,9 @@ namespace luna {
             auto & processor = mProcessors[i];
             auto & strand = pixelStrands[i];
             processor.process(strand, mFFT.magnitudes());
+        }
+        for(auto & white : whiteStrands){
+            white = 0;
         }
         return true;
     }

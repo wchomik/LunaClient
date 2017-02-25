@@ -51,6 +51,7 @@ namespace luna {
         std::vector<PixelStrand> mPixelStrands;
         std::vector<ColorScalar> mWhiteStands;
 
+        // concurrency
         bool mShouldRun;
         std::thread mThread;
     public:

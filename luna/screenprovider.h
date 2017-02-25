@@ -47,6 +47,9 @@ namespace luna {
         int mStrandHeight;
         ScreenBounds mBounds;
         Config mLunaConfig;
+
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
 }
 
