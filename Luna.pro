@@ -13,15 +13,14 @@ SOURCES += main.cpp \
     luna/fft.cpp \
     luna/samplebuffer.cpp \
     luna/audioprovider.cpp \
-    luna/connection.cpp \
-    luna/connectionlegacy.cpp \
     luna/illuminationprovider.cpp \
     luna/manager.cpp \
     luna/provider.cpp \
     luna/worker.cpp \
     luna/screenprovider.cpp \
     luna/providerfactory.cpp \
-    model/settings.cpp
+    model/settings.cpp \
+    luna/connection.cpp
 
 RESOURCES += qml.qrc
 
@@ -62,12 +61,13 @@ HEADERS += \
     luna/worker.h \
     luna/provider.h \
     luna/manager.h \
-    luna/connectionlegacy.h \
     luna/illuminationprovider.h \
     luna/config.h \
     luna/audioprovider.h \
-    luna/connection.h \
-    model/settings.h
+    model/settings.h \
+    delegate.h \
+    event.h \
+    luna/connection.h
 
 LIBS += -L$$PWD/Lib/
 

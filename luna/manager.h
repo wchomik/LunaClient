@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <Eigen/Core>
+#include "connection.h"
 #include "colorutils.h"
 #include "colormode.h"
 #include "colorspace.h"
@@ -31,6 +32,7 @@ namespace luna {
         void updateColorMode();
         void activateProvider();
         void deactivateProvider();
+        void connected();
 
         // color management
         Color mWhiteBalance;
@@ -40,7 +42,7 @@ namespace luna {
         std::unique_ptr<class ColorProcessor> mColorProcessor;
 
         // connection management
-        std::unique_ptr<class Connection> mLuna;
+        Connection mLuna;
 
         // provider management
         ProviderFactory mProviderFactory;

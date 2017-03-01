@@ -3,7 +3,6 @@
 #include <chrono>
 
 #include "connection.h"
-#include "connectionlegacy.h"
 
 #include "providerfactory.h"
 
@@ -18,11 +17,12 @@ namespace luna {
         mWhiteBalance(1, 1, 1, 1),
         mSourceColorSpace(ColorSpace::sRGB()),
         mDestinationColorSpace(ColorSpace::sRGB()),
-        mLuna(std::make_unique<ConnectionLegacy>()),
         mCurrentProviderType(ProviderType::illumination),
         mShouldRun(true),
         mThread([this](){ threadFunc(); })
-    {}
+    {
+        mLuna.onConnected.subscribe<Manager, &Manager::connected>(this);
+    }
 
     Manager::~Manager()
     {
@@ -41,28 +41,13 @@ namespace luna {
         ch::steady_clock::time_point nextPeriod =
             ch::steady_clock::now() + ch::milliseconds(10);
         while(mShouldRun){
-            mLuna->update();
-            if(mLuna->isConnected()){
+            mLuna.update();
+            if(mLuna.isConnected()){
                 if(mActiveProvider->getData(mPixelStrands, mWhiteStands)){
                     for(PixelStrand & strand : mPixelStrands){
                         mColorProcessor->process(strand);
                     }
-                    mLuna->sendPixels(mPixelStrands, mWhiteStands);
-                }
-            }else{
-                //mLuna->connect()
-                if(false){
-                    mLuna->getConfig(&mLunaConfig);
-                    mPixelStrands.clear();
-                    mWhiteStands.clear();
-                    for(auto & conf : mLunaConfig.pixelStrands){
-                        mPixelStrands.emplace_back(conf.count);
-                    }
-                    for(auto & conf : mLunaConfig.whiteStrands){
-                        mWhiteStands.emplace_back(0);
-                    }
-                    mDestinationColorSpace = mLunaConfig.colorSpace;
-                    activateProvider();
+                    mLuna.sendPixels(mPixelStrands, mWhiteStands);
                 }
             }
 
@@ -95,6 +80,21 @@ namespace luna {
         }
     }
 
+    void Manager::connected()
+    {
+        mLuna.getConfig(mLunaConfig);
+        mPixelStrands.clear();
+        mWhiteStands.clear();
+        for(auto && conf : mLunaConfig.pixelStrands){
+            mPixelStrands.emplace_back(conf.count);
+        }
+        for(auto && conf : mLunaConfig.whiteStrands){
+            mWhiteStands.emplace_back(0);
+        }
+        mDestinationColorSpace = mLunaConfig.colorSpace;
+        activateProvider();
+    }
+
     void Manager::updateColorMode()
     {
         switch(mCurrentColorMode){
@@ -116,7 +116,7 @@ namespace luna {
     {
         deactivateProvider();
         mCurrentProviderType = type;
-        if(mLuna->isConnected()){
+        if(mLuna.isConnected()){
             activateProvider();
         }
     }

@@ -1,39 +1,56 @@
-#ifndef LUNA_H
-#define LUNA_H
+#ifndef LUNALEGACY_H
+#define LUNALEGACY_H
 
 #include <memory>
 #include <string>
+#include "binarystream.h"
+#include "socket.h"
 #include "colorutils.h"
-#include "config.h"
+#include "event.h"
 
 namespace luna {
-
     class Host {
     public:
         Host();
         Host(const std::string & name) : mName(name) {}
-        virtual ~Host(){}
 
         const std::string & name(){ return mName; }
-    protected:
+    private:
         std::string mName;
+        net::Address mAddress;
         friend class Connection;
     };
 
     class Connection
     {
     public:
-        virtual ~Connection(){}
-        virtual bool isConnected() = 0;
+        Connection();
+        ~Connection();
 
-        virtual void sendPixels(const std::vector<PixelStrand> & pixelStrands,
-                            const std::vector<ColorScalar> & whiteStrands) = 0;
+        bool isConnected();
+        void sendPixels(const std::vector<PixelStrand> & pixelStrands,
+            const std::vector<ColorScalar> & whiteStrands);
 
-        virtual void update() = 0;
-        virtual const std::vector<std::shared_ptr<Host>> & getHosts() = 0;
-        virtual void getConfig(struct Config * config) = 0;
-        virtual void connect(const Host * host) = 0;
-        virtual void disconnect() = 0;
+        void update();
+        std::vector<Host> getHosts();
+        void getConfig(struct Config & config);
+        void connect(const Host & host);
+        void disconnect();
+
+        Event<void()> onHostsChanged;
+        Event<void()> onConnected;
+        Event<void()> onDisconnected;
+    private:
+        enum {
+            PIXEL_COUNT = 120,
+            PORT = 1234,
+            BUFFER_SIZE  = 6 + PIXEL_COUNT * 6,
+        };
+        bool mIsConnected;
+        net::SocketUdp mSocket;
+        BinaryStream<BUFFER_SIZE> mBuffer;
+        std::vector<Host> mHostList;
+        void send();
     };
 }
-#endif // LUNA_H
+#endif // LUNALEGACY_H
