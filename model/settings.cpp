@@ -72,6 +72,7 @@ namespace model {
         }else if(name == "Audio"){
             type = luna::ProviderType::audio;
         }
+        mManager->setMode(type);
         /*QMetaObject::invokeMethod(mManager, "setMode",
             Qt::QueuedConnection, Q_ARG(luna::ProviderType, type));*/
     }

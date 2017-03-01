@@ -3,13 +3,13 @@
 
 #include <memory>
 #include <thread>
+#include <mutex>
 
 #include <Eigen/Core>
 #include "connection.h"
 #include "colorutils.h"
 #include "colormode.h"
 #include "colorspace.h"
-
 #include "providerfactory.h"
 #include "config.h"
 
@@ -26,7 +26,6 @@ namespace luna {
 
         void setWhiteBalance(const Color & color);
         void setMode(luna::ProviderType type);
-
     private:
         void threadFunc();
         void updateColorMode();
@@ -56,6 +55,7 @@ namespace luna {
         // concurrency
         bool mShouldRun;
         std::thread mThread;
+        std::mutex mMutex;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

@@ -2,14 +2,11 @@
 
 #include <chrono>
 
-#include "connection.h"
-
 #include "providerfactory.h"
 
-#include "config.h"
-#include "colorspace.h"
 #include "colorprocessor.h"
 #include <iostream>
+
 namespace ch = std::chrono;
 
 namespace luna {
@@ -32,8 +29,19 @@ namespace luna {
 
     void Manager::setWhiteBalance(const Color &color)
     {
+        std::lock_guard<std::mutex> guard(mMutex);
         mWhiteBalance = color;
         updateColorMode();
+    }
+
+    void Manager::setMode(ProviderType type)
+    {
+        std::lock_guard<std::mutex> guard(mMutex);
+        deactivateProvider();
+        mCurrentProviderType = type;
+        if(mLuna.isConnected()){
+            activateProvider();
+        }
     }
 
     void Manager::threadFunc()
@@ -43,6 +51,7 @@ namespace luna {
         while(mShouldRun){
             mLuna.update();
             if(mLuna.isConnected()){
+                std::lock_guard<std::mutex> guard(mMutex);
                 if(mActiveProvider->getData(mPixelStrands, mWhiteStands)){
                     for(PixelStrand & strand : mPixelStrands){
                         mColorProcessor->process(strand);
@@ -92,6 +101,7 @@ namespace luna {
             mWhiteStands.emplace_back(0);
         }
         mDestinationColorSpace = mLunaConfig.colorSpace;
+        updateColorMode();
         activateProvider();
     }
 
@@ -109,15 +119,6 @@ namespace luna {
         default:
             mColorProcessor = std::make_unique<ColorProcessorDirect>();
             break;
-        }
-    }
-
-    void Manager::setMode(ProviderType type)
-    {
-        deactivateProvider();
-        mCurrentProviderType = type;
-        if(mLuna.isConnected()){
-            activateProvider();
         }
     }
 
