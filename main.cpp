@@ -11,9 +11,7 @@ int main(int argc, char *argv[])
     qputenv("QT_QUICK_CONTROLS_1_STYLE", "Flat");
     QGuiApplication app(argc, argv);
 
-
     luna::Manager manager;
-    manager.setMode(luna::ProviderType::screen);
     model::Settings settings;
     settings.setLunaManager(&manager);
 

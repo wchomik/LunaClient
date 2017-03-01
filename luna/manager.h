@@ -22,7 +22,7 @@ namespace luna {
         Manager(const Manager &) = delete;
         Manager & operator=(const Manager &) = delete;
 
-        Provider * currentProvider();
+        Provider * currentProvider(){ return mActiveProvider.get(); }
 
         void setWhiteBalance(const Color & color);
         void setMode(luna::ProviderType type);

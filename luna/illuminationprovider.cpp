@@ -18,7 +18,7 @@ namespace luna {
 
     bool IlluminationProvider::getData(std::vector<PixelStrand> &pixelStrands, std::vector<ColorScalar> &whiteStrands)
     {
-        if(mNewData){
+        //if(mNewData){
             for(PixelStrand & strand : pixelStrands){
                 for(Color & pixel : strand){
                     pixel = mColor;
@@ -29,8 +29,8 @@ namespace luna {
             }
             mNewData = false;
             return true;
-        }else{
+        /*}else{
             return false;
-        }
+        }*/
     }
 }

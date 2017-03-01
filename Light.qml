@@ -9,7 +9,11 @@ Item {
     width: window.width
     property color color
     onColorChanged: {
-        //Luna.
+        Luna.light.color = color;
+    }
+
+    Component.onCompleted: {
+        color = Luna.light.color;
     }
 
     ColorDialog {

@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     luna/screenprovider.cpp \
     luna/providerfactory.cpp \
     model/settings.cpp \
-    luna/connection.cpp
+    luna/connection.cpp \
+    model/lightprovidersettings.cpp
 
 RESOURCES += qml.qrc
 
@@ -67,7 +68,9 @@ HEADERS += \
     model/settings.h \
     delegate.h \
     event.h \
-    luna/connection.h
+    luna/connection.h \
+    model/providersettings.h \
+    model/lightprovidersettings.h
 
 LIBS += -L$$PWD/Lib/
 

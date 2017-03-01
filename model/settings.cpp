@@ -5,7 +5,8 @@
 namespace model {
     Settings::Settings(QObject *parent) :
         QObject(parent),
-        mSettings(QSettings::IniFormat, QSettings::UserScope, "Luna", "Luna", this)
+        mSettings(QSettings::IniFormat, QSettings::UserScope, "Luna", "Luna", this),
+        mLightSettings(this)
     {
         qRegisterMetaType<luna::ProviderType>("luna::ProviderType");
     }
@@ -25,6 +26,7 @@ namespace model {
         mGreenBalance = mSettings.value("greenBalance", 1.0).toReal();
         mBlueBalance = mSettings.value("blueBalance", 1.0).toReal();
         updateWhiteBalance();
+        mLightSettings.setSettings(&mSettings);
     }
 
     void Settings::setRedBalance(qreal value)
@@ -54,14 +56,6 @@ namespace model {
         }
     }
 
-    void Settings::setLightColor(const QColor &color)
-    {
-        if(mLightColor != color){
-            mLightColor = color;
-            lightColorChanged();
-        }
-    }
-
     void Settings::setProvider(const QString &name)
     {
         luna::ProviderType type = luna::ProviderType::none;
@@ -73,13 +67,10 @@ namespace model {
             type = luna::ProviderType::audio;
         }
         mManager->setMode(type);
-        /*QMetaObject::invokeMethod(mManager, "setMode",
-            Qt::QueuedConnection, Q_ARG(luna::ProviderType, type));*/
-    }
 
-    void Settings::onProviderChanged()
-    {
+        luna::Provider * provider = mManager->currentProvider();
 
+        mLightSettings.setProvider(provider);
     }
 
     void Settings::updateWhiteBalance()
