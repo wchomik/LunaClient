@@ -1,6 +1,7 @@
 #ifndef LUNASCREENPROVIDER_H
 #define LUNASCREENPROVIDER_H
 
+#include <mutex>
 #include "provider.h"
 #include "screencapture.h"
 #include "config.h"
@@ -47,7 +48,7 @@ namespace luna {
         int mStrandHeight;
         ScreenBounds mBounds;
         Config mLunaConfig;
-
+        std::mutex mMutex;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

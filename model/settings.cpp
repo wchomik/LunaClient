@@ -6,7 +6,8 @@ namespace model {
     Settings::Settings(QObject *parent) :
         QObject(parent),
         mSettings(QSettings::IniFormat, QSettings::UserScope, "Luna", "Luna", this),
-        mLightSettings(this)
+        mLightSettings(this),
+        mScreenSettings(this)
     {
         qRegisterMetaType<luna::ProviderType>("luna::ProviderType");
     }
@@ -27,6 +28,7 @@ namespace model {
         mBlueBalance = mSettings.value("blueBalance", 1.0).toReal();
         updateWhiteBalance();
         mLightSettings.setSettings(&mSettings);
+        mScreenSettings.setSettings(&mSettings);
     }
 
     void Settings::setRedBalance(qreal value)
@@ -71,6 +73,7 @@ namespace model {
         luna::Provider * provider = mManager->currentProvider();
 
         mLightSettings.setProvider(provider);
+        mScreenSettings.setProvider(provider);
     }
 
     void Settings::updateWhiteBalance()

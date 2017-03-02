@@ -4,9 +4,9 @@
 #include <QThread>
 #include <QMutex>
 
-#include <wrl.h>
 #include <d3d11.h>
 #include <dxgi1_5.h>
+#include <wrl.h>
 
 #include "luna/colorutils.h"
 #include "luna/array2d.h"

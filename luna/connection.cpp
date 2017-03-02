@@ -18,6 +18,7 @@ namespace luna {
         mSocket.setNonBlock(true);
         net::Address any(net::Address::ANY, PORT);
         mSocket.bind(any);
+        mLastKeepAlive = std::chrono::steady_clock::now();
     }
 
 
@@ -64,6 +65,13 @@ namespace luna {
         if(shouldConnect){
             mSocket.connect(from);
             onConnected();
+        }
+        if(mIsConnected){
+            if(std::chrono::steady_clock::now() - mLastKeepAlive > std::chrono::milliseconds(1000)){
+                mBuffer.reset();
+                send();
+                mLastKeepAlive = std::chrono::steady_clock::now();
+            }
         }
     }
 

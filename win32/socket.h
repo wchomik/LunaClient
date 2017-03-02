@@ -4,10 +4,6 @@
 // fucking windows and its macros
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-/* See http://stackoverflow.com/questions/12765743/getaddrinfo-on-win32 */
-#ifndef _WIN32_WINNT
-    #define _WIN32_WINNT 0x0501  /* Windows XP. */
-#endif
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include <cstdint>

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <chrono>
 #include "binarystream.h"
 #include "socket.h"
 #include "colorutils.h"
@@ -50,6 +51,7 @@ namespace luna {
         net::SocketUdp mSocket;
         BinaryStream<BUFFER_SIZE> mBuffer;
         std::vector<Host> mHostList;
+        std::chrono::steady_clock::time_point mLastKeepAlive;
         void send();
     };
 }

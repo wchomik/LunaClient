@@ -33,36 +33,37 @@ Item {
                 RangeSlider {
                     id: horizontalRangeSlider
                     wheelEnabled: true
-                    second.value: 1.0
-                    first.value: 0.0
-                    //width: 200
-                    /*Label {
-                        id: label
-                        horizontalAlignment: "AlignHCenter"
-                        text: qsTr("Horizontal Range")
-                    }*/
+                    first.value: Luna.screen.left
+                    second.value: Luna.screen.right
+
+                    first.onPositionChanged: {
+                        Luna.screen.left = first.position;
+                    }
+                    second.onPositionChanged: {
+                        Luna.screen.right = second.position;
+                    }
                 }
 
                 RangeSlider {
                     id: verticalRangeSlider
-                    wheelEnabled: true
-                    second.value: 0.75
-                    first.value: 0.25
                     orientation: "Vertical"
                     Layout.fillHeight: true
-                    /*Label {
-                        id: label2
-                        rotation: -90
-                        text: qsTr("Vertical Range")
-                    }*/
+                    wheelEnabled: true
+                    first.value: Luna.screen.bottom
+                    second.value: Luna.screen.top
+
+                    first.onPositionChanged: {
+                        Luna.screen.bottom = first.position;
+                    }
+                    second.onPositionChanged: {
+                        Luna.screen.top = second.position;
+                    }
                 }
 
                 Rectangle {
                     id: colorButton
                     height: 200
                     width: 200
-                    //Layout.fillHeight: true
-                    //Layout.fillWidth: true
                     color: "white"
                 }
             }
@@ -73,12 +74,17 @@ Item {
             ColumnLayout {
                 SpinBox {
                     editable: true
-                    value: 1
+                    value: Luna.screen.depth
+                    from: 1
+                    to: 30
                     stepSize: 1
                     Label {
                         id: depthLabel
                         font.pixelSize: 12
                         text: qsTr("Depth")
+                    }
+                    onValueChanged: {
+                        Luna.screen.depth = value
                     }
                 }
 

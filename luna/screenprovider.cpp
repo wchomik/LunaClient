@@ -34,6 +34,7 @@ namespace luna {
 
     void ScreenProvider::setDepth(int depth)
     {
+        std::lock_guard<std::mutex> lock(mMutex);
         mDepthWeights = Eigen::ArrayXf::LinSpaced(depth, 1.0f, 1.0f / depth);
         mDepthWeights = mDepthWeights / mDepthWeights.sum();
     }
@@ -41,13 +42,18 @@ namespace luna {
     bool ScreenProvider::getData(std::vector<PixelStrand> & pixelStrands,
                                  std::vector<ColorScalar> & whiteStrands)
     {
+        std::lock_guard<std::mutex> lock(mMutex);
         bool hasNextFrame = mScreenCapture.getNextFrame();
         if(hasNextFrame){
             Color * pixels = mScreenCapture.pixels().data();
+            const int maxIndex = mScreenCapture.pixels().columns() * mScreenCapture.pixels().rows();
             const int depth = mDepthWeights.rows();
             for(int i = 0; i < mMappings.size(); ++i){
                 PixelStrand & strand = pixelStrands[i];
                 const PixelMapping & mapping = mMappings[i];
+                for(int x = 0; x < mapping.startPixel; ++x){
+                    strand[x].setZero();
+                }
                 for(int x = mapping.startPixel; x < mapping.endPixel; ++x){
                     Color color(0, 0, 0, 0);
                     for(int d = 0; d < depth; ++d){
@@ -57,6 +63,9 @@ namespace luna {
                         color += pixels[index] * mDepthWeights[d];
                     }
                     strand[x] = color;
+                }
+                for(int x = mapping.endPixel; x < strand.size(); ++x){
+                    strand[x].setZero();
                 }
             }
             for(auto & white : whiteStrands){
@@ -114,17 +123,20 @@ namespace luna {
 
     void ScreenProvider::configureScreenCaptureAndMappings()
     {
-        const int width = mStrandWidth * (mBounds.xHigh - mBounds.xLow);
-        const int height = mStrandHeight * (mBounds.yHigh - mBounds.yLow);
+        std::lock_guard<std::mutex> lock(mMutex);
 
-        const int xLow = std::lround(mStrandWidth * mBounds.xLow);
-        const int xHigh = std::lround(mStrandWidth * mBounds.xHigh);
-        const int yLow = std::lround(mStrandHeight * mBounds.yLow);
-        const int yHigh = std::lround(mStrandHeight * mBounds.yHigh);
+        const int xLow = lround(mStrandWidth * mBounds.xLow);
+        const int xHigh = lround(mStrandWidth * mBounds.xHigh);
+        const int yLow = lround(mStrandHeight * mBounds.yLow);
+        const int yHigh = lround(mStrandHeight * mBounds.yHigh);
+
+        const int width = xHigh - xLow;
+        const int height = yHigh - yLow;
 
         const int colStride = 1;
         const int rowStride = width;
 
+        if(width <= mDepthWeights.rows() || height <= 0) return;
 
         mScreenCapture.configure(width, height);
 

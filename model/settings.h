@@ -9,6 +9,7 @@
 #include "../luna/provider.h"
 
 #include "lightprovidersettings.h"
+#include "screenprovidersettings.h"
 
 namespace model {
     class Settings : public QObject
@@ -18,7 +19,8 @@ namespace model {
         Q_PROPERTY(qreal greenBalance READ greenBalance WRITE setGreenBalance NOTIFY greenBalanceChanged)
         Q_PROPERTY(qreal blueBalance READ blueBalance WRITE setBlueBalance NOTIFY blueBalanceChanged)
         Q_PROPERTY(QString provider WRITE setProvider)
-        Q_PROPERTY(LightProviderSettings * light READ light)
+        Q_PROPERTY(LightProviderSettings * light READ light NOTIFY lightChanged)
+        Q_PROPERTY(ScreenProviderSettings * screen READ screen NOTIFY screenChanged)
     public:
         explicit Settings(QObject *parent = 0);
         ~Settings();
@@ -34,17 +36,21 @@ namespace model {
         void setBlueBalance(qreal value);
 
         LightProviderSettings * light(){ return &mLightSettings; }
+        ScreenProviderSettings * screen(){ return &mScreenSettings; }
     signals:
         void redBalanceChanged();
         void greenBalanceChanged();
         void blueBalanceChanged();
         void lightColorChanged();
+        void lightChanged();
+        void screenChanged();
     private:
         void updateWhiteBalance();
 
         luna::Manager * mManager;
         QSettings mSettings;
         LightProviderSettings mLightSettings;
+        ScreenProviderSettings mScreenSettings;
 
         qreal mRedBalance;
         qreal mGreenBalance;
