@@ -37,8 +37,8 @@ namespace luna { namespace audio {
     void AudioChannelProcessor::process(PixelStrand & output, const Eigen::ArrayXf & input)
     {
         constexpr float maxDecay = 0.5f;
-        constexpr float maxRise = 1.0f;
-        constexpr float smoothingFactor = 0.97f;
+        constexpr float maxRise = 2.0f;
+        constexpr float smoothingFactor = 0.99f;
         constexpr float decayRate = 0.05f;
         constexpr float offset = 1.0f;
 
@@ -53,7 +53,7 @@ namespace luna { namespace audio {
         }
         mFilteredNorm = mFilteredNorm * smoothingFactor + norm * (1 - smoothingFactor);
 
-        mSums = (((mSums + 1e-12f).log() - mFilteredNorm + offset) * mLogMul);
+        mSums = (((mSums + 1e-12f).log() - mFilteredNorm) * mLogMul + offset);
 
         mFilter = (mFilter - decayRate).max(mSums).max(0);
         for(int i = 0; i < mCount; ++i){

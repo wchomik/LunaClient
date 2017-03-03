@@ -25,12 +25,13 @@ namespace luna {
         bool getData(std::vector<PixelStrand> & pixelStrands,
                     std::vector<ColorScalar> & whiteStrands) override;
 
-        void setDepth(int depth);
-    private slots:
-        void onDataReady();
+        void setDepth(int value);
+        void setBrightness(float value);
+        void setGamma(float value);
     private:
         void readStrandDimensions();
         void configureScreenCaptureAndMappings();
+        void makeDepthWeights();
 
         graphics::ScreenCapture mScreenCapture;
 
@@ -44,9 +45,12 @@ namespace luna {
 
         std::vector<PixelMapping> mMappings;
         Eigen::ArrayXf mDepthWeights;
+        int mDepth;
         int mStrandWidth;
         int mStrandHeight;
         ScreenBounds mBounds;
+        float mBrightness;
+        float mGamma;
         Config mLunaConfig;
         std::mutex mMutex;
     public:

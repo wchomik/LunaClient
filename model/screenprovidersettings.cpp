@@ -14,6 +14,8 @@ namespace model {
         mSettings->setValue("screen/left", mLeft);
         mSettings->setValue("screen/right", mRight);
         mSettings->setValue("screen/depth", mDepth);
+        mSettings->setValue("screen/brightness", mBrightness);
+        mSettings->setValue("screen/gamma", mGamma);
     }
 
     void ScreenProviderSettings::setTop(const qreal value)
@@ -61,6 +63,24 @@ namespace model {
         }
     }
 
+    void ScreenProviderSettings::setBrightness(const qreal value)
+    {
+        if(value != mBrightness){
+            mBrightness = value;
+            applyBrightness();
+            brightnessChanged();
+        }
+    }
+
+    void ScreenProviderSettings::setGamma(const qreal value)
+    {
+        if(value != mGamma){
+            mGamma = value;
+            applyGamma();
+            gammaChanged();
+        }
+    }
+
     void ScreenProviderSettings::applyBounds()
     {
         if(mProvider){
@@ -80,11 +100,27 @@ namespace model {
         }
     }
 
+    void ScreenProviderSettings::applyBrightness()
+    {
+        if(mProvider){
+            mProvider->setBrightness(static_cast<float>(mBrightness));
+        }
+    }
+
+    void ScreenProviderSettings::applyGamma()
+    {
+        if(mProvider){
+            mProvider->setGamma(mGamma * 2);
+        }
+    }
+
     void ScreenProviderSettings::setProvider(luna::Provider *provider)
     {
         mProvider = dynamic_cast<luna::ScreenProvider *>(provider);
         applyBounds();
         applyDepth();
+        applyBrightness();
+        applyGamma();
     }
 
     void ScreenProviderSettings::setSettings(QSettings *settings)
@@ -95,8 +131,12 @@ namespace model {
         mLeft = mSettings->value("screen/left", (qreal)0).toReal();
         mRight = mSettings->value("screen/right", (qreal)1).toReal();
         mDepth = mSettings->value("screen/depth", (qreal)5).toReal();
+        mBrightness = mSettings->value("screen/brightness", (qreal)1).toReal();
+        mGamma = mSettings->value("screen/gamma", (qreal)0.5).toReal();
         applyBounds();
         applyDepth();
+        applyBrightness();
+        applyGamma();
     }
 }
 

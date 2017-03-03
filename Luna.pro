@@ -1,6 +1,6 @@
 QT += qml quick
 
-CONFIG += c++11
+CONFIG += c++14
 
 INCLUDEPATH += $$(EIGEN)
 

@@ -1,9 +1,6 @@
 #ifndef SCREENCAPTURE_H
 #define SCREENCAPTURE_H
 
-#include <QThread>
-#include <QMutex>
-
 #include <d3d11.h>
 #include <dxgi1_5.h>
 #include <wrl.h>
@@ -56,7 +53,6 @@ namespace luna { namespace graphics {
         Microsoft::WRL::ComPtr<ID3D11Texture2D> mCPUTexture;
 
         Array2D<Color> mPixels;
-        QMutex mDuplicationMutex;
     };
 }}
 

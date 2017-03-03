@@ -6,7 +6,9 @@
 
 namespace luna {
     ScreenProvider::ScreenProvider() :
-        mBounds{0, 1, 0, 1}
+        mBounds{0, 1, 0, 1},
+        mBrightness(1.0f),
+        mGamma(1.0f)
     {
         setDepth(20);
     }
@@ -32,11 +34,23 @@ namespace luna {
         return ColorMode::colorSpaceConversion;
     }
 
-    void ScreenProvider::setDepth(int depth)
+    void ScreenProvider::setDepth(int value)
     {
+        mDepth = value;
         std::lock_guard<std::mutex> lock(mMutex);
-        mDepthWeights = Eigen::ArrayXf::LinSpaced(depth, 1.0f, 1.0f / depth);
-        mDepthWeights = mDepthWeights / mDepthWeights.sum();
+        makeDepthWeights();
+    }
+
+    void ScreenProvider::setBrightness(float value)
+    {
+        mBrightness = value;
+        std::lock_guard<std::mutex> lock(mMutex);
+        makeDepthWeights();
+    }
+
+    void ScreenProvider::setGamma(float value)
+    {
+        mGamma = value;
     }
 
     bool ScreenProvider::getData(std::vector<PixelStrand> & pixelStrands,
@@ -60,7 +74,7 @@ namespace luna {
                         int index = mapping.begin +
                                     x * mapping.stride +
                                     d * mapping.depthStride;
-                        color += pixels[index] * mDepthWeights[d];
+                        color += (pixels[index].array().pow(mGamma).matrix() * mDepthWeights[d]);
                     }
                     strand[x] = color;
                 }
@@ -179,6 +193,12 @@ namespace luna {
             pm.begin -= pm.startPixel * pm.stride;
             mMappings.push_back(pm);
         }
+    }
+
+    void ScreenProvider::makeDepthWeights()
+    {
+        mDepthWeights = Eigen::ArrayXf::LinSpaced(mDepth, 1.0f, 1.0f / mDepth);
+        mDepthWeights = mDepthWeights * (mBrightness / mDepthWeights.sum());
     }
 
 }

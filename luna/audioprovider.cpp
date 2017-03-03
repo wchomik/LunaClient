@@ -20,7 +20,7 @@ namespace luna {
         audioConf.fLow = 100;
         audioConf.fHigh = 16000;
         audioConf.sampleRate = mAudioCapture.sampleRate();
-        audioConf.unitsPerDecade = 8.0f;
+        audioConf.unitsPerDecade = 4.0f;
         mProcessors.clear();
         for(int i = 0; i < channelCount; ++i){
             audioConf.count = config.pixelStrands[i].count;

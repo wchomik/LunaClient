@@ -5,9 +5,6 @@ import QtQuick.Layouts 1.3
 Item {
     id: displayItem
     width: window.width
-    /*anchors.right: parent.right
-    anchors.left: parent.left
-    anchors.top: parent.top*/
 
     RowLayout{
         anchors.right: parent.right
@@ -88,45 +85,25 @@ Item {
                     }
                 }
 
-                SpinBox {
-                    id: spinSharpnessRadius
-                    editable: true
-                    value: 0
+                Slider {
+                    value: Luna.screen.brightness
+                    onPositionChanged: {
+                        Luna.screen.brightness = position;
+                    }
+
                     Label {
-                        id: sharpLabel
-                        font.pixelSize: 12
-                        text: qsTr("Sharpeness radius")
+                        text: qsTr("Brightness")
                     }
                 }
 
-                SpinBox {
-                    id: spinSharpnessStep
-                    editable: true
-                    from: 0
-                    value: 110
-                    to: 100 * 100
-                    stepSize: 100
-
-                    property int decimals: 2
-                    property real realValue: value / 100
-
-                    validator: DoubleValidator {
-                        bottom: Math.min(spinSharpnessStep.from, spinSharpnessStep.to)
-                        top:  Math.max(spinSharpnessStep.from, spinSharpnessStep.to)
-                    }
-
-                    textFromValue: function(value, locale) {
-                        return Number(value / 100).toLocaleString(locale, 'f', spinSharpnessStep.decimals)
-                    }
-
-                    valueFromText: function(text, locale) {
-                        return Number.fromLocaleString(locale, text) * 100
+                Slider {
+                    value: Luna.screen.gamma
+                    onPositionChanged: {
+                        Luna.screen.gamma = position;
                     }
 
                     Label {
-                        id: stepLabel
-                        font.pixelSize: 12
-                        text: qsTr("Sharpeness steps")
+                        text: qsTr("Gamma")
                     }
                 }
             }

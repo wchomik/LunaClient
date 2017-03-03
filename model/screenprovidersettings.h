@@ -14,6 +14,8 @@ namespace model {
         Q_PROPERTY(qreal left READ left WRITE setLeft NOTIFY leftChanged)
         Q_PROPERTY(qreal right READ right WRITE setRight NOTIFY rightChanged)
         Q_PROPERTY(qreal depth READ depth WRITE setDepth NOTIFY depthChanged)
+        Q_PROPERTY(qreal brightness READ brightness WRITE setBrightness NOTIFY brightnessChanged)
+        Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
     public:
         ScreenProviderSettings(QObject * parent = nullptr);
         ~ScreenProviderSettings();
@@ -25,28 +27,37 @@ namespace model {
         qreal left() const { return mLeft; }
         qreal right() const { return mRight; }
         qreal depth() const { return mDepth; }
+        qreal brightness() const { return mBrightness; }
+        qreal gamma() const { return mGamma; }
 
         void setTop(const qreal value);
         void setBottom(const qreal value);
         void setLeft(const qreal value);
         void setRight(const qreal value);
         void setDepth(const qreal value);
-
+        void setBrightness(const qreal value);
+        void setGamma(const qreal value);
     signals:
         void topChanged();
         void bottomChanged();
         void leftChanged();
         void rightChanged();
         void depthChanged();
+        void brightnessChanged();
+        void gammaChanged();
     private:
         void applyBounds();
         void applyDepth();
+        void applyBrightness();
+        void applyGamma();
 
         qreal mTop;
         qreal mBottom;
         qreal mLeft;
         qreal mRight;
         qreal mDepth;
+        qreal mBrightness;
+        qreal mGamma;
 
         luna::ScreenProvider * mProvider;
     };

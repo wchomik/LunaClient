@@ -8,6 +8,7 @@
 #include <iostream>
 
 namespace ch = std::chrono;
+using namespace std::chrono_literals;
 
 namespace luna {
     Manager::Manager() :
@@ -47,7 +48,7 @@ namespace luna {
     void Manager::threadFunc()
     {
         ch::steady_clock::time_point nextPeriod =
-            ch::steady_clock::now() + ch::milliseconds(10);
+            ch::steady_clock::now() + 10ms;
         while(mShouldRun){
             mLuna.update();
             if(mLuna.isConnected()){
@@ -60,15 +61,13 @@ namespace luna {
                 }
             }
 
-            ch::steady_clock::duration diff;
-            while((diff = ch::steady_clock::now() - nextPeriod) < ch::milliseconds(-1)){
+            if(nextPeriod < ch::steady_clock::now())
+                nextPeriod = ch::steady_clock::now();
+            else while(ch::steady_clock::now() < nextPeriod - 1ms){
                 std::this_thread::sleep_until(nextPeriod);
             }
 
-            if(nextPeriod - ch::steady_clock::now() > ch::milliseconds(0))
-                nextPeriod = ch::steady_clock::now();
-
-            nextPeriod += ch::milliseconds(10);
+            nextPeriod += 10ms;
         }
     }
 
