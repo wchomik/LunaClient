@@ -13,7 +13,7 @@ namespace luna {
 
     ColorMode IlluminationProvider::colorMode(class ColorSpace *)
     {
-        return ColorMode::fullWhiteBalanced;
+        return ColorMode::fullDirect;
     }
 
     bool IlluminationProvider::getData(std::vector<PixelStrand> &pixelStrands, std::vector<ColorScalar> &whiteStrands)

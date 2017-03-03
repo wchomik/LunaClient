@@ -1,5 +1,4 @@
 QT += qml quick
-QT += network
 
 CONFIG += c++11
 

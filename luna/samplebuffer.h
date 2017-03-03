@@ -1,7 +1,7 @@
 #ifndef SAMPLEBUFFER_H
 #define SAMPLEBUFFER_H
 
-
+#include <memory>
 
 namespace luna {
     class SampleBuffer
@@ -20,15 +20,14 @@ namespace luna {
         };
     public:
         SampleBuffer(size_t size, int channelCount);
-        ~SampleBuffer();
         size_t size() { return mSize; }
-        void readFrom(float * src, size_t sampleCount);
+        void readFrom(const float * src, size_t sampleCount);
         Channel channel(int index);
 
     private:
         size_t mSize;
         int mChannelCount;
-        float * const mData;
+        std::unique_ptr<float[]> mData;
         float * mPtr;
         float * begin(){ return mPtr; }
         float * end(){ return mPtr + mSize; }

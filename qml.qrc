@@ -47,5 +47,6 @@
         <file>AsasdadForm.ui.qml</file>
         <file>images/cinema-screen.jpeg</file>
         <file>images/screen.png</file>
+        <file>Audio.qml</file>
     </qresource>
 </RCC>

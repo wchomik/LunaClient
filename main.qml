@@ -223,7 +223,7 @@ ApplicationWindow {
                     }
                 }
 
-                Light {
+                Audio {
                     ListView.onCurrentItemChanged: {
                         if(ListView.isCurrentItem){ Luna.provider = "Audio" }
                     }
