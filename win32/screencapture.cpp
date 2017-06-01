@@ -171,26 +171,27 @@ namespace luna { namespace graphics {
         HRESULT hr;
         bool acquired = false;
         ComPtr<IDXGIResource> desktopResource;
-        {
-            if(mHasOutput){
-                DXGI_OUTDUPL_FRAME_INFO frameInfo;
-                hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
-                if(DXGI_ERROR_WAIT_TIMEOUT == hr){
-                    // TODO fix this nested return
-                    return false;
-                }else if(FAILED(hr)){
-                    mHasOutput = false;
-                }else{
-                    acquired = true;
-                }
+
+        if(mHasOutput){
+            DXGI_OUTDUPL_FRAME_INFO frameInfo;
+            hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
+            if(DXGI_ERROR_WAIT_TIMEOUT == hr){
+                acquired = false;
+            }else if(FAILED(hr)){
+                mHasOutput = false;
             }else{
-                mHasOutput = obtainScreen();
+                acquired = true;
             }
+        }else{
+            mHasOutput = obtainScreen();
         }
+
         if(acquired){
             processFrame(desktopResource);
             hr = mOutputDuplication->ReleaseFrame();
-            testHR(hr);
+            if(S_OK != hr){
+                acquired = false;
+            }
         }
         return acquired;
     }
@@ -235,7 +236,11 @@ namespace luna { namespace graphics {
 
     void ScreenCapture::blitTexture(ID3D11RenderTargetView * dst, ID3D11ShaderResourceView * src, ID3D11SamplerState * sampler, size_t width, size_t height)
     {
-        D3D11_VIEWPORT viewport{0, 0, width, height, 0, 1};
+        D3D11_VIEWPORT viewport{
+            0, 0,
+            static_cast<float>(width), static_cast<float>(height),
+            0, 1
+        };
         mContext->OMSetRenderTargets(1, &dst, nullptr);
         mContext->PSSetShaderResources(0, 1, &src);
         mContext->PSSetSamplers(0, 1, &sampler);
