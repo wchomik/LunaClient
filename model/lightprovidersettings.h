@@ -16,6 +16,7 @@ namespace model {
         Q_OBJECT
         Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
         Q_PROPERTY(qreal whiteness READ whiteness WRITE setWhiteness NOTIFY whitenessChanged)
+        Q_PROPERTY(bool colorFromTheme READ colorFromTheme WRITE setColorFromTheme NOTIFY colorFromThemeChanged)
     public:
         LightProviderSettings(QObject * parent);
         ~LightProviderSettings();
@@ -27,17 +28,23 @@ namespace model {
 
         qreal whiteness(){ return mWhiteness; }
         void setWhiteness(const qreal value);
+
+        bool colorFromTheme() { return mColorFromTheme; }
+        void setColorFromTheme(const bool value);
     signals:
         void colorChanged();
         void whitenessChanged();
+        void colorFromThemeChanged();
     private:
         void applyColor();
         void applyWhiteness();
+        void applyColorFromTheme();
 
         luna::IlluminationProvider * mProvider;
 
         QColor mColor;
         qreal mWhiteness;
+        bool mColorFromTheme;
     };
 }
 

@@ -12,6 +12,11 @@ namespace luna {
     typedef std::vector<Color, Eigen::aligned_allocator<Color>> PixelStrand;
 
     void hsvToRgb(Color & ret, const Color & hsv);
+    Color uintToColor(uint32_t integer);
+
+    inline Color lerp(const Color & a, const Color & b, float t) {
+        return a * (1.0f - t) + b * t;
+    }
 }
 
 #endif // COLORUTILS_H

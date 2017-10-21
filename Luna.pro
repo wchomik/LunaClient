@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     model/settings.cpp \
     luna/connection.cpp \
     model/lightprovidersettings.cpp \
-    model/screenprovidersettings.cpp
+    model/screenprovidersettings.cpp \
+    win32/themecolor.cpp
 
 RESOURCES += qml.qrc
 
@@ -71,7 +72,8 @@ HEADERS += \
     luna/connection.h \
     model/providersettings.h \
     model/lightprovidersettings.h \
-    model/screenprovidersettings.h
+    model/screenprovidersettings.h \
+    win32/themecolor.h
 
 LIBS += -L$$PWD/Lib/
 

@@ -53,6 +53,10 @@ namespace luna {
             mLuna.update();
             if(mLuna.isConnected()){
                 std::lock_guard<std::mutex> guard(mMutex);
+
+                mCurrentColorMode = mActiveProvider->colorMode(&mSourceColorSpace);
+                updateColorMode();
+
                 if(mActiveProvider->getData(mPixelStrands, mWhiteStands)){
                     for(PixelStrand & strand : mPixelStrands){
                         mColorProcessor->process(strand);
@@ -76,8 +80,6 @@ namespace luna {
         mActiveProvider = mProviderFactory.make(mCurrentProviderType);
         if(mActiveProvider){
             mActiveProvider->configure(mLunaConfig);
-            mCurrentColorMode = mActiveProvider->colorMode(&mSourceColorSpace);
-            updateColorMode();
         }
     }
 

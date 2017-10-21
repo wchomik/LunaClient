@@ -8,12 +8,22 @@ Item {
     id: lightItem
     width: window.width
     property color color
+    property real whiteness
+    property bool colorFromTheme
     onColorChanged: {
         Luna.light.color = color;
+    }
+    onWhitenessChanged: {
+        Luna.light.whiteness = whiteness;
+    }
+    onColorFromThemeChanged: {
+        Luna.light.colorFromTheme = colorFromTheme;
     }
 
     Component.onCompleted: {
         color = Luna.light.color;
+        whiteness = Luna.light.whiteness;
+        colorFromTheme = Luna.light.colorFromTheme;
     }
 
     ColorDialog {
@@ -38,11 +48,24 @@ Item {
         anchors.top: parent.top
         columns: 2
 
+        CheckBox {
+            id: colorFromThemeCheckBox
+            Layout.fillWidth:  true
+            checked: lightItem.colorFromTheme
+            Label {
+                text: qsTr("Get color from system theme")
+            }
+            onCheckedChanged: {
+                if(lightItem.colorFromTheme !== checked){
+                    lightItem.colorFromTheme = checked
+                }
+            }
+        }
+
         Rectangle {
             id: colorButton
-            width: 100
-            Layout.fillHeight: true
-            Layout.rowSpan: 3
+            height: 20
+            Layout.fillWidth: true
             color: lightItem.color
             MouseArea {
                 anchors.fill: parent
@@ -56,7 +79,6 @@ Item {
             value: lightItem.color.r
             wheelEnabled: true
             Label {
-                id: label
                 text: qsTr("Red")
             }
             onPositionChanged: {
@@ -72,7 +94,6 @@ Item {
             value: lightItem.color.g
             wheelEnabled: true
             Label {
-                id: label1
                 text: qsTr("Green")
             }
             onPositionChanged: {
@@ -88,7 +109,6 @@ Item {
             value: lightItem.color.b
             wheelEnabled: true
             Label {
-                id: label2
                 text: qsTr("Blue")
             }
             onPositionChanged: {
@@ -98,15 +118,19 @@ Item {
             }
         }
 
-        /*Slider {
-            id: brightnessSlider
+        Slider {
+            id: whitenessSlider
             Layout.fillWidth: true
-            value: 0.5
-
+            value: lightItem.whiteness
+            wheelEnabled: true
             Label {
-                id: label3
-                text: qsTr("Brightness")
+                text: qsTr("White")
             }
-        }*/
+            onPositionChanged: {
+                if(lightItem.whiteness !== position){
+                    lightItem.whiteness = position
+                }
+            }
+        }
     }
 }
