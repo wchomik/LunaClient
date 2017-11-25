@@ -1,58 +1,52 @@
 #include "illuminationprovider.h"
 
-#include "config.h"
+#include <cstdint>
+#include "strand.h"
 
 namespace luna {
     IlluminationProvider::IlluminationProvider() :
         mColor(1, 1, 1, 1),
         mWhiteness(0.0),
-        mColorFromTheme(false),
         mSmoothColor(0.0, 0.0, 0.0, 0.0),
-        mSmoothWhiteness(0.0f)
-    {}
-
-    void IlluminationProvider::configure(const Config &){}
-
-
-    ColorMode IlluminationProvider::colorMode(class ColorSpace *)
+        mColorFromTheme(false)
     {
-        ColorMode ret = ColorMode::fullDirect;
-        if(mColorFromTheme) ret = ColorMode::colorSpaceConversion;
-        return ret;
+        mScreenToXyzTransformation =
+            ColorSpace::combine(
+                ColorSpace::sRGB(),
+                ColorSpace::cieXyz());
+
+        mScreenToXyzTransformation =
+            ColorSpace::combine(
+                ColorSpace::rec2020(),
+                ColorSpace::cieXyz());
     }
 
-    bool IlluminationProvider::getData(std::vector<PixelStrand> &pixelStrands, std::vector<ColorScalar> &whiteStrands)
+    void IlluminationProvider::getData(std::vector<Strand *> &strands)
     {
         Color lightColor;
-        float lightWhiteness;
         if(mColorFromTheme) {
-            lightColor = mThemeColor.get();
-            lightWhiteness = 0;
+            lightColor = mScreenToXyzTransformation * mThemeColor.get();
+            lightColor[3] = 0.0f;
         } else {
-            lightColor = mColor;
-            lightWhiteness = mWhiteness;
+            lightColor = mScreenToXyzTransformation * mColor;
+            lightColor[3] = mWhiteness;
         }
 
-        float smoothScale = 0.02f;
+        const float smoothScale = 0.05f;
         mSmoothColor = lerp(mSmoothColor, lightColor, smoothScale);
-        mSmoothWhiteness = mSmoothWhiteness * (1.0f - smoothScale)
-            + lightWhiteness * smoothScale;
 
-        for(PixelStrand & strand : pixelStrands){
-            for(Color & pixel : strand){
-                pixel = mSmoothColor;
+        for(auto && strand : strands) {
+            strand->setSpaceConversionColorMode(ColorSpace::cieXyz());
+            uint32_t count = strand->config().count;
+            Color * pixels = strand->pixels();
+            for(uint32_t i = 0; i < count; ++i) {
+                pixels[i] = mSmoothColor;
             }
         }
-        for(ColorScalar & strand : whiteStrands){
-            strand = mSmoothWhiteness;
-        }
-        return true;
     }
 
     void IlluminationProvider::shouldGetColorFromTheme(const bool value) {
         if(value != mColorFromTheme) {
-            //mSmoothWhiteness = mWhiteness;
-            //mSmoothColor = mColor;
             mColorFromTheme = value;
         }
     }

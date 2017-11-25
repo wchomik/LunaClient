@@ -66,9 +66,9 @@ namespace luna { namespace audio {
         testHR(hr);
     }
 
-    int AudioCapture::readSamples(luna::SampleBuffer * buffer)
+    uint32_t AudioCapture::readSamples(luna::SampleBuffer * buffer)
     {
-        int total = 0;
+        uint32_t total = 0;
         HRESULT hr;
         uint32_t packetSize;
         hr = mAudioCaptureClient->GetNextPacketSize(&packetSize);

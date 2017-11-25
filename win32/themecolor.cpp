@@ -1,43 +1,31 @@
 #include "themecolor.h"
-/*
-[DllImport("uxtheme.dll", EntryPoint = "#95")]
-   public static extern uint GetImmersiveColorFromColorSetEx(uint dwImmersiveColorSet, uint dwImmersiveColorType, bool bIgnoreHighContrast, uint dwHighContrastCacheMode);
-   [DllImport("uxtheme.dll", EntryPoint = "#96")]
-   public static extern uint GetImmersiveColorTypeFromName(IntPtr pName);
-   [DllImport("uxtheme.dll", EntryPoint = "#98")]
-   public static extern int GetImmersiveUserColorSetPreference(bool bForceCheckRegistry, bool bSkipCheckOnFail);
-
-   public Color GetThemeColor()
-   {
-       var colorSetEx = GetImmersiveColorFromColorSetEx(
-           (uint)GetImmersiveUserColorSetPreference(false, false),
-           GetImmersiveColorTypeFromName(Marshal.StringToHGlobalUni("ImmersiveStartSelectionBackground")),
-           false, 0);
-
-       var colour = Color.FromArgb((byte)((0xFF000000 & colorSetEx) >> 24), (byte)(0x000000FF & colorSetEx),
-           (byte)((0x0000FF00 & colorSetEx) >> 8), (byte)((0x00FF0000 & colorSetEx) >> 16));
-
-       return colour;
-   }*/
 
 #include <QtDebug>
 
 const wchar_t * const dllName = L"uxtheme.dll";
+
 const char * const GetImmersiveColorFromColorSetEx_Name =
     reinterpret_cast<char *>(95);
+
 const char * const GetImmersiveColorTypeFromName_Name =
     reinterpret_cast<char *>(96);
+
 const char * const GetImmersiveUserColorSetPreference_Name =
     reinterpret_cast<char *>(98);
 
 namespace luna {
     ThemeColor::ThemeColor() :
+        allOk(true),
         mDllHandle(0),
         GetImmersiveColorFromColorSetEx(nullptr),
         GetImmersiveColorTypeFromName(nullptr),
         GetImmersiveUserColorSetPreference(nullptr)
     {
         mDllHandle = LoadLibrary(dllName);
+        if(NULL == mDllHandle) {
+            allOk = false;
+            return;
+        }
 
         GetImmersiveColorFromColorSetEx =
             reinterpret_cast<GetImmersiveColorFromColorSetEx_t *>(
@@ -45,11 +33,21 @@ namespace luna {
                     mDllHandle,
                     GetImmersiveColorFromColorSetEx_Name));
 
+        if(nullptr == GetImmersiveColorFromColorSetEx) {
+            allOk = false;
+            return;
+        }
+
         GetImmersiveColorTypeFromName =
             reinterpret_cast<GetImmersiveColorTypeFromName_t *>(
                 GetProcAddress(
                     mDllHandle,
                     GetImmersiveColorTypeFromName_Name));
+
+        if(nullptr == GetImmersiveColorTypeFromName) {
+            allOk = false;
+            return;
+        }
 
         GetImmersiveUserColorSetPreference =
             reinterpret_cast<GetImmersiveUserColorSetPreference_t *>(
@@ -57,14 +55,23 @@ namespace luna {
                     mDllHandle,
                     GetImmersiveUserColorSetPreference_Name));
 
+        if(nullptr == GetImmersiveUserColorSetPreference) {
+            allOk = false;
+            return;
+        }
+
         mColorType = GetImmersiveColorTypeFromName(L"ImmersiveStartSelectionBackground");
     }
 
     ThemeColor::~ThemeColor() {
-        FreeLibrary(mDllHandle);
+        if(NULL != mDllHandle) FreeLibrary(mDllHandle);
     }
 
     Color ThemeColor::get() {
+        if(!allOk) {
+            return Color(1.0, 0.0, 1.0, 0.0);
+        }
+
         unsigned int userColorSet = GetImmersiveUserColorSetPreference(false, false);
         unsigned int color = GetImmersiveColorFromColorSetEx(
             userColorSet,

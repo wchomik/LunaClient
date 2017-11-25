@@ -1,6 +1,7 @@
 #ifndef AUDIOCAPTURE_H
 #define AUDIOCAPTURE_H
 
+#include <cstdint>
 #include <memory>
 
 #include <wrl.h>
@@ -16,8 +17,8 @@ namespace luna { namespace audio {
         ~AudioCapture();
 
         void configure(int outputChannels);
-        int sampleRate(){ return mFormat->nSamplesPerSec; }
-        int readSamples(luna::SampleBuffer * buffer);
+        uint32_t sampleRate(){ return mFormat->nSamplesPerSec; }
+        uint32_t readSamples(luna::SampleBuffer * buffer);
     private:
         void panic(const char *msg = "");
 

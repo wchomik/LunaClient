@@ -15,58 +15,6 @@ Item {
         anchors.topMargin: 20
 
         GroupBox {
-            GridLayout {
-                id: gridLayout
-                anchors.right: parent.right
-                anchors.left: parent.left
-                anchors.top: parent.top
-
-                columns: 2
-
-                Pane{
-
-                }
-
-                RangeSlider {
-                    id: horizontalRangeSlider
-                    wheelEnabled: true
-                    first.value: Luna.screen.left
-                    second.value: Luna.screen.right
-
-                    first.onPositionChanged: {
-                        Luna.screen.left = first.position;
-                    }
-                    second.onPositionChanged: {
-                        Luna.screen.right = second.position;
-                    }
-                }
-
-                RangeSlider {
-                    id: verticalRangeSlider
-                    orientation: "Vertical"
-                    Layout.fillHeight: true
-                    wheelEnabled: true
-                    first.value: Luna.screen.bottom
-                    second.value: Luna.screen.top
-
-                    first.onPositionChanged: {
-                        Luna.screen.bottom = first.position;
-                    }
-                    second.onPositionChanged: {
-                        Luna.screen.top = second.position;
-                    }
-                }
-
-                Rectangle {
-                    id: colorButton
-                    height: 200
-                    width: 200
-                    color: "white"
-                }
-            }
-        }
-
-        GroupBox {
             Layout.fillHeight: true
             ColumnLayout {
                 SpinBox {

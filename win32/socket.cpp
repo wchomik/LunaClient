@@ -1,5 +1,6 @@
 #include "socket.h"
 
+#include "binarystream.h"
 
 namespace net {
     Address::Address(uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint16_t port)
@@ -28,6 +29,14 @@ namespace net {
             addr = INADDR_NONE;
         }
         mSockAddrIn.sin_addr.s_addr = htonl (addr);
+    }
+
+    void Address::setPort(uint16_t port) {
+        mSockAddrIn.sin_port = htons(port);
+    }
+
+    bool Address::operator==(const Address & other) const {
+        return (0 == memcmp(&mSockAddrIn, &(other.mSockAddrIn), sizeof(sockaddr_in)));
     }
 
     std::ostream & net::operator<<(std::ostream & stream, const Address & address)
@@ -92,6 +101,10 @@ namespace net {
         return ::send(mSocket, reinterpret_cast<const char *>(buffer), bufferSize, 0);
     }
 
+    int SocketUdp::send(const BinaryStream & stream) {
+        return send(stream.data(), static_cast<int>(stream.count()));
+    }
+
     int SocketUdp::sendTo(const void *buffer, int bufferSize, Address & address)
     {
         return ::sendto(mSocket, reinterpret_cast<const char *>(buffer), bufferSize, 0, address.asSockAddr(), address.size());
@@ -105,9 +118,13 @@ namespace net {
 
     bool SocketUdp::setReceiveTimeout(int microseconds)
     {
-        DWORD tv = microseconds / 1000;
-        return (setsockopt(mSocket, SOL_SOCKET, SO_RCVTIMEO,
-                           (const char *) &tv, sizeof(DWORD)) == 0);
+        DWORD tv = static_cast<DWORD>(microseconds / 1000);
+        int retVal = setsockopt(mSocket,
+                                SOL_SOCKET,
+                                SO_RCVTIMEO,
+                                reinterpret_cast<const char *>(&tv),
+                                sizeof(DWORD));
+        return retVal == 0;
     }
 
     bool SocketUdp::setBroadcast(bool enableBroadcast)

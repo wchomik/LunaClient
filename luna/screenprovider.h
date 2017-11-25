@@ -19,18 +19,12 @@ namespace luna {
     public:
         ScreenProvider();
 
-        void configure(const Config & config) override;
-        void setBounds(const ScreenBounds & bounds);
-        ColorMode colorMode(class ColorSpace * outColorSpace) override;
-        bool getData(std::vector<PixelStrand> & pixelStrands,
-                    std::vector<ColorScalar> & whiteStrands) override;
+        void getData(std::vector<Strand *> &strands) override;
 
         void setDepth(int value);
         void setBrightness(float value);
         void setGamma(float value);
     private:
-        void readStrandDimensions();
-        void configureScreenCaptureAndMappings();
         void makeDepthWeights();
 
         graphics::ScreenCapture mScreenCapture;
@@ -51,7 +45,6 @@ namespace luna {
         ScreenBounds mBounds;
         float mBrightness;
         float mGamma;
-        Config mLunaConfig;
         std::mutex mMutex;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW

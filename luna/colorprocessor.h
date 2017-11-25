@@ -8,19 +8,19 @@ namespace luna {
     class ColorProcessor
     {
     public:
-        virtual ~ColorProcessor(){}
-        virtual void process(PixelStrand & strand) = 0;
+        virtual ~ColorProcessor();
+        virtual void process(ColorVector & strand) = 0;
     };
 
     class ColorProcessorDirect : public ColorProcessor {
     public:
-        void process(PixelStrand & strand) override;
+        void process(ColorVector & strand) override;
     };
 
     class ColorProcessorWhiteBalanced : public ColorProcessor {
     public:
         ColorProcessorWhiteBalanced(const Color & scale);
-        void process(PixelStrand & strand) override;
+        void process(ColorVector & strand) override;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     private:
         Color mScale;
@@ -29,7 +29,7 @@ namespace luna {
     class ColorProcessorColorSpace : public ColorProcessor {
     public:
         ColorProcessorColorSpace(const ColorSpace & src, const ColorSpace & dst, const Color & scale);
-        void process(PixelStrand & strand) override;
+        void process(ColorVector & strand) override;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     private:
         ColorSpace::Transformation mTransformation;

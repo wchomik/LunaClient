@@ -1,6 +1,7 @@
 #ifndef AUDIOCHANNELPROCESSOR_H
 #define AUDIOCHANNELPROCESSOR_H
 
+#include <cstdint>
 #include <vector>
 #include <Eigen/Core>
 
@@ -9,10 +10,10 @@
 namespace luna { namespace audio {
     struct AudioChannelConfig{
         class FFT * fft = nullptr;
-        int count = 0;
+        uint32_t count = 0;
         float fLow = 1;
         float fHigh = 1;
-        int sampleRate = 48000;
+        uint32_t sampleRate = 48000;
         float logarithmBase = 10;
         float unitsPerDecade = 2;
     };
@@ -21,14 +22,14 @@ namespace luna { namespace audio {
     {
     public:
         explicit AudioChannelProcessor(const AudioChannelConfig & config);
-        void process(PixelStrand & output, const Eigen::ArrayXf & input);
+        void process(Color * output, const Eigen::ArrayXf & input);
     private:
-        class FFT * const mFFT;
-        const int mCount;
-        std::vector<int> mIndices;
+        class FFT * mFFT;
+        const uint32_t mCount;
+        std::vector<uint32_t> mIndices;
         Eigen::ArrayXf mSums;
         Eigen::ArrayXf mFilter;
-        PixelStrand mBaseColors;
+        ColorVector mBaseColors;
         const float mLogMul;
         float mFilteredNorm;
     };

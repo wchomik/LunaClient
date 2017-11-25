@@ -15,14 +15,17 @@ SOURCES += main.cpp \
     luna/illuminationprovider.cpp \
     luna/manager.cpp \
     luna/provider.cpp \
-    luna/worker.cpp \
     luna/screenprovider.cpp \
     luna/providerfactory.cpp \
     model/settings.cpp \
-    luna/connection.cpp \
     model/lightprovidersettings.cpp \
     model/screenprovidersettings.cpp \
-    win32/themecolor.cpp
+    win32/themecolor.cpp \
+    luna/effectprovider.cpp \
+    luna/strand.cpp \
+    luna/connector.cpp \
+    luna/connectorudplegacy.cpp \
+    binarystream.cpp
 
 RESOURCES += qml.qrc
 
@@ -51,7 +54,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     luna/array2d.h \
     luna/audiochannelprocessor.h \
-    luna/binarystream.h \
     luna/colormode.h \
     luna/colorprocessor.h \
     luna/colorspace.h \
@@ -60,7 +62,6 @@ HEADERS += \
     luna/samplebuffer.h \
     luna/providerfactory.h \
     luna/screenprovider.h \
-    luna/worker.h \
     luna/provider.h \
     luna/manager.h \
     luna/illuminationprovider.h \
@@ -69,11 +70,15 @@ HEADERS += \
     model/settings.h \
     delegate.h \
     event.h \
-    luna/connection.h \
     model/providersettings.h \
     model/lightprovidersettings.h \
     model/screenprovidersettings.h \
-    win32/themecolor.h
+    win32/themecolor.h \
+    luna/effectprovider.h \
+    luna/strand.h \
+    luna/connector.h \
+    luna/connectorudplegacy.h \
+    binarystream.h
 
 LIBS += -L$$PWD/Lib/
 
@@ -93,5 +98,9 @@ win32 {
         win32/shaders.h \
         win32/socket.h
     LIBS += -lmmdevapi -lole32 -llibfftw3f-3 -ld3d11 -ldxgi -lWs2_32
-    DEFINES += _USE_MATH_DEFINES
+    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 }
+
+DISTFILES += \
+    win32/PassThrough.hlsl \
+    win32/VertexShader.hlsl

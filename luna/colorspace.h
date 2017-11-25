@@ -16,6 +16,7 @@ namespace luna {
 
         typedef Eigen::Matrix<ColorScalar, 4, 4> Transformation;
 
+        static const ColorSpace & cieXyz();
         static const ColorSpace & sRGB();
         static const ColorSpace & rec2020();
         static const ColorSpace & ws2812();

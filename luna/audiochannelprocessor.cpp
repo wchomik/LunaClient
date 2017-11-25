@@ -28,13 +28,13 @@ namespace luna { namespace audio {
 
         for(int i = 0; i < mCount; ++i){
             float f = step * i;
-            hsvToRgb(mBaseColors[i], Color(f, 1, 1, 0));
+            mBaseColors[i] = hsvToRgb(Color(f, 1, 1, 0));
         }
 
         mFilter.setZero();
     }
 
-    void AudioChannelProcessor::process(PixelStrand & output, const Eigen::ArrayXf & input)
+    void AudioChannelProcessor::process(Color * output, const Eigen::ArrayXf & input)
     {
         constexpr float maxDecay = 0.5f;
         constexpr float maxRise = 2.0f;

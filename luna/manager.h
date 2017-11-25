@@ -6,7 +6,6 @@
 #include <mutex>
 
 #include <Eigen/Core>
-#include "connection.h"
 #include "colorutils.h"
 #include "colormode.h"
 #include "colorspace.h"
@@ -34,23 +33,20 @@ namespace luna {
         void connected();
 
         // color management
-        Color mWhiteBalance;
+        /*Color mWhiteBalance;
         ColorSpace mSourceColorSpace;
         ColorSpace mDestinationColorSpace;
         ColorMode mCurrentColorMode;
-        std::unique_ptr<class ColorProcessor> mColorProcessor;
+        std::unique_ptr<class ColorProcessor> mColorProcessor;*/
 
         // connection management
-        Connection mLuna;
+        std::vector<std::unique_ptr<class Connector>> mConnectors;
 
         // provider management
         ProviderFactory mProviderFactory;
         ProviderType mCurrentProviderType;
         std::unique_ptr<class Provider> mActiveProvider;
-        Config mLunaConfig;
 
-        std::vector<PixelStrand> mPixelStrands;
-        std::vector<ColorScalar> mWhiteStands;
 
         // concurrency
         bool mShouldRun;

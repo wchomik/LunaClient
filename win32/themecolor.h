@@ -2,10 +2,9 @@
 #define THEMECOLOR_H
 
 #include "luna/colorutils.h"
-#include <windows.h>
+#include <Windows.h>
 
 namespace luna {
-
     class ThemeColor
     {
     public:
@@ -24,9 +23,11 @@ namespace luna {
             unsigned int __stdcall (const wchar_t * pName);
 
         using GetImmersiveUserColorSetPreference_t =
-            int __stdcall (
+            unsigned int __stdcall (
                 bool bForceCheckRegistry,
                 bool bSkipCheckOnFail);
+
+        bool allOk;
 
         HINSTANCE mDllHandle;
 

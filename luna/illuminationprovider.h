@@ -3,17 +3,15 @@
 
 #include "provider.h"
 #include "themecolor.h"
+#include "colorspace.h"
 
 namespace luna {
     class IlluminationProvider : public Provider
     {
     public:
         IlluminationProvider();
-        virtual ~IlluminationProvider(){}
-        void configure(const struct Config & config) override;
-        ColorMode colorMode(class ColorSpace * outColorSpace) override;
-        bool getData(std::vector<PixelStrand> & pixelStrands,
-                    std::vector<ColorScalar> & whiteStrands) override;
+
+        void getData(std::vector<class Strand *> & strands) override;
 
         void color(const Color & value){ mColor = value; }
         void whiteness(ColorScalar value){ mWhiteness = value; }
@@ -24,12 +22,15 @@ namespace luna {
         ColorScalar mWhiteness;
 
         Color mSmoothColor;
-        ColorScalar mSmoothWhiteness;
 
         ThemeColor mThemeColor;
         bool mColorFromTheme;
     private:
         void update();
+        ColorSpace::Transformation mScreenToXyzTransformation;
+        ColorSpace::Transformation mColorToXyzTransformation;
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
 }
 
