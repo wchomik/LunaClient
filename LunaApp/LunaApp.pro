@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS += Luna
+SUBDIRS += Luna \
+    LightPlugin \
+    LunaCore

@@ -25,7 +25,7 @@ public:
     template<R(*function)(Args...)>
     void subscribe() {
         mDelegates.emplace_back();
-        mDelegates.back().bind<function>(p);
+        mDelegates.back().bind<function>(nullptr);
     }
 
     bool unsubscribe(const DelT & delegate) {

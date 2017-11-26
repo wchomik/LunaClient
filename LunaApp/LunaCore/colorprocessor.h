@@ -1,11 +1,12 @@
 #ifndef COLORPROCESSOR_H
 #define COLORPROCESSOR_H
 
+#include "lunacore_global.h"
 #include "colorutils.h"
 #include "colorspace.h"
 
 namespace luna {
-    class ColorProcessor
+    class LUNACORESHARED_EXPORT ColorProcessor
     {
     public:
         virtual ~ColorProcessor();

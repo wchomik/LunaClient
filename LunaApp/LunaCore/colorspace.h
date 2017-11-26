@@ -3,10 +3,11 @@
 
 #include <Eigen/Core>
 
+#include "lunacore_global.h"
 #include "colorutils.h"
 
 namespace luna {
-    class ColorSpace
+    class LUNACORESHARED_EXPORT ColorSpace
     {
         typedef Eigen::Matrix<ColorScalar, 2, 1> cieCoord_t;
     public:

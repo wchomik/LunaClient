@@ -5,6 +5,10 @@
 
 #include <chrono>
 #include <cstdint>
+#include <memory>
+#include <vector>
+
+#include "lunacore_global.h"
 #include "binarystream.h"
 #include "socket.h"
 #include "colorutils.h"
@@ -13,7 +17,7 @@
 
 
 namespace luna {
-    class HostUDPLegacy : public Host {
+    class LUNACORESHARED_EXPORT HostUDPLegacy : public Host {
     public:
         HostUDPLegacy(net::Address address);
         virtual ~HostUDPLegacy();
@@ -36,11 +40,13 @@ namespace luna {
         BinaryStream mBuffer;
     };
 
-    class ConnectorUDPLegacy : public Connector
+    class LUNACORESHARED_EXPORT ConnectorUDPLegacy : public Connector
     {
     public:
         ConnectorUDPLegacy(uint16_t port);
+        ConnectorUDPLegacy(const ConnectorUDPLegacy &) = delete;
         virtual ~ConnectorUDPLegacy();
+        ConnectorUDPLegacy & operator=(const ConnectorUDPLegacy &) = delete;
         void update() override;
         void getHosts(std::vector<Host *> & hosts) override;
     private:

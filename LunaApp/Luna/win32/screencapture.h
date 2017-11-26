@@ -5,8 +5,7 @@
 #include <dxgi1_5.h>
 #include <wrl.h>
 
-#include "luna/colorutils.h"
-#include "luna/array2d.h"
+#include <colorutils.h>
 
 namespace luna { namespace graphics {
     class ScreenCapture

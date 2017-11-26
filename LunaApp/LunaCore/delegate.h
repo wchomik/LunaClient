@@ -2,6 +2,7 @@
 #define DELEGATE_H
 
 #include <cstddef>
+#include <utility>
 
 template<typename F>
 class Delegate;

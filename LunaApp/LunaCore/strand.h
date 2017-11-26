@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 #include <cstdint>
+
+#include "lunacore_global.h"
 #include "colormode.h"
 #include "colorutils.h"
 #include "colorspace.h"
@@ -18,10 +20,10 @@ namespace luna {
         rgb = red | green | blue,
     };
 
-    class Strand
+    class LUNACORESHARED_EXPORT Strand
     {
     public:
-        struct Config {
+        struct LUNACORESHARED_EXPORT Config {
             ColorSpace colorSpace;
             ColorChannels colorChannels;
             Color whiteBalance;

@@ -4,10 +4,12 @@
 #include <vector>
 #include <memory>
 #include <string>
+
+#include "lunacore_global.h"
 #include "event.h"
 
 namespace luna {
-    class Host {
+    class LUNACORESHARED_EXPORT Host {
     public:
         virtual ~Host();
         virtual std::string displayName() const = 0;
@@ -19,7 +21,7 @@ namespace luna {
     protected:
     };
 
-    class Connector {
+    class LUNACORESHARED_EXPORT Connector {
     public:
         virtual ~Connector();
         virtual void update() = 0;

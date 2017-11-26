@@ -3,8 +3,6 @@
 #include <chrono>
 #include <iostream>
 
-#include "providerfactory.h"
-
 #include "colorprocessor.h"
 #include "connector.h"
 #include "connectorudplegacy.h"
@@ -16,11 +14,9 @@ using namespace std::chrono_literals;
 
 namespace luna {
     Manager::Manager() :
-        mCurrentProviderType(ProviderType::illumination),
         mShouldRun(true)
     {
         mConnectors.emplace_back(std::make_unique<ConnectorUDPLegacy>(1234));
-        activateProvider();
 
         mThread = std::thread([this](){ threadFunc(); });
     }
@@ -36,11 +32,10 @@ namespace luna {
         //mWhiteBalance = color;
     }
 
-    void Manager::setMode(ProviderType type) {
+    void Manager::setProvider(std::unique_ptr<Provider> &&provider)
+    {
         std::lock_guard<std::mutex> guard(mMutex);
-        deactivateProvider();
-        mCurrentProviderType = type;
-        activateProvider();
+        mActiveProvider = std::move(provider);
     }
 
     void Manager::threadFunc()
@@ -77,15 +72,4 @@ namespace luna {
             nextPeriod += 10ms;
         }
     }
-
-    void Manager::activateProvider() {
-        mActiveProvider = mProviderFactory.make(mCurrentProviderType);
-    }
-
-    void Manager::deactivateProvider() {
-        if(mActiveProvider){
-            mActiveProvider = std::unique_ptr<Provider>();
-        }
-    }
-
 }

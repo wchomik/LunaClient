@@ -6,14 +6,16 @@
 #include <mutex>
 
 #include <Eigen/Core>
+
+
+#include "lunacore_global.h"
 #include "colorutils.h"
 #include "colormode.h"
 #include "colorspace.h"
-#include "providerfactory.h"
-#include "config.h"
+#include "provider.h"
 
 namespace luna {
-    class Manager
+    class LUNACORESHARED_EXPORT Manager
     {
     public:
         Manager();
@@ -21,23 +23,15 @@ namespace luna {
         Manager(const Manager &) = delete;
         Manager & operator=(const Manager &) = delete;
 
-        Provider * currentProvider(){ return mActiveProvider.get(); }
-
         void setWhiteBalance(const Color & color);
-        void setMode(luna::ProviderType type);
+        void setProvider(std::unique_ptr<Provider> && provider);
     private:
         void threadFunc();
         void updateColorMode();
-        void activateProvider();
-        void deactivateProvider();
         void connected();
 
-        // connection management
         std::vector<std::unique_ptr<class Connector>> mConnectors;
 
-        // provider management
-        ProviderFactory mProviderFactory;
-        ProviderType mCurrentProviderType;
         std::unique_ptr<class Provider> mActiveProvider;
 
         // concurrency

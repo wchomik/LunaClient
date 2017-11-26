@@ -1,15 +1,15 @@
 #include "settings.h"
 
-#include "luna/colorutils.h"
+#include <colorutils.h>
 
 namespace model {
     Settings::Settings(QObject *parent) :
         QObject(parent),
         mSettings(QSettings::IniFormat, QSettings::UserScope, "Luna", "Luna", this),
-        mLightSettings(this),
-        mScreenSettings(this)
+        mLightSettings(this)//,
+        //mScreenSettings(this)
     {
-        qRegisterMetaType<luna::ProviderType>("luna::ProviderType");
+        //qRegisterMetaType<luna::ProviderType>("luna::ProviderType");
     }
 
     Settings::~Settings()
@@ -28,7 +28,7 @@ namespace model {
         mBlueBalance = mSettings.value("blueBalance", 1.0).toReal();
         updateWhiteBalance();
         mLightSettings.setSettings(&mSettings);
-        mScreenSettings.setSettings(&mSettings);
+        //mScreenSettings.setSettings(&mSettings);
     }
 
     void Settings::setRedBalance(qreal value)
@@ -60,7 +60,7 @@ namespace model {
 
     void Settings::setProvider(const QString &name)
     {
-        luna::ProviderType type = luna::ProviderType::none;
+        /*luna::ProviderType type = luna::ProviderType::none;
         if(name == "Light"){
             type = luna::ProviderType::illumination;
         }else if(name == "Display"){
@@ -75,7 +75,7 @@ namespace model {
         luna::Provider * provider = mManager->currentProvider();
 
         mLightSettings.setProvider(provider);
-        mScreenSettings.setProvider(provider);
+        mScreenSettings.setProvider(provider);*/
     }
 
     void Settings::updateWhiteBalance()

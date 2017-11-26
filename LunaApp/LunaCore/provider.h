@@ -2,8 +2,10 @@
 #define LUNAPROVIDER_H
 
 #include <vector>
+#include "lunacore_global.h"
+
 namespace luna {
-    class Provider
+    class LUNACORESHARED_EXPORT Provider
     {
     public:
         virtual ~Provider();

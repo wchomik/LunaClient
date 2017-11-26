@@ -7,10 +7,12 @@
 
 #include <ostream>
 
+#include "lunacore_global.h"
+
 class BinaryStream;
 
 namespace net {
-    class Address{
+    class LUNACORESHARED_EXPORT Address{
     public:
         enum SpecialAddress{
             ANY,
@@ -35,7 +37,7 @@ namespace net {
         bool operator!=(const Address & other) const { return !((*this) == other); }
     };
 
-    class SocketUdp
+    class LUNACORESHARED_EXPORT SocketUdp
     {
     public:
         SocketUdp();

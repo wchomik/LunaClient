@@ -1,7 +1,7 @@
 #ifndef THEMECOLOR_H
 #define THEMECOLOR_H
 
-#include "luna/colorutils.h"
+#include <colorutils.h>
 #include <Windows.h>
 
 namespace luna {

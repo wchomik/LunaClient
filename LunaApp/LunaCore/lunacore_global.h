@@ -1,0 +1,12 @@
+#ifndef LUNACORE_GLOBAL_H
+#define LUNACORE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(LUNACORE_LIBRARY)
+#  define LUNACORESHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define LUNACORESHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LUNACORE_GLOBAL_H
