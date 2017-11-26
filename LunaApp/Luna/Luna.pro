@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     luna/strand.cpp \
     luna/connector.cpp \
     luna/connectorudplegacy.cpp \
-    binarystream.cpp
+    binarystream.cpp \
+    luna/lunaplugin.cpp
 
 RESOURCES += qml.qrc
 
@@ -78,7 +79,8 @@ HEADERS += \
     luna/strand.h \
     luna/connector.h \
     luna/connectorudplegacy.h \
-    binarystream.h
+    binarystream.h \
+    luna/lunaplugin.h
 
 LIBS += -L$$PWD/Lib/
 
