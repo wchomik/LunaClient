@@ -6,6 +6,8 @@
 #include <Eigen/Core>
 #include <Eigen/StdVector>
 
+#include <QColor>
+
 #include "lunacore_global.h"
 
 namespace luna {
@@ -35,6 +37,9 @@ namespace luna {
 
     void LUNACORESHARED_EXPORT clampColorToGamutRelative(Color & color);
     void LUNACORESHARED_EXPORT clampColorToGamutAbsolute(Color & color);
+
+    Color LUNACORESHARED_EXPORT qColorToColor(const QColor & source);
+    QColor LUNACORESHARED_EXPORT colorToQColor(const Color & source);
 }
 
 #endif // COLORUTILS_H

@@ -24,7 +24,7 @@ namespace luna {
         Manager & operator=(const Manager &) = delete;
 
         void setWhiteBalance(const Color & color);
-        void setProvider(std::unique_ptr<Provider> && provider);
+        void setProvider(std::shared_ptr<Provider> provider);
     private:
         void threadFunc();
         void updateColorMode();
@@ -32,7 +32,7 @@ namespace luna {
 
         std::vector<std::unique_ptr<class Connector>> mConnectors;
 
-        std::unique_ptr<class Provider> mActiveProvider;
+        std::shared_ptr<class Provider> mActiveProvider;
 
         // concurrency
         bool mShouldRun;

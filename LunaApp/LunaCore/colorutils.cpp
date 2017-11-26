@@ -139,4 +139,12 @@ namespace luna {
         return Color(x, y, 1 - x - y, 0);
     }
 
+    Color qColorToColor(const QColor &source) {
+        return Color(source.redF(), source.greenF(), source.blueF(), source.alphaF());
+    }
+
+    QColor colorToQColor(const Color &source) {
+        return QColor(source.x(), source.y(), source.z(), source.w());
+    }
+
 }

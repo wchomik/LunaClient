@@ -1,4 +1,5 @@
 QT       -= gui
+QT += quick
 
 TARGET = LunaCore
 TEMPLATE = lib

@@ -1,6 +1,6 @@
 #include "lightprovidersettings.h"
 
-#include "../luna/illuminationprovider.h"
+#include "../luna/LightProvider.h"
 
 namespace model {
     LightProviderSettings::LightProviderSettings(QObject *parent) :
@@ -20,7 +20,7 @@ namespace model {
 
     void LightProviderSettings::setProvider(luna::Provider * provider)
     {
-        mProvider = dynamic_cast<luna::IlluminationProvider *>(provider);
+        mProvider = dynamic_cast<luna::LightProvider *>(provider);
         applyColor();
         applyWhiteness();
         applyColorFromTheme();

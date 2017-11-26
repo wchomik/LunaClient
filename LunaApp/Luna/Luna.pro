@@ -6,19 +6,12 @@ INCLUDEPATH += $$(EIGEN)
 
 SOURCES += \
     main.cpp \
-    luna/illuminationprovider.cpp \
-    model/settings.cpp \
-    model/lightprovidersettings.cpp \
-    win32/themecolor.cpp
+    luna.cpp
 
 RESOURCES += qml.qrc
 
 HEADERS += \
-    luna/illuminationprovider.h \
-    model/settings.h \
-    model/providersettings.h \
-    model/lightprovidersettings.h \
-    win32/themecolor.h
+    luna.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

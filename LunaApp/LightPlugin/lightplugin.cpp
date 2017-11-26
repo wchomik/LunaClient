@@ -1,19 +1,32 @@
 #include "lightplugin.h"
 
+#include "lightprovider.h"
 
-LightPlugin::LightPlugin()
-{
-}
+namespace luna {
+    LightPlugin::LightPlugin() :
+        mModel(std::make_unique<LightModel>())
+    {
+    }
+
+    LightPlugin::~LightPlugin() {}
 
 
-QString LightPlugin::name() {
-    return QString("Light");
-}
+    QString LightPlugin::name() {
+        return QString("Light");
+    }
 
-/*QQuickItem * LightPlugin::createItem() {
-    return nullptr;
-}*/
+    std::shared_ptr<luna::Provider> LightPlugin::createProvider() {
+        // TODO use make_shared and fix alignment issue
+        std::shared_ptr<luna::LightProvider> ret(new luna::LightProvider());
+        mModel->provider(ret);
+        return ret;
+    }
 
-std::unique_ptr<luna::Provider> LightPlugin::createProvider() {
-    return nullptr;
+    QObject * LightPlugin::model() {
+        return mModel.get();
+    }
+
+    QUrl LightPlugin::itemUrl() {
+        return QUrl("qrc:/LightPlugin.qml");
+    }
 }

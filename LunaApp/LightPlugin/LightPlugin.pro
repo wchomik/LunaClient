@@ -2,11 +2,18 @@ TEMPLATE = lib
 CONFIG += plugin
 QT += qml \
       quick
+
 INCLUDEPATH += ../LunaCore
+INCLUDEPATH += $$(EIGEN)
+
 HEADERS += \
-        lightplugin.h
+    lightplugin.h \
+    lightprovider.h \
+    lightmodel.h
 SOURCES += \
-        lightplugin.cpp
+    lightplugin.cpp \
+    lightprovider.cpp \
+    lightmodel.cpp
 TARGET = $$qtLibraryTarget(LightPlugin)
 DESTDIR = ../plugins
 
@@ -20,6 +27,13 @@ DISTFILES +=
 
 RESOURCES += \
     qml.qrc
+
+win32 {
+    HEADERS += \
+        win32/themecolor.h
+    SOURCES += \
+        win32/themecolor.cpp
+}
 
 #LunaCore
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../LunaCore/release/ -lLunaCore

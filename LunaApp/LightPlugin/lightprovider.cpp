@@ -1,10 +1,10 @@
-#include "illuminationprovider.h"
+#include "lightprovider.h"
 
 #include <cstdint>
-#include "strand.h"
+#include <strand.h>
 
 namespace luna {
-    IlluminationProvider::IlluminationProvider() :
+    LightProvider::LightProvider() :
         mColor(1, 1, 1, 1),
         mWhiteness(0.0),
         mSmoothColor(0.0, 0.0, 0.0, 0.0),
@@ -21,10 +21,9 @@ namespace luna {
                 ColorSpace::cieXyz());
     }
 
-    void IlluminationProvider::getData(std::vector<Strand *> &strands)
-    {
+    void LightProvider::getData(std::vector<Strand *> & strands) {
         Color lightColor;
-        if(mColorFromTheme) {
+        if (mColorFromTheme) {
             lightColor = mScreenToXyzTransformation * mThemeColor.get();
             lightColor[3] = 0.0f;
         } else {
@@ -35,18 +34,38 @@ namespace luna {
         const float smoothScale = 0.05f;
         mSmoothColor = lerp(mSmoothColor, lightColor, smoothScale);
 
-        for(auto && strand : strands) {
+        for (auto && strand : strands) {
             strand->setSpaceConversionColorMode(ColorSpace::cieXyz());
             uint32_t count = strand->config().count;
             Color * pixels = strand->pixels();
-            for(uint32_t i = 0; i < count; ++i) {
+            for (uint32_t i = 0; i < count; ++i) {
                 pixels[i] = mSmoothColor;
             }
         }
     }
 
-    void IlluminationProvider::shouldGetColorFromTheme(const bool value) {
-        if(value != mColorFromTheme) {
+    Color LightProvider::color() {
+        return mColor;
+    }
+
+    void LightProvider::color(const Color & value) {
+        mColor = value;
+    }
+
+    ColorScalar LightProvider::whiteness() {
+        return mWhiteness;
+    }
+
+    void LightProvider::whiteness(ColorScalar value) {
+        mWhiteness = value;
+    }
+
+    bool LightProvider::shouldGetColorFromTheme() {
+        return mColorFromTheme;
+    }
+
+    void LightProvider::shouldGetColorFromTheme(const bool value) {
+        if (value != mColorFromTheme) {
             mColorFromTheme = value;
         }
     }

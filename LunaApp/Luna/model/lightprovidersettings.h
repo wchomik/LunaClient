@@ -6,7 +6,7 @@
 #include <QColor>
 
 namespace luna {
-    class IlluminationProvider;
+    class LightProvider;
 }
 
 
@@ -40,7 +40,7 @@ namespace model {
         void applyWhiteness();
         void applyColorFromTheme();
 
-        luna::IlluminationProvider * mProvider;
+        luna::LightProvider * mProvider;
 
         QColor mColor;
         qreal mWhiteness;

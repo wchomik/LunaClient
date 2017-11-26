@@ -5,7 +5,7 @@
 
 #include <QString>
 #include <QtPlugin>
-//#include <QQuickItem>
+#include <QQuickItem>
 
 #include "lunacore_global.h"
 #include "provider.h"
@@ -16,8 +16,12 @@ namespace luna {
         virtual ~LunaPlugin();
 
         virtual QString name() = 0;
-        //virtual QQuickItem * createItem() = 0;
-        virtual std::unique_ptr<Provider> createProvider() = 0;
+        virtual std::shared_ptr<Provider> createProvider() = 0;
+        virtual QObject * model() = 0;
+
+        QQuickItem * createItem(QQmlEngine * engine);
+    protected:
+        virtual QUrl itemUrl() = 0;
     };
 }
 

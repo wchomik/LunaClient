@@ -1,21 +1,24 @@
-#ifndef LUNAILLUMINATIONPROVIDER_H
-#define LUNAILLUMINATIONPROVIDER_H
+#ifndef LUNALightProvider_H
+#define LUNALightProvider_H
 
-#include "provider.h"
-#include "themecolor.h"
-#include "colorspace.h"
+#include <provider.h>
+#include <colorspace.h>
+#include "win32/themecolor.h"
 
 namespace luna {
-    class IlluminationProvider : public Provider
-    {
+    class LightProvider : public Provider {
     public:
-        IlluminationProvider();
+        LightProvider();
 
         void getData(std::vector<class Strand *> & strands) override;
 
-        void color(const Color & value){ mColor = value; }
-        void whiteness(ColorScalar value){ mWhiteness = value; }
+        Color color();
+        void color(const Color & value);
 
+        ColorScalar whiteness();
+        void whiteness(ColorScalar value);
+
+        bool shouldGetColorFromTheme();
         void shouldGetColorFromTheme(const bool value);
     private:
         Color mColor;
@@ -34,4 +37,4 @@ namespace luna {
     };
 }
 
-#endif // LUNAILLUMINATIONPROVIDER_H
+#endif // LUNALightProvider_H

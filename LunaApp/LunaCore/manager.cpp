@@ -32,10 +32,10 @@ namespace luna {
         //mWhiteBalance = color;
     }
 
-    void Manager::setProvider(std::unique_ptr<Provider> &&provider)
+    void Manager::setProvider(std::shared_ptr<Provider> provider)
     {
         std::lock_guard<std::mutex> guard(mMutex);
-        mActiveProvider = std::move(provider);
+        mActiveProvider = provider;
     }
 
     void Manager::threadFunc()

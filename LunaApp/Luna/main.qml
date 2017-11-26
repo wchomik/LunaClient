@@ -15,6 +15,7 @@ ApplicationWindow {
     minimumHeight: 800
     title: qsTr("Luna")
 
+
     header: ToolBar {
         RowLayout {
             spacing: 20
@@ -104,155 +105,30 @@ ApplicationWindow {
             anchors.rightMargin: 20
             anchors.leftMargin: 20
             transformOrigin: Item.Center
-
-            GroupBox {
-                id: whiteBalanceGroupBox
-                width: 200
-                height: 200
-                title: qsTr("White Balance")
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-                ColumnLayout {
-                    id: columnLayout1
-                    transformOrigin: Item.Center
-                    anchors.fill: parent
-
-                    Slider {
-                        id: redWhiteBalanceslider
-                        Layout.fillWidth: true
-                        value: Luna.redBalance
-                        wheelEnabled: true
-                        onPositionChanged: {
-                            Luna.redBalance = position
-                        }
-
-                        Label {
-                            id: label
-                            text: qsTr("Red")
-                        }
-                    }
-
-                    Slider {
-                        id: greenWhiteBalanceslider
-                        Layout.fillWidth: true
-                        value: Luna.greenBalance
-                        wheelEnabled: true
-                        onPositionChanged: {
-                            Luna.greenBalance = position
-                        }
-
-                        Label {
-                            id: label1
-                            text: qsTr("Green")
-                        }
-                    }
-
-                    Slider {
-                        id: blueWhiteBalanceslider
-                        Layout.fillWidth: true
-                        value: Luna.blueBalance
-                        wheelEnabled: true
-                        onPositionChanged: {
-                            Luna.blueBalance = position
-                        }
-
-                        Label {
-                            id: label2
-                            text: qsTr("Blue")
-                        }
-                    }
-                }
-            }
-
-            GroupBox {
-                id: gammaGroupBox
-                width: 200
-                height: 200
-                Layout.fillWidth: true
-                title: qsTr("Gamma")
-                wheelEnabled: true
-
-                Slider {
-                    id: gammaSlider
-                    anchors.fill: parent
-                    value: 0.5
-                }
-            }
         }
     }
 
-    ColumnLayout {
-        anchors.right: parent.right
-        anchors.left: parent.left
-        anchors.top: parent.top
+    SwipeView {
+        anchors.fill: parent
+        id: swipeView
+        objectName: "swipeView"
+        currentIndex: tabBar.currentIndex
 
+        signal indexChanged(int index)
 
-        Rectangle {
-            anchors.rightMargin: 20
-            anchors.leftMargin: 20
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            width: parent.width
-            height: width * 9 /16
-            Image {
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                asynchronous : true
-                width: parent.width
-                fillMode: Image.PreserveAspectFit
-                source: "qrc:images/screen.png"
-            }
-        }
-        Pane {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            SwipeView {
-                Layout.fillWidth: true
-                id: swipeView
-                currentIndex: tabBar.currentIndex
+        onCurrentIndexChanged: indexChanged(currentIndex)
 
-                Light {
-                    ListView.onCurrentItemChanged: {
-                        if(ListView.isCurrentItem){ Luna.provider = "Light" }
-                    }
-                }
-
-                Display {
-                    ListView.onCurrentItemChanged: {
-                        if(ListView.isCurrentItem){ Luna.provider = "Display" }
-                    }
-                }
-
-                Audio {
-                    ListView.onCurrentItemChanged: {
-                        if(ListView.isCurrentItem){ Luna.provider = "Audio" }
-                    }
-                }
-
-                EffectsTab {
-                    ListView.onCurrentItemChanged: {
-                        if(ListView.isCurrentItem){ Luna.provider = "Effects" }
-                    }
-                }
-            }
-        }
     }
 
     footer: TabBar {
         id: tabBar
+        objectName: "tabBar"
         currentIndex: swipeView.currentIndex
-
         TabButton {
-            text: qsTr("Light")
+            text: "Dupa"
         }
         TabButton {
-            text: qsTr("Display")
-        }
-        TabButton {
-            text: qsTr("Audio")
-        }
-        TabButton {
-            text: qsTr("Effects")
+            text: "Dupa2"
         }
     }
 }
