@@ -14,6 +14,7 @@ namespace luna {
     Color rgbToHsv(const Color & rgb);
     Color hsvToRgb(const Color & hsv);
     Color uintToColor(uint32_t integer);
+    Color temperatureToCieXyz(float temperature);
 
     inline Color lerp(const Color & a, const Color & b, float t) {
         return a * (1.0f - t) + b * t;

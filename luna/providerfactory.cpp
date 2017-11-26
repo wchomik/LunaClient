@@ -3,6 +3,7 @@
 #include "illuminationprovider.h"
 #include "audioprovider.h"
 #include "screenprovider.h"
+#include "effectprovider.h"
 
 namespace luna {
     template<typename T>
@@ -22,6 +23,7 @@ namespace luna {
         mCreators[ProviderType::illumination] = createProvider<IlluminationProvider>;
         mCreators[ProviderType::audio] = createProvider<AudioProvider>;
         mCreators[ProviderType::screen] = createProvider<ScreenProvider>;
+        mCreators[ProviderType::effects] = createProvider<EffectProvider>;
     }
 
     std::unique_ptr<Provider> ProviderFactory::make(ProviderType type)

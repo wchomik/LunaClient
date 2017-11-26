@@ -92,4 +92,51 @@ namespace luna {
         color = color.cwiseMax(minimum).cwiseMin(maximum);
     }
 
+    Color temperatureToCieXyz(float t)
+    {
+        float t2 = t * t;
+        float t3 = t2 * t;
+
+        float x, y;
+        if(t <= 4000.0f)
+        {
+            x = -0.2661239e9f / t3
+                -0.2343580e6f / t2
+                + 0.8776956e3f / t
+                + 0.179910f;
+        }else
+        {
+            x = -3.0258469e9f / t3
+                + 2.1070379e6f / t2
+                + 0.2226347e3f / t
+                + 0.240390f;
+        }
+
+        float x2 = x * x;
+        float x3 = x2 * x;
+
+        if(t < 2222.0f)
+        {
+            y = -1.1063814f * x3
+                - 1.34811020f * x2
+                + 2.18555832f * x
+                - 0.20219683f;
+        }else if(t < 4000.0f)
+        {
+            y = -0.9549476f * x3
+                - 1.37418593f * x2
+                + 2.09137015f * x
+                - 0.16748867f;
+        }
+        else
+        {
+            y = 3.0817580f * x3
+                - 5.8733867f * x2
+                + 3.75112997f * x
+                - 0.37001483f;
+        }
+
+        return Color(x, y, 1 - x - y, 0);
+    }
+
 }

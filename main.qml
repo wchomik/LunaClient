@@ -228,6 +228,12 @@ ApplicationWindow {
                         if(ListView.isCurrentItem){ Luna.provider = "Audio" }
                     }
                 }
+
+                EffectsTab {
+                    ListView.onCurrentItemChanged: {
+                        if(ListView.isCurrentItem){ Luna.provider = "Effects" }
+                    }
+                }
             }
         }
     }
@@ -244,6 +250,9 @@ ApplicationWindow {
         }
         TabButton {
             text: qsTr("Audio")
+        }
+        TabButton {
+            text: qsTr("Effects")
         }
     }
 }

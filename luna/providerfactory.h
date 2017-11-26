@@ -11,6 +11,7 @@ namespace luna {
         illumination,
         audio,
         screen,
+        effects,
         //fire,
         //plasma,
         COUNT,

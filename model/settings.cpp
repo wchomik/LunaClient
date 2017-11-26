@@ -67,6 +67,8 @@ namespace model {
             type = luna::ProviderType::screen;
         }else if(name == "Audio"){
             type = luna::ProviderType::audio;
+        }else if(name == "Effects"){
+            type = luna::ProviderType::effects;
         }
         mManager->setMode(type);
 

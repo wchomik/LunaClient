@@ -46,5 +46,6 @@
         <file>images/cinema-screen.jpeg</file>
         <file>images/screen.png</file>
         <file>Audio.qml</file>
+        <file>EffectsTab.qml</file>
     </qresource>
 </RCC>

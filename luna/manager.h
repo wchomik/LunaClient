@@ -32,13 +32,6 @@ namespace luna {
         void deactivateProvider();
         void connected();
 
-        // color management
-        /*Color mWhiteBalance;
-        ColorSpace mSourceColorSpace;
-        ColorSpace mDestinationColorSpace;
-        ColorMode mCurrentColorMode;
-        std::unique_ptr<class ColorProcessor> mColorProcessor;*/
-
         // connection management
         std::vector<std::unique_ptr<class Connector>> mConnectors;
 
@@ -46,7 +39,6 @@ namespace luna {
         ProviderFactory mProviderFactory;
         ProviderType mCurrentProviderType;
         std::unique_ptr<class Provider> mActiveProvider;
-
 
         // concurrency
         bool mShouldRun;
