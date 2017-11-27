@@ -11,7 +11,7 @@ namespace luna {
     LightPlugin::~LightPlugin() {}
 
 
-    QString LightPlugin::name() {
+    QString LightPlugin::name() const {
         return QString("Light");
     }
 

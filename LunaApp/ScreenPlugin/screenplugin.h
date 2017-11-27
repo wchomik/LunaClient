@@ -1,19 +1,18 @@
-#ifndef AUDIOPLUGIN_H
-#define AUDIOPLUGIN_H
+#ifndef SCREENPLUGIN_H
+#define SCREENPLUGIN_H
 
 #include <QObject>
 #include <lunaplugin.h>
+#include "screenmodel.h"
 
-#include "audiomodel.h"
-
-class AudioPlugin : public QObject, public luna::LunaPlugin
+class ScreenPlugin : public QObject, public luna::LunaPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.luna.audio")
+    Q_PLUGIN_METADATA(IID "org.luna.screen")
     Q_INTERFACES(luna::LunaPlugin)
 public:
-    AudioPlugin();
-    virtual ~AudioPlugin();
+    ScreenPlugin();
+    virtual ~ScreenPlugin();
 
     QString name() const override;
     std::shared_ptr<luna::Provider> createProvider() override;
@@ -22,7 +21,7 @@ public:
 protected:
     QUrl itemUrl() override;
 private:
-    std::unique_ptr<AudioModel> mModel;
+    std::unique_ptr<luna::ScreenModel> mModel;
 };
 
-#endif // AUDIOPLUGIN_H
+#endif // SCREENPLUGIN_H

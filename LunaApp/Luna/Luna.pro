@@ -25,14 +25,8 @@ DEPENDPATH += $$PWD/Include
 
 win32 {
     QMAKE_CXXFLAGS += -arch:AVX
-    INCLUDEPATH += ./win32
-    #LIBS += -ld3d11 -ldxgi
-    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
+    DEFINES += _USE_MATH_DEFINES
 }
-
-DISTFILES += \
-    win32/PassThrough.hlsl \
-    win32/VertexShader.hlsl
 
 #LunaCore
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../LunaCore/release/ -lLunaCore

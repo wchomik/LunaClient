@@ -1,10 +1,9 @@
 #include "screenprovider.h"
 
 #include <cstdint>
-#include "config.h"
 
-#include "colorspace.h"
-#include "strand.h"
+#include <colorspace.h>
+#include <strand.h>
 
 using namespace Eigen;
 

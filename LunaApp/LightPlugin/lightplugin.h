@@ -16,7 +16,7 @@ namespace luna {
         LightPlugin();
         ~LightPlugin();
 
-        QString name() override;
+        QString name() const override;
         std::shared_ptr<luna::Provider> createProvider() override;
         QObject * model() override;
         int displayOrder() const override;

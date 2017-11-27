@@ -6,7 +6,7 @@ AudioPlugin::AudioPlugin() {}
 
 AudioPlugin::~AudioPlugin() {}
 
-QString AudioPlugin::name() {
+QString AudioPlugin::name() const {
     return "Audio";
 }
 

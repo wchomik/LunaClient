@@ -1,22 +1,22 @@
-#ifndef SCREENPROVIDERSETTINGS_H
-#define SCREENPROVIDERSETTINGS_H
+#ifndef ScreenModel_H
+#define ScreenModel_H
 
-#include "providersettings.h"
+#include <QObject>
+#include <QSettings>
 
-#include "../luna/screenprovider.h"
+#include "screenprovider.h"
 
-namespace model {
-    class ScreenProviderSettings : public ProviderSettings
+namespace luna {
+    class ScreenModel : public QObject
     {
         Q_OBJECT
         Q_PROPERTY(qreal depth READ depth WRITE setDepth NOTIFY depthChanged)
         Q_PROPERTY(qreal brightness READ brightness WRITE setBrightness NOTIFY brightnessChanged)
         Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
     public:
-        ScreenProviderSettings(QObject * parent = nullptr);
-        ~ScreenProviderSettings();
-        void setProvider(luna::Provider *provider) override;
-        void setSettings(QSettings *settings) override;
+        ScreenModel(QObject * parent = nullptr);
+        virtual ~ScreenModel();
+        void provider(std::weak_ptr<ScreenProvider> ptr);
 
         qreal depth() const { return mDepth; }
         qreal brightness() const { return mBrightness; }
@@ -38,8 +38,9 @@ namespace model {
         qreal mBrightness;
         qreal mGamma;
 
-        luna::ScreenProvider * mProvider;
+        std::weak_ptr<ScreenProvider> mProvider;
+        QSettings mSettings;
     };
 }
 
-#endif // SCREENPROVIDERSETTINGS_H
+#endif // ScreenModel_H

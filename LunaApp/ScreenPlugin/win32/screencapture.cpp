@@ -4,11 +4,8 @@
 #include <algorithm>
 #include <iterator>
 
-#include <QMutexLocker>
-
 #include "shaders.h"
 
-#include "luna/config.h"
 #include "win32errorhandling.h"
 
 

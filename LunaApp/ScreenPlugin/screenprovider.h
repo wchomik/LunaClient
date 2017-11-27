@@ -2,9 +2,8 @@
 #define LUNASCREENPROVIDER_H
 
 #include <mutex>
-#include "provider.h"
+#include <provider.h>
 #include "screencapture.h"
-#include "config.h"
 
 namespace luna {
     struct ScreenBounds {

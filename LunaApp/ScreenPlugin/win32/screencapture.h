@@ -6,6 +6,7 @@
 #include <wrl.h>
 
 #include <colorutils.h>
+#include "array2d.h"
 
 namespace luna { namespace graphics {
     class ScreenCapture

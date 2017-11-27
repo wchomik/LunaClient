@@ -5,8 +5,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 
 Item {
-    id: lightItem
-
     ColorDialog {
         id: colorDialog
         title: "Choose a color"
@@ -18,8 +16,7 @@ Item {
         }
     }
 
-    ColumnLayout {
-        id: gridLayout
+    GroupBox {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -28,36 +25,37 @@ Item {
         anchors.leftMargin: 20
         anchors.topMargin: 20
 
-        RowLayout {
-            Label {
-                text: qsTr("Get color from system theme")
+        label: CheckBox {
+            id: themeColorCheckBox
+            checked: Light.themeColor
+            onCheckedChanged: {
+                Light.themeColor = checked
             }
-            CheckBox {
-                id: themeColorCheckBox
-                checked: Light.themeColor
-                onCheckedChanged: {
-                    Light.themeColor = checked
-                }
-            }
+            text: qsTr("Get color from system theme")
         }
 
-        RowLayout {
+        GridLayout {
+            enabled: !themeColorCheckBox.checked
+            anchors.fill: parent
+            columns: 2
+
             Button {
                 text: qsTr("Pick color")
                 onClicked: colorDialog.open()
             }
+
             Rectangle {
                 id: colorButton
                 height: 40
                 Layout.fillWidth: true
                 color: Light.color
+                radius: 8
             }
-        }
 
-        ColumnLayout {
             Label {
                 text: qsTr("Red")
             }
+
             Slider {
                 id: redSlider
                 Layout.fillWidth: true
@@ -68,12 +66,11 @@ Item {
                     Light.color.r = value
                 }
             }
-        }
 
-        ColumnLayout {
             Label {
                 text: qsTr("Green")
             }
+
             Slider {
                 id: greenSlider
                 Layout.fillWidth: true
@@ -84,12 +81,11 @@ Item {
                     Light.color.g = value
                 }
             }
-        }
 
-        ColumnLayout {
             Label {
                 text: qsTr("Blue")
             }
+
             Slider {
                 id: blueSlider
                 Layout.fillWidth: true
@@ -100,12 +96,11 @@ Item {
                     Light.color.b = value
                 }
             }
-        }
 
-        ColumnLayout {
             Label {
                 text: qsTr("White")
             }
+
             Slider {
                 id: whitenessSlider
                 Layout.fillWidth: true
