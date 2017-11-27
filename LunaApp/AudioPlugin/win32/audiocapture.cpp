@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include "luna/samplebuffer.h"
+#include "samplebuffer.h"
 #include "win32errorhandling.h"
 
 namespace luna { namespace audio {

@@ -10,7 +10,7 @@ namespace luna {
     class LightPlugin : public QObject, public luna::LunaPlugin
     {
         Q_OBJECT
-        Q_PLUGIN_METADATA(IID LunaPlugin_iid)
+        Q_PLUGIN_METADATA(IID "org.luna.light")
         Q_INTERFACES(luna::LunaPlugin)
     public:
         LightPlugin();
@@ -19,6 +19,7 @@ namespace luna {
         QString name() override;
         std::shared_ptr<luna::Provider> createProvider() override;
         QObject * model() override;
+        int displayOrder() const override;
     protected:
         QUrl itemUrl() override;
 

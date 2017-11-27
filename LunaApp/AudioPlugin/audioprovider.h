@@ -2,7 +2,7 @@
 #define LUNAAUDIOPROVIDER_H
 
 #include <unordered_map>
-#include "provider.h"
+#include <provider.h>
 #include "audiocapture.h"
 #include "fft.h"
 #include "audiochannelprocessor.h"
@@ -13,6 +13,8 @@ namespace luna {
     {
     public:
         AudioProvider();
+        virtual ~AudioProvider();
+
         void getData(std::vector<Strand *> &strands) override;
     private:
         std::unique_ptr<SampleBuffer> mBuffer;

@@ -8,7 +8,7 @@
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
 
-#include "luna/samplebuffer.h"
+#include "samplebuffer.h"
 
 namespace luna { namespace audio {
     class AudioCapture {

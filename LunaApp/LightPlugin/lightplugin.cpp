@@ -25,6 +25,10 @@ namespace luna {
         return mModel.get();
     }
 
+    int LightPlugin::displayOrder() const {
+        return 0;
+    }
+
     QUrl LightPlugin::itemUrl() {
         return QUrl("qrc:/LightPlugin.qml");
     }

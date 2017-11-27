@@ -4,6 +4,8 @@
 #include <QPluginLoader>
 #include <QDir>
 #include <QDebug>
+#include <algorithm>
+
 
 Luna::Luna(QObject *parent) :
     QObject(parent),
@@ -49,21 +51,33 @@ void Luna::loadDynamicPlugins()
     #endif
     pluginsDir.cd("plugins");
 
+    QCoreApplication::addLibraryPath(pluginsDir.absolutePath());
+
     qDebug() << "Loading plugins from " << pluginsDir.absolutePath();
 
     for (auto fileName : pluginsDir.entryList(QDir::Files)) {
-        qDebug() << "Plugin: " << fileName;
+        if (!(fileName.endsWith("dll") || fileName.endsWith(".so"))) continue;
+
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+        if (!pluginLoader.isLoaded()) {
+            qDebug() << "Failed to load " << fileName;
+            qDebug() <<  pluginLoader.errorString();
+        }
         QObject * plugin = pluginLoader.instance();
         if (plugin) {
-            qDebug() << "Maybe";
             auto lunaPlugin = qobject_cast<luna::LunaPlugin *>(plugin);
             if (nullptr != lunaPlugin) {
-                qDebug() << "Compatible";
+                qDebug() << fileName << " loaded";
                 mPlugins.emplace_back(lunaPlugin);
             }
         }
     }
+
+    std::sort(mPlugins.begin(), mPlugins.end(),
+        [](const auto & a, const auto & b) -> bool {
+            return a->displayOrder() < b->displayOrder();
+        }
+    );
 }
 
 void Luna::setSelectedIndex(int index) {

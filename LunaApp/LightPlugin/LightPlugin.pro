@@ -14,21 +14,17 @@ SOURCES += \
     lightplugin.cpp \
     lightprovider.cpp \
     lightmodel.cpp
+
 TARGET = $$qtLibraryTarget(LightPlugin)
 DESTDIR = ../plugins
 
-
-EXAMPLE_FILES = lightplugin.json
-
-
-
 CONFIG += install_ok
-DISTFILES +=
 
 RESOURCES += \
     qml.qrc
 
 win32 {
+    INCLUDEPATH += ./win32
     HEADERS += \
         win32/themecolor.h
     SOURCES += \

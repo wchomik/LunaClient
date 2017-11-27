@@ -19,7 +19,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-LIBS += -L$$PWD/Lib/
 
 INCLUDEPATH += $$PWD/Include
 DEPENDPATH += $$PWD/Include
@@ -27,7 +26,7 @@ DEPENDPATH += $$PWD/Include
 win32 {
     QMAKE_CXXFLAGS += -arch:AVX
     INCLUDEPATH += ./win32
-    #LIBS += -lmmdevapi -lole32 -llibfftw3f-3 -ld3d11 -ldxgi
+    #LIBS += -ld3d11 -ldxgi
     DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 }
 

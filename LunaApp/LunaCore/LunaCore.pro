@@ -18,7 +18,6 @@ SOURCES += \
     lunaplugin.cpp \
     manager.cpp \
     provider.cpp \
-    samplebuffer.cpp \
     strand.cpp
 
 HEADERS += \
@@ -35,7 +34,6 @@ HEADERS += \
     lunaplugin.h \
     manager.h \
     provider.h \
-    samplebuffer.h \
     strand.h
 
 SUBDIRS += \

@@ -18,6 +18,7 @@ namespace luna {
         virtual QString name() = 0;
         virtual std::shared_ptr<Provider> createProvider() = 0;
         virtual QObject * model() = 0;
+        virtual int displayOrder() const = 0;
 
         QQuickItem * createItem(QQmlEngine * engine);
     protected:

@@ -3,7 +3,7 @@
 
 #include <provider.h>
 #include <colorspace.h>
-#include "win32/themecolor.h"
+#include "themecolor.h"
 
 namespace luna {
     class LightProvider : public Provider {

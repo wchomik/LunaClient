@@ -2,13 +2,12 @@
 #define SAMPLEBUFFER_H
 
 #include <memory>
-#include "lunacore_global.h"
 
 namespace luna {
-    class LUNACORESHARED_EXPORT SampleBuffer
+    class SampleBuffer
     {
     private:
-        class LUNACORESHARED_EXPORT Channel{
+        class Channel{
         public:
             Channel(float * begin, int stride) :
                 mBegin(begin), mStride(stride) {}
