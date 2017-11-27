@@ -64,6 +64,7 @@ namespace luna {
     }
 
     ColorSpace::Transformation ColorSpace::combine(const ColorSpace & from, const ColorSpace & to) {
-       return to.mXyzToRgb * from.mRgbToXyz;
+       ColorSpace::Transformation ret = to.mXyzToRgb * from.mRgbToXyz;
+       return ret;
     }
 }

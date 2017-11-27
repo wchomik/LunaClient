@@ -16,8 +16,7 @@ namespace luna {
     }
 
     std::shared_ptr<luna::Provider> LightPlugin::createProvider() {
-        // TODO use make_shared and fix alignment issue
-        std::shared_ptr<luna::LightProvider> ret(new luna::LightProvider());
+        auto ret = std::make_shared<luna::LightProvider>();
         mModel->provider(ret);
         return ret;
     }

@@ -1,133 +1,122 @@
 import QtQml 2.2
-import QtQuick 2.4
-import QtQuick.Controls 2.0
+import QtQuick 2.7
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 
 Item {
     id: lightItem
-    property color color
-    property real whiteness
-    property bool colorFromTheme
-    onColorChanged: {
-        Light.color = color;
-    }
-    onWhitenessChanged: {
-        Light.whiteness = whiteness;
-    }
-    onColorFromThemeChanged: {
-        Light.colorFromTheme = colorFromTheme;
-    }
-
-    Component.onCompleted: {
-        color = Light.color;
-        whiteness = Light.whiteness;
-        colorFromTheme = Light.colorFromTheme;
-    }
 
     ColorDialog {
         id: colorDialog
         title: "Choose a color"
-        width: 400
-        height: 400
-        color: lightItem.color
+        width: 450
+        height: 450
+        color: Light.color
         onCurrentColorChanged: {
-            lightItem.color = currentColor
+            Light.color = currentColor
         }
     }
 
-    GridLayout {
+    ColumnLayout {
         id: gridLayout
-        height: 100
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
         anchors.rightMargin: 20
         anchors.leftMargin: 20
         anchors.topMargin: 20
-        columns: 2
 
-        CheckBox {
-            id: colorFromThemeCheckBox
-            Layout.fillWidth:  true
-            checked: lightItem.colorFromTheme
+        RowLayout {
             Label {
                 text: qsTr("Get color from system theme")
             }
-            onCheckedChanged: {
-                if(lightItem.colorFromTheme !== checked){
-                    lightItem.colorFromTheme = checked
+            CheckBox {
+                id: themeColorCheckBox
+                checked: Light.themeColor
+                onCheckedChanged: {
+                    Light.themeColor = checked
                 }
             }
         }
 
-        Rectangle {
-            id: colorButton
-            height: 20
-            Layout.fillWidth: true
-            color: lightItem.color
-            MouseArea {
-                anchors.fill: parent
+        RowLayout {
+            Button {
+                text: qsTr("Pick color")
                 onClicked: colorDialog.open()
+            }
+            Rectangle {
+                id: colorButton
+                height: 40
+                Layout.fillWidth: true
+                color: Light.color
             }
         }
 
-        Slider {
-            id: redSlider
-            Layout.fillWidth: true
-            value: lightItem.color.r
-            wheelEnabled: true
+        ColumnLayout {
             Label {
                 text: qsTr("Red")
             }
-            onPositionChanged: {
-                if(lightItem.color.r !== position){
-                    lightItem.color.r = position
+            Slider {
+                id: redSlider
+                Layout.fillWidth: true
+                value: Light.color.r
+                wheelEnabled: true
+                onValueChanged: {
+                    if (Light.color.r === value) return;
+                    Light.color.r = value
                 }
             }
         }
 
-        Slider {
-            id: greenSlider
-            Layout.fillWidth: true
-            value: lightItem.color.g
-            wheelEnabled: true
+        ColumnLayout {
             Label {
                 text: qsTr("Green")
             }
-            onPositionChanged: {
-                if(lightItem.color.g !== position){
-                    lightItem.color.g = position
+            Slider {
+                id: greenSlider
+                Layout.fillWidth: true
+                value: Light.color.g
+                wheelEnabled: true
+                onValueChanged: {
+                    if (Light.color.g === value) return;
+                    Light.color.g = value
                 }
             }
         }
 
-        Slider {
-            id: blueSlider
-            Layout.fillWidth: true
-            value: lightItem.color.b
-            wheelEnabled: true
+        ColumnLayout {
             Label {
                 text: qsTr("Blue")
             }
-            onPositionChanged: {
-                if(lightItem.color.b !== position){
-                    lightItem.color.b = position
+            Slider {
+                id: blueSlider
+                Layout.fillWidth: true
+                value: Light.color.b
+                wheelEnabled: true
+                onValueChanged: {
+                    if (Light.color.b === value) return;
+                    Light.color.b = value
                 }
             }
         }
 
-        Slider {
-            id: whitenessSlider
-            Layout.fillWidth: true
-            value: lightItem.whiteness
-            wheelEnabled: true
+        ColumnLayout {
             Label {
                 text: qsTr("White")
             }
-            onPositionChanged: {
-                if(lightItem.whiteness !== position){
-                    lightItem.whiteness = position
+            Slider {
+                id: whitenessSlider
+                Layout.fillWidth: true
+                value: Light.whiteness
+                wheelEnabled: true
+                onPositionChanged: {
+                    if (Light.whiteness === value) return;
+                    Light.whiteness = value
                 }
             }
         }
+
     }
 }

@@ -117,18 +117,16 @@ ApplicationWindow {
         signal indexChanged(int index)
 
         onCurrentIndexChanged: indexChanged(currentIndex)
-
     }
 
     footer: TabBar {
         id: tabBar
-        objectName: "tabBar"
         currentIndex: swipeView.currentIndex
-        TabButton {
-            text: "Dupa"
-        }
-        TabButton {
-            text: "Dupa2"
+        Repeater {
+            model: TabNames
+            TabButton {
+                text: modelData
+            }
         }
     }
 }

@@ -44,29 +44,15 @@ namespace luna {
         }
     }
 
-    Color LightProvider::color() {
-        return mColor;
-    }
-
     void LightProvider::color(const Color & value) {
         mColor = value;
-    }
-
-    ColorScalar LightProvider::whiteness() {
-        return mWhiteness;
     }
 
     void LightProvider::whiteness(ColorScalar value) {
         mWhiteness = value;
     }
 
-    bool LightProvider::shouldGetColorFromTheme() {
-        return mColorFromTheme;
-    }
-
-    void LightProvider::shouldGetColorFromTheme(const bool value) {
-        if (value != mColorFromTheme) {
-            mColorFromTheme = value;
-        }
+    void LightProvider::shouldGetColorFromTheme(bool value) {
+        mColorFromTheme = value;
     }
 }

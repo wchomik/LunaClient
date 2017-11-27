@@ -3,69 +3,83 @@
 #include <QDebug>
 
 namespace luna {
-    LightModel::LightModel(QObject * parent) : QObject(parent) {
+    static const QString whitenessSettingName("whiteness");
+    static const QString colorSettingName("color");
+    static const QString themeColorSettingName("themeColor");
 
+    LightModel::LightModel(QObject * parent) :
+        QObject(parent),
+        mSettings()
+    {
+        mSettings.beginGroup("Light");
+
+        mColor = mSettings.value(colorSettingName, QColor(1.0, 1.0, 1.0, 1.0)).value<QColor>();
+        mWhiteness = mSettings.value(whitenessSettingName, 0.1).toReal();
+        mThemeColor = mSettings.value(themeColorSettingName, false).toBool();
+
+    }
+
+    LightModel::~LightModel() {
+        mSettings.setValue(colorSettingName, mColor);
+        mSettings.setValue(whitenessSettingName, mWhiteness);
+        mSettings.setValue(themeColorSettingName, mThemeColor);
     }
 
     void LightModel::provider(std::weak_ptr<luna::LightProvider> ptr) {
         mProvider = ptr;
-        setColor(QColor("white"));
+        if (auto p = mProvider.lock()) {
+            p->color(qColorToColor(mColor));
+            p->whiteness(mWhiteness);
+            p->shouldGetColorFromTheme(mThemeColor);
+        }
     }
 
     QColor LightModel::color() const {
-        if (auto p = mProvider.lock()) {
-            return colorToQColor(p->color());
-        } else {
-            return QColor();
-        }
+        return mColor;
     }
 
     void LightModel::setColor(QColor value) {
-        qDebug() << "Seting color";
-        if (auto p = mProvider.lock()) {
-            qDebug() << "Yes";
-            if (color() == value) {
-                return;
-            }
-
-            p->color(qColorToColor(value));
-            emit colorChanged(value);
+        if (mColor == value) {
+            return;
         }
+
+        mColor = value;
+        if (auto p = mProvider.lock()) {
+            p->color(qColorToColor(value));
+        }
+        colorChanged(value);
     }
 
     qreal LightModel::whiteness() const {
-        if (auto p = mProvider.lock()) {
-            return p->whiteness();
-        }
-        return 0.0;
+        return mWhiteness;
     }
 
     void LightModel::setWhiteness(qreal value) {
-        if (auto p = mProvider.lock()) {
-            if (whiteness() == value) {
-                return;
-            }
+        if (mWhiteness == value) {
+            return;
+        }
 
+        mWhiteness = value;
+        if (auto p = mProvider.lock()) {
             p->whiteness(value);
-            emit whitenessChanged(value);
         }
+        whitenessChanged(value);
     }
 
-    bool LightModel::colorFromTheme() const {
-        if (auto p = mProvider.lock()) {
-            return p->shouldGetColorFromTheme();
-        }
-        return false;
+
+    bool LightModel::themeColor() const {
+        return mThemeColor;
     }
 
-    void LightModel::setColorFromTheme(bool value) {
-        if (auto p = mProvider.lock()) {
-            if (colorFromTheme() == value) {
-                return;
-            }
+    void LightModel::setThemeColor(bool value) {
+        if (mThemeColor == value) {
+            return;
+        }
 
+        mThemeColor = value;
+        if (auto p = mProvider.lock()) {
             p->shouldGetColorFromTheme(value);
-            emit colorFromThemeChanged(value);
         }
+        themeColorChanged(value);
     }
 }

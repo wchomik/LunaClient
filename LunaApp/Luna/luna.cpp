@@ -9,23 +9,28 @@ Luna::Luna(QObject *parent) :
     QObject(parent),
     mEngine(new QQmlApplicationEngine(this))
 {
-    mEngine->load(QUrl("qrc:/main.qml"));
 }
 
 void Luna::setup()
 {
     loadDynamicPlugins();
 
-    auto root = mEngine->rootObjects().first();
+    auto rootContext = mEngine->rootContext();
+    rootContext->setContextProperty("TabNames", mTabNames);
 
+    mEngine->load(QUrl("qrc:/main.qml"));
+    auto root = mEngine->rootObjects().first();
     auto swipeView = root->findChild<QQuickItem *>("swipeView");
-    auto tabBar = root->findChild<QQuickItem *>("tabBar");
 
     for (auto & plugin : mPlugins) {
-        auto component = plugin->createItem(mEngine);
-        component->setParent(swipeView);
-        component->setParentItem(swipeView);
+        mTabNames.append(plugin->name());
+
+        auto item = plugin->createItem(mEngine);
+        item->setParent(mEngine);
+        item->setParentItem(swipeView);
     }
+
+    rootContext->setContextProperty("TabNames", mTabNames);
 
     QObject::connect(swipeView, SIGNAL(indexChanged(int)),
         this, SLOT(setSelectedIndex(int)));

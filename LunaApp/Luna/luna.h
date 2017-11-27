@@ -8,6 +8,7 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QObject>
+#include <QList>
 
 #include <lunaplugin.h>
 
@@ -19,7 +20,6 @@ public:
 
     void setup();
 private:
-
     using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
     using PluginVector = std::vector<PluginPtr>;
 
@@ -28,6 +28,7 @@ private:
     QQmlApplicationEngine * mEngine;
     luna::Manager mManager;
     PluginVector mPlugins;
+    QStringList mTabNames;
 public slots:
     void setSelectedIndex(int index);
 };
