@@ -6,26 +6,25 @@
 
 #include "lightmodel.h"
 
-namespace luna {
-    class LightPlugin : public QObject, public luna::LunaPlugin
-    {
-        Q_OBJECT
-        Q_PLUGIN_METADATA(IID "org.luna.light")
-        Q_INTERFACES(luna::LunaPlugin)
-    public:
-        LightPlugin();
-        ~LightPlugin();
+class LightPlugin : public QObject, public luna::LunaPlugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.luna.light")
+    Q_INTERFACES(luna::LunaPlugin)
+public:
+    LightPlugin();
+    ~LightPlugin();
 
-        QString name() const override;
-        std::shared_ptr<luna::Provider> createProvider() override;
-        QObject * model() override;
-        int displayOrder() const override;
-    protected:
-        QUrl itemUrl() override;
+    QString name() const override;
+    std::shared_ptr<luna::Provider> createProvider() override;
+    QObject * model() override;
+    int displayOrder() const override;
+protected:
+    QUrl itemUrl() override;
 
-    private:
-        std::unique_ptr<LightModel> mModel;
-    };
-}
+private:
+    std::unique_ptr<LightModel> mModel;
+};
+
 
 #endif // LIGHTPLUGIN_H

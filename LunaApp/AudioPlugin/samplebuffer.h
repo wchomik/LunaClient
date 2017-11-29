@@ -1,37 +1,34 @@
 #ifndef SAMPLEBUFFER_H
 #define SAMPLEBUFFER_H
 
-#include <memory>
+#include <vector>
 
-namespace luna {
-    class SampleBuffer
-    {
-    private:
-        class Channel{
-        public:
-            Channel(float * begin, int stride) :
-                mBegin(begin), mStride(stride) {}
-            float & operator[](size_t index){
-                return mBegin[index * mStride];
-            }
-        private:
-            float * const mBegin;
-            const int mStride;
-        };
+class SampleBuffer
+{
+public:
+    class Channel{
     public:
-        SampleBuffer(size_t size, int channelCount);
-        size_t size() { return mSize; }
-        void readFrom(const float * src, size_t sampleCount);
-        Channel channel(int index);
-
+        Channel(float * begin, size_t stride) :
+            mBegin(begin), mStride(stride) {}
+        float & operator[](size_t index){
+            return mBegin[index * mStride];
+        }
     private:
-        size_t mSize;
-        int mChannelCount;
-        std::unique_ptr<float[]> mData;
-        float * mPtr;
-        float * begin(){ return mPtr; }
-        float * end(){ return mPtr + mSize; }
+        float * const mBegin;
+        const size_t mStride;
     };
-}
+    SampleBuffer(size_t size, unsigned channelCount);
+    size_t size() const;
+    void readFrom(const float * src, size_t sampleCount);
+    Channel channel(unsigned index);
+private:
+    size_t mSize;
+    unsigned mChannelCount;
+    std::vector<float> mData;
+    float * mPtr;
+    float * begin(){ return mPtr; }
+    float * end(){ return mPtr + mSize; }
+};
+
 
 #endif // SAMPLEBUFFER_H

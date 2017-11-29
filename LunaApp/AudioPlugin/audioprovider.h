@@ -3,27 +3,27 @@
 
 #include <unordered_map>
 #include <provider.h>
+
 #include "audiocapture.h"
 #include "fft.h"
 #include "audiochannelprocessor.h"
 #include "samplebuffer.h"
 
-namespace luna {
-    class AudioProvider : public Provider
-    {
-    public:
-        AudioProvider();
-        virtual ~AudioProvider();
+class AudioProvider : public luna::Provider
+{
+public:
+    AudioProvider();
+    virtual ~AudioProvider();
 
-        void getData(std::vector<Strand *> &strands) override;
-    private:
-        std::unique_ptr<SampleBuffer> mBuffer;
-        audio::AudioCapture mAudioCapture;
-        audio::FFT mFFT;
-        std::unordered_map<const Strand *, std::unique_ptr<audio::AudioChannelProcessor>> mProcessors;
+    void getData(std::vector<luna::Strand *> &strands) override;
+private:
+    std::unique_ptr<SampleBuffer> mBuffer;
+    AudioCapture mAudioCapture;
+    FFT mFFT;
+    std::unordered_map<const luna::Strand *, std::unique_ptr<AudioChannelProcessor>> mProcessors;
 
-        void createAudioProcessor(const Strand * strand);
-    };
-}
+    void createAudioProcessor(const luna::Strand * strand);
+};
+
 
 #endif // LUNAAUDIOPROVIDER_H

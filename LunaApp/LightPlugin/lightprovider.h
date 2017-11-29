@@ -3,33 +3,33 @@
 
 #include <provider.h>
 #include <colorspace.h>
+
 #include "themecolor.h"
 
-namespace luna {
-    class LightProvider : public Provider {
-    public:
-        LightProvider();
+class LightProvider : public luna::Provider {
+public:
+    LightProvider();
 
-        void getData(std::vector<class Strand *> & strands) override;
+    void getData(std::vector<luna::Strand *> & strands) override;
 
-        void color(const Color & value);
-        void whiteness(ColorScalar value);
-        void shouldGetColorFromTheme(bool value);
-    private:
-        ColorSpace::Transformation mScreenToXyzTransformation;
-        ColorSpace::Transformation mColorToXyzTransformation;
+    void color(const luna::Color & value);
+    void whiteness(luna::ColorScalar value);
+    void shouldGetColorFromTheme(bool value);
+private:
+    luna::ColorSpace::Transformation mScreenToXyzTransformation;
+    luna::ColorSpace::Transformation mColorToXyzTransformation;
 
-        Color mColor;
-        Color mSmoothColor;
-        ColorScalar mWhiteness;
+    luna::Color mColor;
+    luna::Color mSmoothColor;
+    luna::ColorScalar mWhiteness;
 
-        ThemeColor mThemeColor;
-        bool mColorFromTheme;
-    private:
-        void update();
-    public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    };
-}
+    ThemeColor mThemeColor;
+    bool mColorFromTheme;
+private:
+    void update();
+public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+
 
 #endif // LUNALightProvider_H

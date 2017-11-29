@@ -3,7 +3,7 @@
 #include "screenprovider.h"
 
 ScreenPlugin::ScreenPlugin() :
-    mModel(std::make_unique<luna::ScreenModel>())
+    mModel(std::make_unique<ScreenModel>())
 {
 }
 
@@ -15,7 +15,7 @@ QString ScreenPlugin::name() const {
 }
 
 std::shared_ptr<luna::Provider> ScreenPlugin::createProvider() {
-    auto ret = std::make_shared<luna::ScreenProvider>();
+    auto ret = std::make_shared<ScreenProvider>();
     mModel->provider(ret);
     return ret;
 }

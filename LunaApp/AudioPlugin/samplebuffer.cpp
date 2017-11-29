@@ -2,32 +2,33 @@
 
 #include <cstring>
 
-namespace luna {
-    SampleBuffer::SampleBuffer(size_t size, int channelCount) :
-        mSize(size * channelCount),
-        mChannelCount(channelCount),
-        mData(new float[mSize * 2]()),
-        mPtr(mData.get())
-    {}
+SampleBuffer::SampleBuffer(size_t size, unsigned channelCount) :
+    mSize(size * channelCount),
+    mChannelCount(channelCount),
+    mData(mSize * 2),
+    mPtr(mData.data())
+{}
 
-    void SampleBuffer::readFrom(const float * src, size_t sampleCount)
-    {
-        size_t writeCount = sampleCount * mChannelCount;
-        float * pNext = mPtr + writeCount;
-        if(pNext >= mData.get() + mSize){
-            pNext = mData.get();
-            size_t copyCount = mSize - writeCount;
-            memcpy(mData.get(), mPtr + writeCount, copyCount * sizeof(float));
-            memcpy(mData.get() + copyCount, src, writeCount * sizeof(float));
-            mPtr = mData.get();
-        }else{
-            memcpy(mPtr + mSize, src, writeCount * sizeof(float));
-            mPtr += writeCount;
-        }
-    }
+size_t SampleBuffer::size() const {
+    return mSize;
+}
 
-    SampleBuffer::Channel SampleBuffer::channel(int index)
-    {
-        return Channel(mPtr + index, mChannelCount);
+void SampleBuffer::readFrom(const float * src, size_t sampleCount) {
+    const size_t writeCount = sampleCount * mChannelCount;
+    float * pNext = mPtr + writeCount;
+    if(pNext >= mData.data() + mSize){
+        pNext = mData.data();
+        const size_t copyCount = mSize - writeCount;
+        memcpy(mData.data(), mPtr + writeCount, copyCount * sizeof(float));
+        memcpy(mData.data() + copyCount, src, writeCount * sizeof(float));
+        mPtr = mData.data();
+    }else{
+        memcpy(mPtr + mSize, src, writeCount * sizeof(float));
+        mPtr += writeCount;
     }
 }
+
+SampleBuffer::Channel SampleBuffer::channel(unsigned index) {
+    return Channel(mPtr + index, mChannelCount);
+}
+

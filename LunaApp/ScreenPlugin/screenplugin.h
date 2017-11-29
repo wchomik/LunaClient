@@ -21,7 +21,7 @@ public:
 protected:
     QUrl itemUrl() override;
 private:
-    std::unique_ptr<luna::ScreenModel> mModel;
+    std::unique_ptr<ScreenModel> mModel;
 };
 
 #endif // SCREENPLUGIN_H

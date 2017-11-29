@@ -11,7 +11,7 @@ QString AudioPlugin::name() const {
 }
 
 std::shared_ptr<luna::Provider> AudioPlugin::createProvider() {
-    auto ret = std::make_shared<luna::AudioProvider>();
+    auto ret = std::make_shared<AudioProvider>();
 
     return ret;
 }
