@@ -18,11 +18,12 @@ namespace luna {
     {
         mConnectors.emplace_back(std::make_unique<ConnectorUDPLegacy>(1234));
 
-        mThread = std::thread([this](){ threadFunc(); });
+        mThread = std::thread([this]() {
+            threadFunc();
+        });
     }
 
-    Manager::~Manager()
-    {
+    Manager::~Manager() {
         mShouldRun = false;
         mThread.join();
     }
@@ -32,44 +33,51 @@ namespace luna {
         //mWhiteBalance = color;
     }
 
-    void Manager::setProvider(std::shared_ptr<Provider> provider)
-    {
+    void Manager::setProvider(std::shared_ptr<Provider> provider) {
         std::lock_guard<std::mutex> guard(mMutex);
         mActiveProvider = provider;
     }
 
-    void Manager::threadFunc()
-    {
+    void Manager::addConnector(std::unique_ptr<Connector> && connector) {
+        std::lock_guard<std::mutex> guard(mMutex);
+        mConnectors.emplace_back(std::move(connector));
+    }
+
+    void Manager::threadFunc() {
         ch::steady_clock::time_point nextPeriod =
             ch::steady_clock::now() + 10ms;
-        while(mShouldRun){
-            std::vector<Host *> hosts;
-            for (auto && connector : mConnectors) {
-                connector->getHosts(hosts);
-            }
-            std::vector<Strand *> strands;
-            for (auto && host : hosts) {
-                host->getStrands(strands);
-            }
-            if (nullptr != mActiveProvider) {
-                std::lock_guard<std::mutex> guard(mMutex);
-                mActiveProvider->getData(strands);
-            }
-            for (auto strand : strands) {
-                strand->applyColorProcessing();
-            }
-            for (auto && connector : mConnectors) {
-                connector->update();
-            }
+        while (mShouldRun) {
+            update();
 
             auto now = ch::steady_clock::now();
-            if(nextPeriod < now)
+            if (nextPeriod < now) {
                 nextPeriod = now;
-            else while(ch::steady_clock::now() < nextPeriod - 1ms){
+            } else while (ch::steady_clock::now() < nextPeriod - 1ms) {
                 std::this_thread::sleep_until(nextPeriod);
             }
 
             nextPeriod += 10ms;
+        }
+    }
+
+    void Manager::update() {
+        std::vector<Host *> hosts;
+        std::lock_guard<std::mutex> guard(mMutex);
+        for (auto && connector : mConnectors) {
+            connector->getHosts(hosts);
+        }
+        std::vector<Strand *> strands;
+        for (auto && host : hosts) {
+            host->getStrands(strands);
+        }
+        if (nullptr != mActiveProvider) {
+            mActiveProvider->getData(strands);
+        }
+        for (auto strand : strands) {
+            strand->applyColorProcessing();
+        }
+        for (auto && connector : mConnectors) {
+            connector->update();
         }
     }
 }

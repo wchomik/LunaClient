@@ -16,7 +16,8 @@ QString LightPlugin::name() const {
 }
 
 std::shared_ptr<luna::Provider> LightPlugin::createProvider() {
-    auto ret = std::make_shared<LightProvider>();
+    // make_shared fails due to alignment issues on msvc
+    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
     mModel->provider(ret);
     return ret;
 }

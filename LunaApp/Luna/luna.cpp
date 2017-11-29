@@ -7,14 +7,13 @@
 #include <algorithm>
 
 
-Luna::Luna(QObject *parent) :
+Luna::Luna(QObject * parent) :
     QObject(parent),
     mEngine(new QQmlApplicationEngine(this))
 {
 }
 
-void Luna::setup()
-{
+void Luna::setup() {
     loadDynamicPlugins();
 
     auto rootContext = mEngine->rootContext();
@@ -35,20 +34,13 @@ void Luna::setup()
     rootContext->setContextProperty("TabNames", mTabNames);
 
     QObject::connect(swipeView, SIGNAL(indexChanged(int)),
-        this, SLOT(setSelectedIndex(int)));
+                     this, SLOT(setSelectedIndex(int)));
 
     setSelectedIndex(0);
 }
 
-void Luna::loadDynamicPlugins()
-{
+void Luna::loadDynamicPlugins() {
     QDir pluginsDir(qApp->applicationDirPath());
-    #if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release") {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-    #endif
     pluginsDir.cd("plugins");
 
     QCoreApplication::addLibraryPath(pluginsDir.absolutePath());
@@ -56,7 +48,9 @@ void Luna::loadDynamicPlugins()
     qDebug() << "Loading plugins from " << pluginsDir.absolutePath();
 
     for (auto fileName : pluginsDir.entryList(QDir::Files)) {
-        if (!(fileName.endsWith("dll") || fileName.endsWith(".so"))) continue;
+        if (!(fileName.endsWith("dll") || fileName.endsWith(".so"))) {
+            continue;
+        }
 
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
         if (!pluginLoader.isLoaded()) {
@@ -74,10 +68,10 @@ void Luna::loadDynamicPlugins()
     }
 
     std::sort(mPlugins.begin(), mPlugins.end(),
-        [](const auto & a, const auto & b) -> bool {
-            return a->displayOrder() < b->displayOrder();
-        }
-    );
+    [](const auto & a, const auto & b) -> bool {
+        return a->displayOrder() < b->displayOrder();
+    }
+             );
 }
 
 void Luna::setSelectedIndex(int index) {

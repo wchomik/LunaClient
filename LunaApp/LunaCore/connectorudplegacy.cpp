@@ -13,7 +13,6 @@ namespace luna {
         mAddress(address),
         mBuffer(BUFFER_SIZE)
     {
-
         Strand::Config conf;
         conf.colorSpace = ColorSpace::ws2812();
         conf.whiteBalance << 0.9f, 1.0f, 0.45f, 1.0f;
@@ -69,7 +68,6 @@ namespace luna {
         mBuffer << static_cast<uint8_t>(1);
         mSocket.send(mBuffer);
         mIsConnected = true;
-        connected();
     }
 
     void HostUDPLegacy::disconnect() {
@@ -161,9 +159,7 @@ namespace luna {
                     [from](const auto & host) { return host->address() == from; });
                 bool hostExists = (foundHost != mHosts.end());
                 if (!hostExists) {
-                    mHosts.push_back(std::make_unique<HostUDPLegacy>(from));
-                    mHosts.back()->connected.subscribe<ConnectorUDPLegacy, &ConnectorUDPLegacy::onHostConnected>(this);
-                }
+                    mHosts.push_back(std::make_unique<HostUDPLegacy>(from));}
             }
         }
     }
@@ -176,10 +172,6 @@ namespace luna {
                 host->connect();
             }
         }
-    }
-
-    void ConnectorUDPLegacy::onHostConnected() {
-        hostsChanged();
     }
 
     void ConnectorUDPLegacy::getHosts(std::vector<Host *> &hosts) {

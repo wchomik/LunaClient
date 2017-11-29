@@ -1,12 +1,10 @@
-QT       -= gui
-QT += quick
+include(../Common.pri)
 
-TARGET = LunaCore
 TEMPLATE = lib
-
+QT -= gui
+QT += quick
 DEFINES += LUNACORE_LIBRARY
 
-INCLUDEPATH += $$(EIGEN)
 
 SOURCES += \
     binarystream.cpp \
@@ -36,18 +34,11 @@ HEADERS += \
     provider.h \
     strand.h
 
-SUBDIRS += \
-    LunaCore.pro
-
 win32 {
-    QMAKE_CXXFLAGS += -arch:AVX
     INCLUDEPATH += ./win32
     SOURCES += \
         win32/socket.cpp
     HEADERS += \
         win32/socket.h
     LIBS += -lWs2_32
-    DEFINES += _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN
 }
-
-DISTFILES +=

@@ -25,8 +25,10 @@ namespace luna {
 
         void setWhiteBalance(const Color & color);
         void setProvider(std::shared_ptr<Provider> provider);
+        void addConnector(std::unique_ptr<class Connector> && connector);
     private:
         void threadFunc();
+        void update();
         void updateColorMode();
         void connected();
 
