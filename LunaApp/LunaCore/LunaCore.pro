@@ -13,7 +13,6 @@ SOURCES += \
     colorutils.cpp \
     connector.cpp \
     connectorudplegacy.cpp \
-    lunaplugin.cpp \
     manager.cpp \
     provider.cpp \
     strand.cpp
@@ -29,7 +28,6 @@ HEADERS += \
     connectorudplegacy.h \
     delegate.h \
     event.h \
-    lunaplugin.h \
     manager.h \
     provider.h \
     strand.h

@@ -7,11 +7,12 @@
 #include <QtPlugin>
 #include <QQuickItem>
 
-#include "lunacore_global.h"
-#include "provider.h"
+#include <provider.h>
+
+#include "lunaplugin_global.h"
 
 namespace luna {
-    class LUNACORESHARED_EXPORT LunaPlugin {
+    class LUNAPLUGINSHARED_EXPORT LunaPlugin {
     public:
         virtual ~LunaPlugin();
 
