@@ -1,4 +1,4 @@
-#include "effectprovider.h"
+#include "flameprovider.h"
 
 #include "strand.h"
 
