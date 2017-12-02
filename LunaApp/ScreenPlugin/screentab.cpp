@@ -1,4 +1,4 @@
-#include "screenplugin.h"
+#include "screentab.h"
 
 #include "screenprovider.h"
 

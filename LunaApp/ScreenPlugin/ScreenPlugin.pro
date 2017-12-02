@@ -1,14 +1,14 @@
 include(../LunaPlugin.pri)
 
 HEADERS += \
-    screenplugin.h \
     screenprovider.h \
     screenmodel.h \
-    array2d.h
+    array2d.h \
+    screentab.h
 SOURCES += \
-    screenplugin.cpp \
     screenprovider.cpp \
-    screenmodel.cpp
+    screenmodel.cpp \
+    screentab.cpp
 
 RESOURCES += \
     qml.qrc
