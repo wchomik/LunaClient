@@ -1,5 +1,4 @@
-import QtQml 2.2
-import QtQuick 2.7
+import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
@@ -21,9 +20,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        anchors.rightMargin: 20
-        anchors.leftMargin: 20
-        anchors.topMargin: 20
+        anchors.margins: 20
 
         label: CheckBox {
             id: themeColorCheckBox

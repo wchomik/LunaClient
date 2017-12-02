@@ -17,3 +17,5 @@ HEADERS += \
         lunaplugin_global.h \ 
     luna.h \
     lunatab.h
+
+DESTDIR = ../LunaApp

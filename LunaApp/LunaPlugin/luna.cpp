@@ -25,7 +25,7 @@ namespace luna {
         }
 
         auto rootContext = mEngine->rootContext();
-        rootContext->setContextProperty("TabNames", mTabNames);
+        rootContext->setContextProperty("ModesNames", mTabNames);
 
         mEngine->load(QUrl("qrc:/main.qml"));
 
@@ -83,7 +83,7 @@ namespace luna {
 
         auto rootContext = mEngine->rootContext();
         auto root = mEngine->rootObjects().first();
-        auto swipeView = root->findChild<QQuickItem *>("swipeView");
+        auto swipeView = root->findChild<QQuickItem *>("ModesView");
 
         for (auto & tab : mTabs) {
             qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
@@ -118,7 +118,7 @@ namespace luna {
         QObject::connect(swipeView, SIGNAL(indexChanged(int)),
             this, SLOT(setSelectedIndex(int)));
 
-        rootContext->setContextProperty("TabNames", mTabNames);
+        rootContext->setContextProperty("ModesNames", mTabNames);
     }
 
     void Luna::setSelectedIndex(int index) {
