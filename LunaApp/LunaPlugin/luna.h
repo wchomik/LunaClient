@@ -7,6 +7,7 @@
 
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
+#include <QtQuick>
 #include <QObject>
 #include <QList>
 
@@ -21,6 +22,7 @@ namespace luna {
         Q_OBJECT
     public:
         explicit Luna(QObject *parent = nullptr);
+        ~Luna();
 
         void setup();
         void addTab(std::unique_ptr<Tab> && tab);
@@ -43,7 +45,8 @@ namespace luna {
         PluginVector mPlugins;
 
         TabVector mTabs;
-        QStringList mTabNames;
+        class TabsModel * mModesModel;
+        class TabsModel * mConnectorsModel;
         int mActiveTab;
     private slots:
         void setSelectedIndex(int index);

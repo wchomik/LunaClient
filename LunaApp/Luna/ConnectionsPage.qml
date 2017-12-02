@@ -7,5 +7,4 @@ Page {
     property var names: ["UDP", "Bluetooth"];
     property var statess: [true, false];
 
-    SwipeView
 }

@@ -2,23 +2,24 @@ import QtQuick 2.2
 import QtQuick.Controls 2.2
 
 Page {
-    property alias name: swipeView.objectName
-    property alias model: tabBar.model
+    id: root
+    property var tabs
+    signal tabSelected(int index)
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: bar.currentIndex
 
-        signal indexChanged(int index)
+        onCurrentIndexChanged: root.tabSelected(currentIndex)
 
-        onCurrentIndexChanged: indexChanged(currentIndex)
+        contentChildren: root.tabs.items
     }
 
     footer: TabBar {
         id: bar
         currentIndex: swipeView.currentIndex
         Repeater {
-            id: tabBar
+            model: root.tabs.names
             TabButton {
                 text: modelData
             }

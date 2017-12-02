@@ -8,14 +8,21 @@
 #include <QDebug>
 
 #include "lunaplugin.h"
+#include "tabsmodel.h"
 
 namespace luna {
     Luna::Luna(QObject * parent) :
         QObject(parent),
         mEngine(new QQmlApplicationEngine(this)),
+        mModesModel(new TabsModel(this)),
+        mConnectorsModel(new TabsModel(this)),
         mActiveTab(-1)
     {
+        QObject::connect(mModesModel, &TabsModel::tabSelected,
+            this, &Luna::setSelectedIndex);
     }
+
+    Luna::~Luna() {}
 
     void Luna::setup() {
         loadStaticPlugins();
@@ -24,12 +31,13 @@ namespace luna {
             plugin->initialize(this);
         }
 
+        instantiateTabs();
+
         auto rootContext = mEngine->rootContext();
-        rootContext->setContextProperty("ModesNames", mTabNames);
+        rootContext->setContextProperty("ModesModel", mModesModel);
+        rootContext->setContextProperty("ConnectorsModel", mModesModel);
 
         mEngine->load(QUrl("qrc:/main.qml"));
-
-        instantiateTabs();
 
         setSelectedIndex(0);
     }
@@ -82,8 +90,6 @@ namespace luna {
         );
 
         auto rootContext = mEngine->rootContext();
-        auto root = mEngine->rootObjects().first();
-        auto swipeView = root->findChild<QQuickItem *>("ModesView");
 
         for (auto & tab : mTabs) {
             qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
@@ -111,14 +117,9 @@ namespace luna {
             }
 
             quickItem->setParent(mEngine);
-            quickItem->setParentItem(swipeView);
-            mTabNames.append(tab->displayName());
+            QString name = tab->displayName();
+            mModesModel->addTab(quickItem, name);
         }
-
-        QObject::connect(swipeView, SIGNAL(indexChanged(int)),
-            this, SLOT(setSelectedIndex(int)));
-
-        rootContext->setContextProperty("ModesNames", mTabNames);
     }
 
     void Luna::setSelectedIndex(int index) {

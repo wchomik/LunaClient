@@ -84,8 +84,13 @@ ApplicationWindow {
         id: stackView
         anchors.fill: parent
         initialItem: TabPage {
-            name: "ModesView"
-            model: ModesNames
+            id: modesPage
+            tabs: ModesModel
+            Connections {
+                target: modesPage
+                onTabSelected: { ModesModel.tabSelected(index) }
+
+            }
         }
     }
 }
