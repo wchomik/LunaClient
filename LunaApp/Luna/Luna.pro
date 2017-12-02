@@ -2,11 +2,9 @@ include(../Common.pri)
 QT += qml quick
 
 SOURCES += \
-    main.cpp \
-    luna.cpp
+    main.cpp
 
-HEADERS += \
-    luna.h
+HEADERS +=
 
 RESOURCES += qml.qrc
 

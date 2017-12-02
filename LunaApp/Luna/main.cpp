@@ -2,7 +2,9 @@
 
 #include <QDebug>
 
-#include "luna.h"
+#include <luna.h>
+
+using namespace luna;
 
 int main(int argc, char *argv[])
 {

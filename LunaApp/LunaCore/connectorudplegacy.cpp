@@ -117,7 +117,7 @@ namespace luna {
         mDiscoveryInterval = 500ms;
         mSocket.setBroadcast(true);
         mSocket.setNonBlock(true);
-        net::Address any(net::Address::ANY, mPort);
+        net::Address any(net::Address::ANY, 0);
         mSocket.bind(any);
 
         mNextDiscovery = std::chrono::steady_clock::now();

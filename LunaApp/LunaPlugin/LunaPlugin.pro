@@ -8,8 +8,12 @@ TEMPLATE = lib
 DEFINES += LUNAPLUGIN_LIBRARY
 
 SOURCES += \
-        lunaplugin.cpp
+        lunaplugin.cpp \
+    luna.cpp \
+    lunatab.cpp
 
 HEADERS += \
         lunaplugin.h \
-        lunaplugin_global.h 
+        lunaplugin_global.h \ 
+    luna.h \
+    lunatab.h

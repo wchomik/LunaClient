@@ -6,7 +6,8 @@ SUBDIRS += \
     LightPlugin \
     AudioPlugin \
     ScreenPlugin \
-    Luna
+    Luna \
+    ConnectorPlugin
 
 LunaPlugin.depends = LunaCore
 

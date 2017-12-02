@@ -12,25 +12,41 @@
 
 #include <lunaplugin.h>
 
-class Luna : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Luna(QObject *parent = nullptr);
+#include "lunaplugin_global.h"
+#include "lunatab.h"
 
-    void setup();
-private:
-    using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
-    using PluginVector = std::vector<PluginPtr>;
+namespace luna {
+    class LUNAPLUGINSHARED_EXPORT Luna : public QObject
+    {
+        Q_OBJECT
+    public:
+        explicit Luna(QObject *parent = nullptr);
 
-    void loadDynamicPlugins();
+        void setup();
+        void addTab(std::unique_ptr<Tab> && tab);
+    private:
+        using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
+        using PluginVector = std::vector<PluginPtr>;
 
-    QQmlApplicationEngine * mEngine;
-    luna::Manager mManager;
-    PluginVector mPlugins;
-    QStringList mTabNames;
-public slots:
-    void setSelectedIndex(int index);
-};
+        using TabPtr = std::unique_ptr<Tab>;
+        using TabVector = std::vector<TabPtr>;
+
+
+        void loadDynamicPlugins();
+        void loadStaticPlugins();
+        void instantiateTabs();
+
+
+        QQmlApplicationEngine * mEngine;
+        luna::Manager mManager;
+        PluginVector mPlugins;
+
+        TabVector mTabs;
+        QStringList mTabNames;
+        int mActiveTab;
+    private slots:
+        void setSelectedIndex(int index);
+    };
+}
 
 #endif // LUNA_H

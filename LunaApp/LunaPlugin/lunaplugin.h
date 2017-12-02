@@ -1,34 +1,22 @@
 #ifndef LUNAPLUGIN_H
 #define LUNAPLUGIN_H
 
-#include <memory>
-
-#include <QString>
 #include <QtPlugin>
-#include <QQuickItem>
-
-#include <provider.h>
 
 #include "lunaplugin_global.h"
 
 namespace luna {
+    class Luna;
+
     class LUNAPLUGINSHARED_EXPORT LunaPlugin {
     public:
         virtual ~LunaPlugin();
 
-        virtual QString name() const = 0;
-        virtual std::shared_ptr<Provider> createProvider() = 0;
-        virtual QObject * model() = 0;
-        virtual int displayOrder() const = 0;
-
-        QQuickItem * createItem(QQmlEngine * engine);
-    protected:
-        virtual QUrl itemUrl() = 0;
+        virtual void initialize(Luna * luna) = 0;
+        virtual void finalize(Luna * luna) = 0;
     };
 }
 
-#define LunaPlugin_iid "org.luna.plugin"
-
-Q_DECLARE_INTERFACE(luna::LunaPlugin, LunaPlugin_iid)
+Q_DECLARE_INTERFACE(luna::LunaPlugin, "org.luna.plugin")
 
 #endif // LUNAPLUGIN_H
