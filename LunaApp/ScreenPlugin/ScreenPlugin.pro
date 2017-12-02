@@ -4,11 +4,13 @@ HEADERS += \
     screenprovider.h \
     screenmodel.h \
     array2d.h \
-    screentab.h
+    screentab.h \
+    screenplugin.h
 SOURCES += \
     screenprovider.cpp \
     screenmodel.cpp \
-    screentab.cpp
+    screentab.cpp \
+    screenplugin.cpp
 
 RESOURCES += \
     qml.qrc

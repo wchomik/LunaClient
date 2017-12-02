@@ -2,32 +2,33 @@
 
 #include "screenprovider.h"
 
-ScreenPlugin::ScreenPlugin() :
+ScreenTab::ScreenTab() :
     mModel(std::make_unique<ScreenModel>())
 {
 }
 
-ScreenPlugin::~ScreenPlugin() {
+void ScreenTab::activate(luna::Manager * manager) {
+    auto ret = std::make_shared<ScreenProvider>();
+    mModel->provider(ret);
+    manager->setProvider(ret);
 }
 
-QString ScreenPlugin::name() const {
+void ScreenTab::deactivate(luna::Manager * manager) {
+
+}
+
+QString ScreenTab::displayName() const {
     return "Screen";
 }
 
-std::shared_ptr<luna::Provider> ScreenPlugin::createProvider() {
-    auto ret = std::make_shared<ScreenProvider>();
-    mModel->provider(ret);
-    return ret;
-}
-
-QObject * ScreenPlugin::model() {
+QObject * ScreenTab::model() {
     return mModel.get();
 }
 
-int ScreenPlugin::displayOrder() const {
+int ScreenTab::displayOrder() const {
     return 50;
 }
 
-QUrl ScreenPlugin::itemUrl() {
-    return QUrl("qrc:/ScreenPlugin.qml");
+QUrl ScreenTab::itemUrl() const {
+    return QUrl("qrc:/ScreenTab.qml");
 }

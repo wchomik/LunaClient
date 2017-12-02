@@ -1,27 +1,23 @@
-#ifndef SCREENPLUGIN_H
-#define SCREENPLUGIN_H
+#ifndef SCREENTAB_H
+#define SCREENTAB_H
 
-#include <QObject>
-#include <lunaplugin.h>
+#include <lunatab.h>
+
 #include "screenmodel.h"
 
-class ScreenPlugin : public QObject, public luna::LunaPlugin
+class ScreenTab : public luna::Tab
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.luna.screen")
-    Q_INTERFACES(luna::LunaPlugin)
 public:
-    ScreenPlugin();
-    virtual ~ScreenPlugin();
+    ScreenTab();
 
-    QString name() const override;
-    std::shared_ptr<luna::Provider> createProvider() override;
-    QObject * model() override;
+    void activate(luna::Manager * manager) override;
+    void deactivate(luna::Manager * manager) override;
+    QString displayName() const override;
     int displayOrder() const override;
-protected:
-    QUrl itemUrl() override;
+    QUrl itemUrl() const override;
+    QObject * model() override;
 private:
     std::unique_ptr<ScreenModel> mModel;
 };
 
-#endif // SCREENPLUGIN_H
+#endif // SCREENTAB_H
