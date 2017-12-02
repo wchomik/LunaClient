@@ -7,7 +7,8 @@ HEADERS += \
     fft.h \
     fftw3.h \
     samplebuffer.h \
-    audiotab.h
+    audiotab.h \
+    audioplugin.h
 
 SOURCES += \
     audiomodel.cpp \
@@ -15,7 +16,8 @@ SOURCES += \
     audioprovider.cpp \
     fft.cpp \
     samplebuffer.cpp \
-    audiotab.cpp
+    audiotab.cpp \
+    audioplugin.cpp
 
 RESOURCES += \
     qml.qrc

@@ -2,28 +2,27 @@
 
 #include "audioprovider.h"
 
-AudioPlugin::AudioPlugin() {}
+void AudioTab::activate(luna::Manager * manager) {
+    auto ret = std::make_shared<AudioProvider>();
+    manager->setProvider(ret);
+}
 
-AudioPlugin::~AudioPlugin() {}
+void AudioTab::deactivate(luna::Manager * manager) {
 
-QString AudioPlugin::name() const {
+}
+
+QString AudioTab::displayName() const {
     return "Audio";
 }
 
-std::shared_ptr<luna::Provider> AudioPlugin::createProvider() {
-    auto ret = std::make_shared<AudioProvider>();
-
-    return ret;
+QObject * AudioTab::model() {
+    return mModel.get();
 }
 
-QObject * AudioPlugin::model() {
-    return nullptr;
-}
-
-int AudioPlugin::displayOrder() const {
+int AudioTab::displayOrder() const {
     return 100;
 }
 
-QUrl AudioPlugin::itemUrl() {
+QUrl AudioTab::itemUrl() const {
     return QUrl("qrc:/AudioPlugin.qml");
 }

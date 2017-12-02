@@ -1,28 +1,22 @@
-#ifndef AUDIOPLUGIN_H
-#define AUDIOPLUGIN_H
+#ifndef AUDIOTAB_H
+#define AUDIOTAB_H
 
 #include <QObject>
-#include <lunaplugin.h>
+#include <lunatab.h>
 
 #include "audiomodel.h"
 
-class AudioPlugin : public QObject, public luna::LunaPlugin
+class AudioTab : public luna::Tab
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.luna.audio")
-    Q_INTERFACES(luna::LunaPlugin)
 public:
-    AudioPlugin();
-    virtual ~AudioPlugin();
-
-    QString name() const override;
-    std::shared_ptr<luna::Provider> createProvider() override;
-    QObject * model() override;
+    void activate(luna::Manager * manager) override;
+    void deactivate(luna::Manager * manager) override;
+    QString displayName() const override;
     int displayOrder() const override;
-protected:
-    QUrl itemUrl() override;
+    QUrl itemUrl() const override;
+    QObject * model() override;
 private:
     std::unique_ptr<AudioModel> mModel;
 };
 
-#endif // AUDIOPLUGIN_H
+#endif // AUDIOTAB_H
