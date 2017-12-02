@@ -7,17 +7,18 @@
 
 
 namespace luna {
+    class Luna;
+
     class Tab
     {
     public:
         virtual ~Tab();
-        virtual void enabled(bool state) = 0;
-        virtual QString displayName() = 0;
-        virtual int displayOrder() = 0;
-        virtual QUrl itemUrl() = 0;
+        virtual void activate(Luna * application) = 0;
+        virtual void deactivate(Luna * application) = 0;
+        virtual QString displayName() const = 0;
+        virtual int displayOrder() const = 0;
+        virtual QUrl itemUrl() const = 0;
         virtual QObject * model() = 0;
-
-
     };
 }
 

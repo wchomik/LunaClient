@@ -1,36 +1,35 @@
-#include "lightplugin.h"
+#include "lighttab.h"
 
+#include <luna.h>
 #include "lightprovider.h"
 
-LightPlugin::LightPlugin() :
+LightTab::LightTab() :
     mModel(std::make_unique<LightModel>())
 {
 }
 
-LightPlugin::~LightPlugin() {
+LightTab::~LightTab() {
 }
 
+void LightTab::activate(luna::Luna * application) {
+    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
+    mModel->provider(ret);
+    application->manager().setProvider(ret);
+}
 
-QString LightPlugin::name() const {
+QString LightTab::displayName() const {
     return QString("Light");
 }
 
-std::shared_ptr<luna::Provider> LightPlugin::createProvider() {
-    // make_shared fails due to alignment issues on msvc
-    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
-    mModel->provider(ret);
-    return ret;
-}
-
-QObject * LightPlugin::model() {
+QObject * LightTab::model() {
     return mModel.get();
 }
 
-int LightPlugin::displayOrder() const {
+int LightTab::displayOrder() const {
     return 0;
 }
 
-QUrl LightPlugin::itemUrl() {
+QUrl LightTab::itemUrl() const {
     return QUrl("qrc:/LightPlugin.qml");
 }
 

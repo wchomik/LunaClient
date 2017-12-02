@@ -1,13 +1,13 @@
 include(../LunaPlugin.pri)
 
 HEADERS += \
-    lightplugin.h \
     lightprovider.h \
-    lightmodel.h
+    lightmodel.h \
+    lightplugin.h
 SOURCES += \
-    lightplugin.cpp \
     lightprovider.cpp \
-    lightmodel.cpp
+    lightmodel.cpp \
+    lightplugin.cpp
 
 RESOURCES += \
     qml.qrc

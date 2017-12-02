@@ -1,5 +1,5 @@
 #include "lunatab.h"
 
 namespace luna {
-    LunaTab::~Tab() {}
+    Tab::~Tab() {}
 }

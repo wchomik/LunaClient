@@ -2,29 +2,36 @@
 #define LIGHTPLUGIN_H
 
 #include <QObject>
-#include <lunaplugin.h>
+#include <lunatab.h>
 
 #include "lightmodel.h"
 
-class LightPlugin : public QObject, public luna::LunaPlugin
+class LightTab : public QObject, public luna::Tab
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.luna.light")
     Q_INTERFACES(luna::LunaPlugin)
 public:
-    LightPlugin();
-    ~LightPlugin();
+    LightTab();
+    ~LightTab();
 
-    QString name() const override;
-    std::shared_ptr<luna::Provider> createProvider() override;
-    QObject * model() override;
+    void activate(luna::Luna *application) override;
+    void deactivate(luna::Luna *application) override;
+    QString displayName() const override;
     int displayOrder() const override;
-protected:
-    QUrl itemUrl() override;
-
+    QObject * model() override;
+    QUrl itemUrl() const override;
 private:
     std::unique_ptr<LightModel> mModel;
 };
+
+void LightTab::activate(luna::Luna *application)
+{
+}
+
+void LightTab::deactivate(luna::Luna *application)
+{
+}
 
 
 #endif // LIGHTPLUGIN_H

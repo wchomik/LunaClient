@@ -34,6 +34,10 @@ namespace luna {
         setSelectedIndex(0);
     }
 
+    Manager & Luna::manager() {
+        return mManager;
+    }
+
     void Luna::loadDynamicPlugins() {
         QDir pluginsDir(qApp->applicationDirPath());
         pluginsDir.cd("plugins");

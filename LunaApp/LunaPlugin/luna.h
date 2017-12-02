@@ -24,6 +24,7 @@ namespace luna {
 
         void setup();
         void addTab(std::unique_ptr<Tab> && tab);
+        Manager & manager();
     private:
         using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
         using PluginVector = std::vector<PluginPtr>;
