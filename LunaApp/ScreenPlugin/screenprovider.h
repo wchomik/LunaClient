@@ -13,8 +13,9 @@ public:
     void getData(std::vector<luna::Strand *> &strands) override;
 
     void setDepth(int value);
-    void setBrightness(float value);
-    void setGamma(float value);
+    void setBrightness(luna::ColorScalar value);
+    void setGamma(luna::ColorScalar value);
+    void setBlackLevel(luna::ColorScalar value);
 private:
     void makeDepthWeights();
 
@@ -31,8 +32,9 @@ private:
     std::vector<PixelMapping> mMappings;
     Eigen::ArrayXf mDepthWeights;
     int mDepth;
-    float mBrightness;
-    float mGamma;
+    luna::ColorScalar mBrightness;
+    luna::ColorScalar mGamma;
+    luna::ColorScalar mBlackLevel;
     std::mutex mMutex;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

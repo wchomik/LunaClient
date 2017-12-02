@@ -57,6 +57,21 @@ Item {
                     Screen.gamma = value;
                 }
             }
+
+            Label {
+                text: qsTr("Black level")
+            }
+
+            Slider {
+                Layout.fillWidth: true
+                from: 0.0
+                to: 0.01
+                value: Screen.blackLevel
+                wheelEnabled: true
+                onValueChanged: {
+                    Screen.blackLevel = value;
+                }
+            }
         }
     }
 }

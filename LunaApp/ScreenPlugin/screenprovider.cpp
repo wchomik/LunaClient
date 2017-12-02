@@ -26,7 +26,7 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
         }
         strand->setSpaceConversionColorMode(ColorSpace::sRGB());
 
-        const float tMul = 1.0f / std::max<float>(count - 1, 1);
+        const luna::ColorScalar tMul = 1.0f / std::max<float>(count - 1, 1);
 
         for (uint32_t i = 0; i < count; ++i) {
             const float t = static_cast<float>(i) * tMul;
@@ -53,6 +53,7 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
             for (int i = 0; i < mDepth; ++i) {
                 sum += screenPixels(column, i) * mDepthWeights[i];
             }
+            sum = sum.cwiseMax(Color::Constant(mBlackLevel));
             sum[3] = 0;
             pixels[i] = sum;
         }
@@ -73,14 +74,18 @@ void ScreenProvider::setDepth(int value) {
     makeDepthWeights();
 }
 
-void ScreenProvider::setBrightness(float value) {
+void ScreenProvider::setBrightness(luna::ColorScalar value) {
     std::lock_guard<std::mutex> lock(mMutex);
     mBrightness = value;
     makeDepthWeights();
 }
 
-void ScreenProvider::setGamma(float value) {
+void ScreenProvider::setGamma(luna::ColorScalar value) {
     mGamma = value;
+}
+
+void ScreenProvider::setBlackLevel(ColorScalar value) {
+    mBlackLevel = value;
 }
 
 void ScreenProvider::makeDepthWeights() {
