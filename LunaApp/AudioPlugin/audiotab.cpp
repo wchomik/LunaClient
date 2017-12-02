@@ -1,4 +1,4 @@
-#include "audioplugin.h"
+#include "audiotab.h"
 
 #include "audioprovider.h"
 

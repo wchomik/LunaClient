@@ -1,21 +1,21 @@
 include(../LunaPlugin.pri)
 
 HEADERS += \
-    audioplugin.h \
     audiomodel.h \
     audiochannelprocessor.h \
     audioprovider.h \
     fft.h \
     fftw3.h \
-    samplebuffer.h
+    samplebuffer.h \
+    audiotab.h
 
 SOURCES += \
-    audioplugin.cpp \
     audiomodel.cpp \
     audiochannelprocessor.cpp \
     audioprovider.cpp \
     fft.cpp \
-    samplebuffer.cpp
+    samplebuffer.cpp \
+    audiotab.cpp
 
 RESOURCES += \
     qml.qrc
