@@ -23,5 +23,10 @@ SUBDIRS += ScreenPlugin
 ScreenPlugin.depends = LunaPlugin
 Luna.depends += ScreenPlugin
 
+#EffectsPlugin
+SUBDIRS += EffectsPlugin
+EffectsPlugin.depends = LunaPlugin
+Luna.depends += EffectsPlugin
+
 
 

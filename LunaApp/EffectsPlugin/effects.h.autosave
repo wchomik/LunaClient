@@ -1,0 +1,16 @@
+#ifndef EFFECTS_H
+#define EFFECTS_H
+
+#include <lunaplugin.h>
+
+class  Effects : public luna::LunaPlugin
+{
+    void initialize(luna::Luna *luna) override;
+    void finalize(luna::Luna *luna) override;
+};
+
+
+
+
+
+#endif // EFFECTS_H
