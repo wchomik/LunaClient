@@ -3,15 +3,25 @@ TEMPLATE = subdirs
 SUBDIRS += \
     LunaCore \
     LunaPlugin \
-    LightPlugin \
-    AudioPlugin \
-    ScreenPlugin \
     Luna
 
-LunaPlugin.depends = LunaCore
+LunaPlugin.depends += LunaCore
+Luna.depends += LunaPlugin
 
+#LightPlugin
+SUBDIRS += LightPlugin
 LightPlugin.depends = LunaPlugin
-AudioPlugin.depends = LunaPlugin
-ScreenPlugin.depends = LunaPlugin
+Luna.depens += LightPlugin
 
-Luna.depends = LunaCore LightPlugin ScreenPlugin
+#AudioPlugin
+SUBDIRS += AudioPlugin
+AudioPlugin.depends = LunaPlugin
+Luna.depens += AudioPlugin
+
+#ScreenPlugin
+SUBDIRS += ScreenPlugin
+ScreenPlugin.depends = LunaPlugin
+Luna.depends += ScreenPlugin
+
+
+

@@ -16,13 +16,17 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
 
     for (auto strand : strands) {
         const auto & config = strand->config();
-        if ((config.colorChannels & ColorChannels::rgb) != ColorChannels::rgb) continue;
-
+        const uint32_t count = config.count;
+        Color * const pixels = strand->pixels();
+        if ((config.colorChannels & ColorChannels::rgb) != ColorChannels::rgb) {
+            for (uint32_t i = 0; i < count; ++i) {
+                pixels[i] = Color::Zero();
+            }
+            continue;
+        }
         strand->setSpaceConversionColorMode(ColorSpace::sRGB());
 
-        const uint32_t count = config.count;
         const float tMul = 1.0f / std::max<float>(count - 1, 1);
-        Color * const pixels = strand->pixels();
 
         for (uint32_t i = 0; i < count; ++i) {
             const float t = static_cast<float>(i) * tMul;

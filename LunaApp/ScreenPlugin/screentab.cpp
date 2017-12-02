@@ -30,5 +30,5 @@ int ScreenTab::displayOrder() const {
 }
 
 QUrl ScreenTab::itemUrl() const {
-    return QUrl("qrc:/ScreenTab.qml");
+    return QUrl("qrc:/ScreenPlugin.qml");
 }

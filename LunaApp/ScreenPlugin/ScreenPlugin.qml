@@ -54,7 +54,7 @@ Item {
                 value: Screen.gamma
                 wheelEnabled: true
                 onValueChanged: {
-                    Screen.gamma = position;
+                    Screen.gamma = value;
                 }
             }
         }

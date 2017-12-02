@@ -46,7 +46,7 @@ namespace luna {
         QDir pluginsDir(qApp->applicationDirPath());
         pluginsDir.cd("plugins");
 
-        qDebug() << "Loading plugins from " << pluginsDir.absolutePath();
+        qDebug() << "Loading plugins from" << pluginsDir.absolutePath();
 
         for (auto fileName : pluginsDir.entryList(QDir::Files)) {
             if (!QLibrary::isLibrary(fileName)) {
@@ -54,15 +54,16 @@ namespace luna {
             }
 
             QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-            if (!pluginLoader.isLoaded()) {
-                qDebug() << "Failed to load " << fileName;
+            if (!pluginLoader.load()) {
+                qDebug() << "Failed to load" << fileName;
                 qDebug() <<  pluginLoader.errorString();
+                continue;
             }
             QObject * plugin = pluginLoader.instance();
             if (plugin) {
                 auto lunaPlugin = qobject_cast<luna::LunaPlugin *>(plugin);
                 if (nullptr != lunaPlugin) {
-                    qDebug() << fileName << " loaded";
+                    qDebug() << fileName << "loaded";
                     mPlugins.emplace_back(lunaPlugin);
                 }
             }
@@ -85,7 +86,7 @@ namespace luna {
         auto swipeView = root->findChild<QQuickItem *>("swipeView");
 
         for (auto & tab : mTabs) {
-            qInfo() << "Loading " << tab->displayName() << ", url: " << tab->itemUrl();
+            qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
             QQmlComponent component(mEngine, tab->itemUrl());
             if (!component.isReady()) {
                 qWarning() << "Error. Failed to load tab";
@@ -93,6 +94,8 @@ namespace luna {
             }
 
             auto context = new QQmlContext(rootContext, mEngine);
+            context->setContextProperty(tab->displayName(), tab->model());
+
             auto object = component.create(context);
 
             if (nullptr == object) {
@@ -107,7 +110,6 @@ namespace luna {
                 delete quickItem;
             }
 
-            context->setContextProperty(tab->displayName(), tab->model());
             quickItem->setParent(mEngine);
             quickItem->setParentItem(swipeView);
             mTabNames.append(tab->displayName());
@@ -121,9 +123,9 @@ namespace luna {
 
     void Luna::setSelectedIndex(int index) {
         if (mActiveTab >= 0) {
-            mTabs[mActiveTab]->activate(&mManager);
+            mTabs[mActiveTab]->deactivate(&mManager);
         }
         mActiveTab = index;
-        mTabs[mActiveTab]->deactivate(&mManager);
+        mTabs[mActiveTab]->activate(&mManager);
     }
 }
