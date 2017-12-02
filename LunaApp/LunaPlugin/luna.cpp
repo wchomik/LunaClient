@@ -34,6 +34,10 @@ namespace luna {
         setSelectedIndex(0);
     }
 
+    void Luna::addTab(std::unique_ptr<Tab> && tab) {
+        mTabs.emplace_back(std::move(tab));
+    }
+
     Manager & Luna::manager() {
         return mManager;
     }
@@ -117,9 +121,9 @@ namespace luna {
 
     void Luna::setSelectedIndex(int index) {
         if (mActiveTab >= 0) {
-            mTabs[mActiveTab]->enabled(false);
+            mTabs[mActiveTab]->activate(&mManager);
         }
         mActiveTab = index;
-        mTabs[mActiveTab]->enabled(true);
+        mTabs[mActiveTab]->deactivate(&mManager);
     }
 }

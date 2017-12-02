@@ -5,16 +5,17 @@
 #include <QUrl>
 #include <QObject>
 
+#include <manager.h>
+
+#include "lunaplugin_global.h"
 
 namespace luna {
-    class Luna;
-
-    class Tab
+    class LUNAPLUGINSHARED_EXPORT Tab
     {
     public:
         virtual ~Tab();
-        virtual void activate(Luna * application) = 0;
-        virtual void deactivate(Luna * application) = 0;
+        virtual void activate(Manager * manager) = 0;
+        virtual void deactivate(Manager * manager) = 0;
         virtual QString displayName() const = 0;
         virtual int displayOrder() const = 0;
         virtual QUrl itemUrl() const = 0;

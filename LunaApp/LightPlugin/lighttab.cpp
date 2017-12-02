@@ -11,11 +11,13 @@ LightTab::LightTab() :
 LightTab::~LightTab() {
 }
 
-void LightTab::activate(luna::Luna * application) {
+void LightTab::activate(luna::Manager * manager) {
     auto ret = std::shared_ptr<LightProvider>(new LightProvider());
     mModel->provider(ret);
-    application->manager().setProvider(ret);
+    manager->setProvider(ret);
 }
+
+void LightTab::deactivate(luna::Manager * manager) { }
 
 QString LightTab::displayName() const {
     return QString("Light");
