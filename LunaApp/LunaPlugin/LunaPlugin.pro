@@ -10,14 +10,18 @@ DEFINES += LUNAPLUGIN_LIBRARY
 SOURCES += \
         lunaplugin.cpp \
     luna.cpp \
-    lunatab.cpp \
-    tabsmodel.cpp
+    tabsmodel.cpp \
+    connectorplugin.cpp \
+    configurableplugin.cpp \
+    effectplugin.cpp
 
 HEADERS += \
         lunaplugin.h \
         lunaplugin_global.h \ 
     luna.h \
-    lunatab.h \
-    tabsmodel.h
+    tabsmodel.h \
+    connectorplugin.h \
+    configurableplugin.h \
+    effectplugin.h
 
 DESTDIR = ../LunaApp

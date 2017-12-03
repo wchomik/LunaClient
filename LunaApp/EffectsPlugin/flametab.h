@@ -2,7 +2,7 @@
 #define FLAMETAB_H
 
 #include <QObject>
-#include <lunatab.h>
+#include <effectplugin.h>
 
 //#include "flamemodel.h"
 

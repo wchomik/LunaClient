@@ -3,35 +3,33 @@
 #include <luna.h>
 #include "lightprovider.h"
 
-LightTab::LightTab() :
+LightEffectPlugin::LightEffectPlugin() :
     mModel(std::make_unique<LightModel>())
 {
 }
 
-LightTab::~LightTab() {
+LightEffectPlugin::~LightEffectPlugin() {
 }
 
-void LightTab::activate(luna::Manager * manager) {
-    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
-    mModel->provider(ret);
-    manager->setProvider(ret);
-}
-
-void LightTab::deactivate(luna::Manager * manager) { }
-
-QString LightTab::displayName() const {
+QString LightEffectPlugin::displayName() const {
     return QString("Light");
 }
 
-QObject * LightTab::model() {
+QObject * LightEffectPlugin::model() {
     return mModel.get();
 }
 
-int LightTab::displayOrder() const {
+int LightEffectPlugin::displayOrder() const {
     return 0;
 }
 
-QUrl LightTab::itemUrl() const {
+QUrl LightEffectPlugin::itemUrl() const {
     return QUrl("qrc:/LightPlugin.qml");
 }
 
+
+std::shared_ptr<luna::Provider> LightEffectPlugin::createProvider() {
+    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
+    mModel->provider(ret);
+    return ret;
+}

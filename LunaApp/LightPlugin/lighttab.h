@@ -2,18 +2,17 @@
 #define LIGHTTAB_H
 
 #include <QObject>
-#include <lunatab.h>
+#include <effectplugin.h>
 
 #include "lightmodel.h"
 
-class LightTab : public luna::Tab
+class LightEffectPlugin : public luna::EffectPlugin
 {
 public:
-    LightTab();
-    ~LightTab();
+    LightEffectPlugin();
+    ~LightEffectPlugin();
 
-    void activate(luna::Manager * manager) override;
-    void deactivate(luna::Manager * manager) override;
+    std::shared_ptr<luna::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QObject * model() override;
@@ -21,6 +20,8 @@ public:
 private:
     std::unique_ptr<LightModel> mModel;
 };
+
+
 
 
 #endif // LIGHTTAB_H

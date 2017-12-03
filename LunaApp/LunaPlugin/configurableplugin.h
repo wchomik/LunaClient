@@ -1,5 +1,5 @@
-#ifndef LUNATAB_H
-#define LUNATAB_H
+#ifndef CONFIGURABLEPLUGIN_H
+#define CONFIGURABLEPLUGIN_H
 
 #include <QString>
 #include <QUrl>
@@ -10,17 +10,14 @@
 #include "lunaplugin_global.h"
 
 namespace luna {
-    class LUNAPLUGINSHARED_EXPORT Tab
+    class LUNAPLUGINSHARED_EXPORT ConfigurablePlugin
     {
     public:
-        virtual ~Tab();
-        virtual void activate(Manager * manager) = 0;
-        virtual void deactivate(Manager * manager) = 0;
+        virtual ~ConfigurablePlugin();
         virtual QString displayName() const = 0;
         virtual int displayOrder() const = 0;
         virtual QUrl itemUrl() const = 0;
         virtual QObject * model() = 0;
     };
 }
-
-#endif // LUNATAB_H
+#endif // CONFIGURABLEPLUGIN_H

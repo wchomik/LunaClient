@@ -14,7 +14,7 @@
 #include <lunaplugin.h>
 
 #include "lunaplugin_global.h"
-#include "lunatab.h"
+#include "effectplugin.h"
 
 namespace luna {
     class LUNAPLUGINSHARED_EXPORT Luna : public QObject

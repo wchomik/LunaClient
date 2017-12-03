@@ -2,7 +2,7 @@
 #define AUDIOTAB_H
 
 #include <QObject>
-#include <lunatab.h>
+#include <effectplugin.h>
 
 #include "audiomodel.h"
 

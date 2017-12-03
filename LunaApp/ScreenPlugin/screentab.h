@@ -1,7 +1,7 @@
 #ifndef SCREENTAB_H
 #define SCREENTAB_H
 
-#include <lunatab.h>
+#include <effectplugin.h>
 
 #include "screenmodel.h"
 
