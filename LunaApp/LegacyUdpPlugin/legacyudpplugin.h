@@ -3,7 +3,7 @@
 
 #include <lunaplugin.h>
 
-class LegacyUdpPlugin : public luna::LunaPlugin
+class LegacyUdpPlugin : public QObject, public luna::LunaPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.luna.udplegacy")

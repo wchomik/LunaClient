@@ -7,7 +7,6 @@ DEFINES += LUNACORE_LIBRARY
 
 
 SOURCES += \
-    binarystream.cpp \
     colorprocessor.cpp \
     colorspace.cpp \
     colorutils.cpp \
@@ -18,7 +17,6 @@ SOURCES += \
 
 HEADERS += \
     lunacore_global.h \
-    binarystream.h \
     colormode.h \
     colorprocessor.h \
     colorspace.h \

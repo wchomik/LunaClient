@@ -3,12 +3,14 @@ include(../LunaPlugin.pri)
 SOURCES += \
     udplegacyconnectorplugin.cpp \
     connectorudplegacy.cpp \
-    legacyudpplugin.cpp
+    legacyudpplugin.cpp \
+    binarystream.cpp
 
 HEADERS += \
     udplegacyconnectorplugin.h \
     connectorudplegacy.h \
-    legacyudpplugin.h
+    legacyudpplugin.h \
+    binarystream.h
 
 
 win32 {
@@ -19,3 +21,6 @@ win32 {
         win32/socket.h
     LIBS += -lWs2_32
 }
+
+RESOURCES += \
+    qml.qrc

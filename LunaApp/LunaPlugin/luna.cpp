@@ -45,6 +45,10 @@ namespace luna {
         mEffects.emplace_back(std::move(tab));
     }
 
+    void Luna::addConnector(std::unique_ptr<ConnectorPlugin> && connector) {
+        mConnectors.emplace_back(std::move(connector));
+    }
+
     Manager & Luna::manager() {
         return mManager;
     }
@@ -81,6 +85,39 @@ namespace luna {
 
     }
 
+    QQuickItem * Luna::instantiateTab(ConfigurablePlugin * tab) {
+        auto rootContext = mEngine->rootContext();
+
+        qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
+        QQmlComponent component(mEngine, tab->itemUrl());
+        if (!component.isReady()) {
+            qWarning() << "Error. Failed to load tab";
+            qWarning() << component.errorString();
+            return nullptr;
+        }
+
+        auto context = new QQmlContext(rootContext, mEngine);
+        context->setContextProperty(tab->displayName(), tab->model());
+
+        auto object = component.create(context);
+
+        if (nullptr == object) {
+            qWarning() << "Failed to create tab.";
+            delete object;
+            return nullptr;
+        }
+
+        auto quickItem = qobject_cast<QQuickItem *>(object);
+        if (nullptr == quickItem) {
+            qWarning() << "Created tab is not a QItem.";
+            delete quickItem;
+            return nullptr;
+        }
+
+        quickItem->setParent(mEngine);
+        return quickItem;
+    }
+
     void Luna::instantiateTabs() {
         std::sort(mEffects.begin(), mEffects.end(),
             [](const auto & a, const auto & b) -> bool {
@@ -88,36 +125,28 @@ namespace luna {
             }
         );
 
-        auto rootContext = mEngine->rootContext();
+        for (auto & effect : mEffects) {
+            auto quickItem = instantiateTab(effect.get());
 
-        for (auto & tab : mEffects) {
-            qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
-            QQmlComponent component(mEngine, tab->itemUrl());
-            if (!component.isReady()) {
-                qWarning() << "Error. Failed to load tab";
-                continue;
-            }
-
-            auto context = new QQmlContext(rootContext, mEngine);
-            context->setContextProperty(tab->displayName(), tab->model());
-
-            auto object = component.create(context);
-
-            if (nullptr == object) {
-                qWarning() << "Failed to create tab.";
-                delete object;
-                continue;
-            }
-
-            auto quickItem = qobject_cast<QQuickItem *>(object);
-            if (nullptr == quickItem) {
-                qWarning() << "Created tab is not a QItem.";
-                delete quickItem;
-            }
-
-            quickItem->setParent(mEngine);
-            QString name = tab->displayName();
+            if (nullptr == quickItem) continue;
+            QString name = effect->displayName();
             mEffectsModel->addTab(quickItem, name);
+        }
+
+
+        std::sort(mConnectors.begin(), mConnectors.end(),
+            [](const auto & a, const auto & b) -> bool {
+                return a->displayOrder() < b->displayOrder();
+            }
+        );
+
+        for (auto & connector : mConnectors) {
+            auto quickItem = instantiateTab(connector.get());
+
+            if (nullptr == quickItem) continue;
+            QString name = connector->displayName();
+            mConnectorsModel->addTab(quickItem, name);
+            mManager.addConnector(connector->createConnector());
         }
     }
 

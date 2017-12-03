@@ -5,9 +5,7 @@
 
 #include "colorprocessor.h"
 #include "connector.h"
-#include "connectorudplegacy.h"
-
-#include <qdebug.h>
+#include "strand.h"
 
 namespace ch = std::chrono;
 using namespace std::chrono_literals;
@@ -16,8 +14,6 @@ namespace luna {
     Manager::Manager() :
         mShouldRun(true)
     {
-        mConnectors.emplace_back(std::make_unique<ConnectorUDPLegacy>(1234));
-
         mThread = std::thread([this]() {
             threadFunc();
         });
@@ -28,17 +24,12 @@ namespace luna {
         mThread.join();
     }
 
-    void Manager::setWhiteBalance(const Color & color) {
-        //std::lock_guard<std::mutex> guard(mMutex);
-        //mWhiteBalance = color;
-    }
-
     void Manager::setProvider(std::shared_ptr<Provider> provider) {
         std::lock_guard<std::mutex> guard(mMutex);
         mActiveProvider = provider;
     }
 
-    void Manager::addConnector(std::unique_ptr<Connector> && connector) {
+    void Manager::addConnector(std::shared_ptr<Connector> connector) {
         std::lock_guard<std::mutex> guard(mMutex);
         mConnectors.emplace_back(std::move(connector));
     }

@@ -23,16 +23,15 @@ namespace luna {
         Manager(const Manager &) = delete;
         Manager & operator=(const Manager &) = delete;
 
-        void setWhiteBalance(const Color & color);
         void setProvider(std::shared_ptr<Provider> provider);
-        void addConnector(std::unique_ptr<class Connector> && connector);
+        void addConnector(std::shared_ptr<class Connector> connector);
     private:
         void threadFunc();
         void update();
         void updateColorMode();
         void connected();
 
-        std::vector<std::unique_ptr<class Connector>> mConnectors;
+        std::vector<std::shared_ptr<class Connector>> mConnectors;
 
         std::shared_ptr<class Provider> mActiveProvider;
 

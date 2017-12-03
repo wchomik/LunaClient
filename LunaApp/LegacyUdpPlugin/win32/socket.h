@@ -12,7 +12,7 @@
 class BinaryStream;
 
 namespace net {
-    class LUNACORESHARED_EXPORT Address{
+    class Address{
     public:
         enum SpecialAddress{
             ANY,
@@ -37,7 +37,7 @@ namespace net {
         bool operator!=(const Address & other) const { return !((*this) == other); }
     };
 
-    class LUNACORESHARED_EXPORT SocketUdp
+    class SocketUdp
     {
     public:
         SocketUdp();

@@ -1,0 +1,10 @@
+#include "legacyudpconnectorplugin.h"
+
+
+void LegacyUdpConnectorPlugin::initialize(luna::Luna *luna)
+{
+}
+
+void LegacyUdpConnectorPlugin::finalize(luna::Luna *luna)
+{
+}

@@ -2,10 +2,10 @@
 
 #include <luna.h>
 
-#include "connectorudplegacy.h"
+#include "udplegacyconnectorplugin.h"
 
 void LegacyUdpPlugin::initialize(luna::Luna * luna) {
-    luna->addManager(std::make_shared<ConnectorUdpLegacy>());
+    luna->addConnector(std::make_unique<UdpLegacyConnectorPlugin>());
 }
 
 void LegacyUdpPlugin::finalize(luna::Luna * luna) {
