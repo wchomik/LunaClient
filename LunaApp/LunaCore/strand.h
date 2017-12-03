@@ -26,7 +26,6 @@ namespace luna {
         struct LUNACORESHARED_EXPORT Config {
             ColorSpace colorSpace;
             ColorChannels colorChannels;
-            Color whiteBalance;
             uint32_t count;
             Eigen::Vector3f begin;
             Eigen::Vector3f end;
@@ -41,7 +40,6 @@ namespace luna {
         void applyColorProcessing();
 
         void setDirectColorMode();
-        void setWhiteBalancedColorMode();
         void setSpaceConversionColorMode(const ColorSpace & sourceColorSpace);
     private:
         Config mConfig;

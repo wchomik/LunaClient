@@ -20,11 +20,8 @@ namespace luna {
     }
 
     // color space conversion
-    ColorProcessorColorSpace::ColorProcessorColorSpace(const ColorSpace & src, const ColorSpace & dst, const Color & scale) {
-        ColorSpace::Transformation scaleTransform;
-        scaleTransform.setZero();
-        scaleTransform.diagonal() = scale;
-        mTransformation = scaleTransform * ColorSpace::combine(src, dst);
+    ColorProcessorColorSpace::ColorProcessorColorSpace(const ColorSpace & src, const ColorSpace & dst) {
+        mTransformation = ColorSpace::combine(src, dst);
     }
 
     void ColorProcessorColorSpace::process(ColorVector & strand) {

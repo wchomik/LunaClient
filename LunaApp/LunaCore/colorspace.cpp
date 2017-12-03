@@ -56,7 +56,7 @@ namespace luna {
 
     const ColorSpace & ColorSpace::ws2812() {
         static const ColorSpace ret(
-            {0.31271f, 0.32902f},
+            {0.28623f, 0.27455f},
             {0.68934f, 0.31051f},
             {0.13173f, 0.77457f},
             {0.13450f, 0.04598f});

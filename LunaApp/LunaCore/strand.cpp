@@ -30,15 +30,9 @@ namespace luna {
             std::make_unique<ColorProcessorDirect>();
     }
 
-    void Strand::setWhiteBalancedColorMode() {
-        mColorProcessor =
-            std::make_unique<ColorProcessorWhiteBalanced>(config().whiteBalance);
-    }
-
     void Strand::setSpaceConversionColorMode(const ColorSpace & sourceColorSpace) {
         mColorProcessor = std::make_unique<ColorProcessorColorSpace>(
             sourceColorSpace,
-            config().colorSpace,
-            config().whiteBalance);
+            config().colorSpace);
     }
 }

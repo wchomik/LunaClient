@@ -29,7 +29,7 @@ namespace luna {
 
     class ColorProcessorColorSpace : public ColorProcessor {
     public:
-        ColorProcessorColorSpace(const ColorSpace & src, const ColorSpace & dst, const Color & scale);
+        ColorProcessorColorSpace(const ColorSpace & src, const ColorSpace & dst);
         void process(ColorVector & strand) override;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     private:

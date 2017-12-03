@@ -15,7 +15,6 @@ namespace luna {
     {
         Strand::Config conf;
         conf.colorSpace = ColorSpace::ws2812();
-        conf.whiteBalance << 0.9f, 1.0f, 0.45f, 1.0f;
 
         conf.begin << -1, -1, 0;
         conf.end << -1, 1, 0;
