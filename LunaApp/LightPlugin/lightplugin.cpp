@@ -1,7 +1,7 @@
 #include "lightplugin.h"
 
 #include <luna.h>
-#include "lighttab.h"
+#include "lighteffectplugin.h"
 
 void LightPlugin::initialize(luna::Luna * luna) {
     luna->addTab(std::make_unique<LightTab>());

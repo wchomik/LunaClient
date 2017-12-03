@@ -1,4 +1,4 @@
-#include "flametab.h"
+#include "flameeffectplugin.h"
 
 #include "flameprovider.h"
 

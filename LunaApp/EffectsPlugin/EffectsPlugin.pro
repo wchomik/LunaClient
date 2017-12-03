@@ -2,13 +2,13 @@ include(../LunaPlugin.pri)
 
 SOURCES += \
     effectsplugin.cpp \
-    flametab.cpp \
-    flameprovider.cpp
+    flameprovider.cpp \
+    flameeffectplugin.cpp
 
 HEADERS += \
     effectsplugin.h \
-    flametab.h \
-    flameprovider.h
+    flameprovider.h \
+    flameeffectplugin.h
 
 RESOURCES += \
     qml.qrc
