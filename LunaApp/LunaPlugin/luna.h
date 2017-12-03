@@ -3,16 +3,15 @@
 
 #include <vector>
 #include <memory>
-#include <manager.h>
 
+#include <QObject>
+#include <QtQuick>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
-#include <QtQuick>
-#include <QObject>
-#include <QList>
 
-#include <lunaplugin.h>
+#include <manager.h>
 
+#include "lunaplugin.h"
 #include "lunaplugin_global.h"
 #include "effectplugin.h"
 
@@ -25,29 +24,26 @@ namespace luna {
         ~Luna();
 
         void setup();
-        void addTab(std::unique_ptr<Tab> && tab);
+        void addEffect(std::unique_ptr<EffectPlugin> && effect);
         Manager & manager();
     private:
         using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
         using PluginVector = std::vector<PluginPtr>;
 
-        using TabPtr = std::unique_ptr<Tab>;
-        using TabVector = std::vector<TabPtr>;
-
+        using EffectPtr = std::unique_ptr<EffectPlugin>;
+        using EffectVector = std::vector<EffectPtr>;
 
         void loadDynamicPlugins();
         void loadStaticPlugins();
         void instantiateTabs();
 
-
         QQmlApplicationEngine * mEngine;
         luna::Manager mManager;
         PluginVector mPlugins;
 
-        TabVector mTabs;
-        class TabsModel * mModesModel;
+        EffectVector mEffects;
+        class TabsModel * mEffectsModel;
         class TabsModel * mConnectorsModel;
-        int mActiveTab;
     private slots:
         void setSelectedIndex(int index);
     };

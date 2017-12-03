@@ -10,7 +10,7 @@
 #include "configurableplugin.h"
 
 namespace luna {
-    class ConnectorPlugin : public ConfigurablePlugin
+    class LUNAPLUGINSHARED_EXPORT ConnectorPlugin : public ConfigurablePlugin
     {
     public:
         virtual ~ConnectorPlugin();

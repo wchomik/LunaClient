@@ -5,7 +5,7 @@
 #include "flameeffectplugin.h"
 
 void EffectsPlugin::initialize(luna::Luna * luna) {
-    luna->addTab(std::make_unique<FlameTab>());
+    luna->addEffect(std::make_unique<FlameEffectPlugin>());
 }
 
 void EffectsPlugin::finalize(luna::Luna * luna) {

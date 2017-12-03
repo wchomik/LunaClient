@@ -5,7 +5,7 @@
 #include "audioeffectplugin.h"
 
 void AudioPlugin::initialize(luna::Luna * luna) {
-    luna->addTab(std::make_unique<AudioTab>());
+    luna->addEffect(std::make_unique<AudioEffectPlugin>());
 }
 
 void AudioPlugin::finalize(luna::Luna * luna) {

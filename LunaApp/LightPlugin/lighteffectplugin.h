@@ -1,5 +1,5 @@
-#ifndef LIGHTTAB_H
-#define LIGHTTAB_H
+#ifndef LIGHTEFFECTPLUGIN_H
+#define LIGHTEFFECTPLUGIN_H
 
 #include <QObject>
 #include <effectplugin.h>
@@ -24,4 +24,4 @@ private:
 
 
 
-#endif // LIGHTTAB_H
+#endif // LIGHTEFFECTPLUGIN_H

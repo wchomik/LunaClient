@@ -14,11 +14,10 @@ namespace luna {
     Luna::Luna(QObject * parent) :
         QObject(parent),
         mEngine(new QQmlApplicationEngine(this)),
-        mModesModel(new TabsModel(this)),
-        mConnectorsModel(new TabsModel(this)),
-        mActiveTab(-1)
+        mEffectsModel(new TabsModel(this)),
+        mConnectorsModel(new TabsModel(this))
     {
-        QObject::connect(mModesModel, &TabsModel::tabSelected,
+        QObject::connect(mEffectsModel, &TabsModel::tabSelected,
             this, &Luna::setSelectedIndex);
     }
 
@@ -34,16 +33,16 @@ namespace luna {
         instantiateTabs();
 
         auto rootContext = mEngine->rootContext();
-        rootContext->setContextProperty("ModesModel", mModesModel);
-        rootContext->setContextProperty("ConnectorsModel", mModesModel);
+        rootContext->setContextProperty("EffectsModel", mEffectsModel);
+        rootContext->setContextProperty("ConnectorsModel", mConnectorsModel);
 
         mEngine->load(QUrl("qrc:/main.qml"));
 
         setSelectedIndex(0);
     }
 
-    void Luna::addTab(std::unique_ptr<Tab> && tab) {
-        mTabs.emplace_back(std::move(tab));
+    void Luna::addEffect(std::unique_ptr<EffectPlugin> && tab) {
+        mEffects.emplace_back(std::move(tab));
     }
 
     Manager & Luna::manager() {
@@ -83,7 +82,7 @@ namespace luna {
     }
 
     void Luna::instantiateTabs() {
-        std::sort(mTabs.begin(), mTabs.end(),
+        std::sort(mEffects.begin(), mEffects.end(),
             [](const auto & a, const auto & b) -> bool {
                 return a->displayOrder() < b->displayOrder();
             }
@@ -91,7 +90,7 @@ namespace luna {
 
         auto rootContext = mEngine->rootContext();
 
-        for (auto & tab : mTabs) {
+        for (auto & tab : mEffects) {
             qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
             QQmlComponent component(mEngine, tab->itemUrl());
             if (!component.isReady()) {
@@ -118,15 +117,11 @@ namespace luna {
 
             quickItem->setParent(mEngine);
             QString name = tab->displayName();
-            mModesModel->addTab(quickItem, name);
+            mEffectsModel->addTab(quickItem, name);
         }
     }
 
     void Luna::setSelectedIndex(int index) {
-        if (mActiveTab >= 0) {
-            mTabs[mActiveTab]->deactivate(&mManager);
-        }
-        mActiveTab = index;
-        mTabs[mActiveTab]->activate(&mManager);
+        mManager.setProvider(mEffects[index]->createProvider());
     }
 }

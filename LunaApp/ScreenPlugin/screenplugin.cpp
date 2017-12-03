@@ -5,7 +5,7 @@
 #include "screeneffectplugin.h"
 
 void ScreenPlugin::initialize(luna::Luna * luna) {
-    luna->addTab(std::make_unique<ScreenTab>());
+    luna->addEffect(std::make_unique<ScreenEffectPlugin>());
 }
 
 void ScreenPlugin::finalize(luna::Luna * luna) {

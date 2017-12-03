@@ -1,5 +1,5 @@
 #include "effectplugin.h"
 
 namespace luna {
-    EffectPlugin::~EffectPlugin() {}
+    EffectPlugin::~EffectPlugin() { }
 }

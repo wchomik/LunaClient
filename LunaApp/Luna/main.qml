@@ -85,11 +85,10 @@ ApplicationWindow {
         anchors.fill: parent
         initialItem: TabPage {
             id: modesPage
-            tabs: ModesModel
+            tabs: EffectsModel
             Connections {
                 target: modesPage
-                onTabSelected: { ModesModel.tabSelected(index) }
-
+                onTabSelected: { EffectsModel.tabSelected(index) }
             }
         }
     }

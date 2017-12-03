@@ -1,17 +1,15 @@
-#ifndef SCREENTAB_H
-#define SCREENTAB_H
+#ifndef SCREENEFFECTPLUGIN_H
+#define SCREENEFFECTPLUGIN_H
 
 #include <effectplugin.h>
 
 #include "screenmodel.h"
 
-class ScreenTab : public luna::Tab
+class ScreenEffectPlugin : public luna::EffectPlugin
 {
 public:
-    ScreenTab();
-
-    void activate(luna::Manager * manager) override;
-    void deactivate(luna::Manager * manager) override;
+    ScreenEffectPlugin();
+    std::shared_ptr<luna::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QUrl itemUrl() const override;
@@ -20,4 +18,4 @@ private:
     std::unique_ptr<ScreenModel> mModel;
 };
 
-#endif // SCREENTAB_H
+#endif // SCREENEFFECTPLUGIN_H

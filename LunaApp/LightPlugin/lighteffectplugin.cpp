@@ -1,4 +1,4 @@
-#include "lighttab.h"
+#include "lighteffectplugin.h"
 
 #include <luna.h>
 #include "lightprovider.h"
@@ -6,6 +6,12 @@
 LightEffectPlugin::LightEffectPlugin() :
     mModel(std::make_unique<LightModel>())
 {
+}
+
+std::shared_ptr<luna::Provider> LightEffectPlugin::createProvider() {
+    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
+    mModel->provider(ret);
+    return ret;
 }
 
 LightEffectPlugin::~LightEffectPlugin() {
@@ -25,11 +31,4 @@ int LightEffectPlugin::displayOrder() const {
 
 QUrl LightEffectPlugin::itemUrl() const {
     return QUrl("qrc:/LightPlugin.qml");
-}
-
-
-std::shared_ptr<luna::Provider> LightEffectPlugin::createProvider() {
-    auto ret = std::shared_ptr<LightProvider>(new LightProvider());
-    mModel->provider(ret);
-    return ret;
 }
