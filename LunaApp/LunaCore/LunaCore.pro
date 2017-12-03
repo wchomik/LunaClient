@@ -12,7 +12,6 @@ SOURCES += \
     colorspace.cpp \
     colorutils.cpp \
     connector.cpp \
-    connectorudplegacy.cpp \
     manager.cpp \
     provider.cpp \
     strand.cpp
@@ -25,18 +24,8 @@ HEADERS += \
     colorspace.h \
     colorutils.h \
     connector.h \
-    connectorudplegacy.h \
     delegate.h \
     event.h \
     manager.h \
     provider.h \
     strand.h
-
-win32 {
-    INCLUDEPATH += ./win32
-    SOURCES += \
-        win32/socket.cpp
-    HEADERS += \
-        win32/socket.h
-    LIBS += -lWs2_32
-}

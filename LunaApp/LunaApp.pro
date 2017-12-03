@@ -28,5 +28,10 @@ SUBDIRS += EffectsPlugin
 EffectsPlugin.depends = LunaPlugin
 Luna.depends += EffectsPlugin
 
+#LegacyUdpPlugin
+SUBDIRS += LegacyUdpPlugin
+LegacyUdpPlugin.depends = LunaPlugin
+Luna.depends += LegacyUdpPlugin
+
 
 
