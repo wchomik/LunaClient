@@ -2,7 +2,7 @@
 
 #include <luna.h>
 
-#include "audiotab.h"
+#include "audioeffectplugin.h"
 
 void AudioPlugin::initialize(luna::Luna * luna) {
     luna->addTab(std::make_unique<AudioTab>());

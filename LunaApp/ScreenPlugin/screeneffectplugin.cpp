@@ -1,4 +1,4 @@
-#include "screentab.h"
+#include "screeneffectplugin.h"
 
 #include "screenprovider.h"
 
