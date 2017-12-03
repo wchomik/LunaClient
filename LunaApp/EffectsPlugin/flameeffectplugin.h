@@ -1,16 +1,15 @@
-#ifndef FLAMETAB_H
-#define FLAMETAB_H
+#ifndef FLAMEEFFECTPLUGIN_H
+#define FLAMEEFFECTPLUGIN_H
 
 #include <QObject>
 #include <effectplugin.h>
 
 //#include "flamemodel.h"
 
-class FlameTab : public luna::Tab
+class FlameEffectPlugin : public luna::EffectPlugin
 {
 public:
-    void activate(luna::Manager * manager) override;
-    void deactivate(luna::Manager * manager) override;
+    std::shared_ptr<luna::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QObject * model() override;
@@ -18,4 +17,7 @@ public:
 private:
     //std::unique_ptr<FlameModel> mModel;
 };
-#endif // FLAMETAB_H
+
+
+
+#endif // FLAMEEFFECTPLUGIN_H
