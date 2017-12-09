@@ -5,14 +5,13 @@
 using namespace Eigen;
 using namespace luna;
 
-constexpr static float sourceTemperatureLow = 1000.0f;
-constexpr static float sourceTemperatureHigh = 3700.0f;
-constexpr static float sourceChangeSpeed = 0.2f;
-
 FlameProvider::FlameProvider() :
     mTemperatureDistribution(-1.0f, 1.0f),
-    mSparkleDistribution(0.0001)
-{
+    mSparkleDistribution(0.0001),
+    mTemperatureLow(1000.0f),
+    mTemperatureHigh(5700.0f),
+    mFlickerRate(0.2f),
+    mBrightness(1.0f) {
     mPreviousTime = mClock.now();
 }
 
@@ -33,63 +32,67 @@ void FlameProvider::getData(std::vector<Strand *> & strands) {
         }
 
         auto it = mStrandData.find(strand);
-        if(mStrandData.end() == it) {
+        if (mStrandData.end() == it) {
             createStrandData(strand);
         }
         StrandData & data = mStrandData[strand];
 
-        data.burnRate += sourceChangeSpeed * mTemperatureDistribution(mRandom);
+        data.burnRate += mFlickerRate * mTemperatureDistribution(mRandom);
         // decay towards 1
-        const float decayFactor = 1.0f - sourceChangeSpeed;
-        data.burnRate = (data.burnRate - 1.0f) * decayFactor + 1.0f;
+        const float decayFactor = 1.0f - mFlickerRate;
+        data.burnRate = (data.burnRate - 0.5f) * decayFactor + 0.5f;
+        data.burnRate = clamp(data.burnRate, 0.0f, 1.0f);
 
 
         // decay temperature and add sparkles
-        const float coolRate = sourceTemperatureHigh / config.count;
+        const float coolRate = 1.0f / config.count;
         for (int i = 0; i < config.count; ++i) {
             float & temperature = data.temperatures[i];
             temperature -= coolRate;
-            /*if (mSparkleDistribution(mRandom)) {
-                temperature += 3000.0f;
-            }*/
         }
 
-        // shift whole strand
-        data.shift += deltaTime * 100.0f;
-
-        float shift;
-        data.shift = std::modf(data.shift, &shift);
-
-        auto shiftCount = 1;//static_cast<int>(shift);
-
-        if (shiftCount > 0) {
-            for (unsigned i = config.count - 1; i > 0; --i) {
-                data.temperatures[i] = data.temperatures[i - 1];
-            }
-            data.temperatures[0] = data.burnRate * (sourceTemperatureHigh - sourceTemperatureLow) + sourceTemperatureLow;
+        for (unsigned i = config.count - 1; i > 0; --i) {
+            data.temperatures[i] = data.temperatures[i - 1];
         }
+        data.temperatures[0] = data.burnRate;
 
         // map to colors
         strand->setSpaceConversionColorMode(ColorSpace::cieXyz());
 
         for (unsigned i = 0; i < config.count; ++i) {
-            int index = data.begin + data.direction * i;
             float temperature = data.temperatures[i];
-            const float brightness = std::max(0.0f, (temperature - sourceTemperatureLow))
-                / (sourceTemperatureHigh - sourceTemperatureLow);
+            const float brightness = std::sqrt(std::max(0.0f, temperature)) * mBrightness;
             const float fadeStart = std::min(1.0f, i * 15.0f * config.count);
-            Color color = temperatureToCieXyz(temperature) * brightness * fadeStart;
+            Color color = temperatureToCieXyz(temperature * (mTemperatureHigh - mTemperatureLow) + mTemperatureLow) * brightness * fadeStart;
+
+            int index = data.begin + data.direction * i;
             strand->pixels()[index] = color;
         }
     }
 }
 
-void FlameProvider::createStrandData(Strand *strand) {
+void FlameProvider::temperatureLow(float value) {
+    mTemperatureLow = value;
+}
+
+void FlameProvider::temperatureHigh(float value) {
+    mTemperatureHigh = value;
+}
+
+void FlameProvider::flickerRate(float value) {
+    mFlickerRate = value;
+}
+
+void FlameProvider::brightness(float value) {
+    mBrightness = value;
+}
+
+void FlameProvider::createStrandData(Strand * strand) {
     auto & config = strand->config();
     StrandData & data = mStrandData[strand];
     data.temperatures.resize(config.count);
     for (float & t : data.temperatures) {
-        t = 1000.0f;
+        t = 0.0f;
     }
 
     Vector3f difference = config.end - config.begin;

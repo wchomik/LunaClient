@@ -1,9 +1,15 @@
 #include "flameeffectplugin.h"
 
 #include "flameprovider.h"
+#include "flamemodel.h"
+
+FlameEffectPlugin::FlameEffectPlugin() :
+    mModel(std::make_unique<FlameModel>())
+{}
 
 std::shared_ptr<luna::Provider> FlameEffectPlugin::createProvider() {
     auto provider = std::shared_ptr<FlameProvider>(new FlameProvider());
+    mModel->provider(provider);
     return provider;
 }
 
@@ -16,7 +22,7 @@ int FlameEffectPlugin::displayOrder() const {
 }
 
 QObject * FlameEffectPlugin::model() {
-    return nullptr;
+    return mModel.get();
 }
 
 QUrl FlameEffectPlugin::itemUrl() const {

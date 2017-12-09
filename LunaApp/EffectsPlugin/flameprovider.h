@@ -13,6 +13,11 @@ class FlameProvider : public luna::Provider
 public:
     FlameProvider();
     void getData(std::vector<luna::Strand *> &strands) override;
+
+    void temperatureLow(float value);
+    void temperatureHigh(float value);
+    void flickerRate(float value);
+    void brightness(float value);
 private:
     struct StrandData {
         std::vector<float> temperatures;
@@ -29,6 +34,11 @@ private:
     std::default_random_engine mRandom;
     std::uniform_real_distribution<float> mTemperatureDistribution;
     std::bernoulli_distribution mSparkleDistribution;
+
+    float mTemperatureLow;
+    float mTemperatureHigh;
+    float mFlickerRate;
+    float mBrightness;
 };
 
 
