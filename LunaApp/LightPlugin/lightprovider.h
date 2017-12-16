@@ -3,28 +3,47 @@
 
 #include <provider.h>
 #include <colorspace.h>
+#include <colorutils.h>
+#include <strand.h>
 
 #include "themecolor.h"
 
 class LightProvider : public luna::Provider {
 public:
+    enum class Source {
+        ColorPicker,
+        Temperature,
+        Manual,
+        Theme,
+    };
+
     LightProvider();
 
     void getData(std::vector<luna::Strand *> & strands) override;
 
-    void color(const luna::Color & value);
-    void whiteness(luna::ColorScalar value);
-    void shouldGetColorFromTheme(bool value);
+    void setColor(const luna::Color & value);
+    void setColorFromTemperature(const float value);
+    void setWhiteness(luna::ColorScalar value);
+    void setBrightness(luna::ColorScalar value);
+
+    void setSource(Source value);
 private:
-    luna::ColorSpace::Transformation mScreenToXyzTransformation;
-    luna::ColorSpace::Transformation mColorToXyzTransformation;
+    struct LightData {
+        explicit LightData(luna::Strand * strand);
+        luna::Color smoothColor;
+        luna::ColorSpace::Transformation screenToStrandTransformation;
+    };
+
+    Source mSource;
 
     luna::Color mColor;
-    luna::Color mSmoothColor;
     luna::ColorScalar mWhiteness;
 
     ThemeColor mThemeColor;
-    bool mColorFromTheme;
+
+    luna::ColorScalar mBrightness;
+
+    luna::StrandData<LightData> mStrandData;
 private:
     void update();
 public:

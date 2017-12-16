@@ -48,6 +48,20 @@ namespace luna {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
+
+    template<typename T>
+    class StrandData {
+    public:
+        T & operator[](Strand * key) {
+            auto it = mStorage.find(key);
+            if (mStorage.end() == it) {
+                it = mStorage.emplace(std::make_pair(key, T(key))).first;
+            }
+            return it->second;
+        }
+    private:
+        aligned_unordered_map<Strand *, T> mStorage;
+    };
 }
 
 #endif // STRAND_H

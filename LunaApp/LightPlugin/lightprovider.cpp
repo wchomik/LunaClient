@@ -6,53 +6,76 @@
 using namespace luna;
 
 LightProvider::LightProvider() :
+    mSource(Source::ColorPicker),
     mColor(1, 1, 1, 1),
-    mSmoothColor(0.0, 0.0, 0.0, 0.0),
     mWhiteness(0.0),
-    mColorFromTheme(false)
+    mBrightness(1.0)
 {
-    mScreenToXyzTransformation =
-        ColorSpace::combine(
-            ColorSpace::sRGB(),
-            ColorSpace::cieXyz());
-
-    mScreenToXyzTransformation =
-        ColorSpace::combine(
-            ColorSpace::rec2020(),
-            ColorSpace::cieXyz());
 }
 
 void LightProvider::getData(std::vector<Strand *> & strands) {
-    Color lightColor;
-    if (mColorFromTheme) {
-        lightColor = mScreenToXyzTransformation * mThemeColor.get();
-        lightColor[3] = 0.0f;
-    } else {
-        lightColor = mScreenToXyzTransformation * mColor;
-        lightColor[3] = mWhiteness;
-    }
+    constexpr float smoothScale = 0.04f;
 
-    const float smoothScale = 0.05f;
-    mSmoothColor = lerp(mSmoothColor, lightColor, smoothScale);
+    for (auto strand : strands) {
+        Color lightColor = mColor;
+        strand->setDirectColorMode();
 
-    for (auto && strand : strands) {
-        strand->setSpaceConversionColorMode(ColorSpace::cieXyz());
+        auto & data = mStrandData[strand];
+
+        switch (mSource) {
+        case Source::Manual:
+            lightColor[3] = mWhiteness;
+            break;
+        case Source::Theme:
+            lightColor = mThemeColor.get();
+            // fallthrough
+        case Source::ColorPicker:
+            lightColor = data.screenToStrandTransformation * lightColor;
+            lightColor[3] = 0.0;
+            break;
+        case Source::Temperature:
+            lightColor = strand->config().colorSpace.fromXyzToRgb(lightColor);
+            lightColor[3] = 0.0;
+            break;
+        }
+
+        lightColor *= mBrightness;
+
+        data.smoothColor = lerp(data.smoothColor, lightColor, smoothScale);
+
         uint32_t count = strand->config().count;
         Color * pixels = strand->pixels();
         for (uint32_t i = 0; i < count; ++i) {
-            pixels[i] = mSmoothColor;
+            pixels[i] = data.smoothColor;
         }
     }
 }
 
-void LightProvider::color(const Color & value) {
+void LightProvider::setColor(const Color & value) {
     mColor = value;
 }
 
-void LightProvider::whiteness(ColorScalar value) {
+void LightProvider::setColorFromTemperature(const float value) {
+    mColor = temperatureToCieXyz(value);
+}
+
+void LightProvider::setWhiteness(ColorScalar value) {
     mWhiteness = value;
 }
 
-void LightProvider::shouldGetColorFromTheme(bool value) {
-    mColorFromTheme = value;
+void LightProvider::setBrightness(ColorScalar value) {
+    mBrightness = value;
+}
+
+void LightProvider::setSource(LightProvider::Source value) {
+    mSource = value;
+}
+
+LightProvider::LightData::LightData(Strand * strand) :
+    smoothColor(Color::Zero())
+{
+    screenToStrandTransformation =
+        ColorSpace::combine(
+            ColorSpace::rec2020(),
+            strand->config().colorSpace);
 }

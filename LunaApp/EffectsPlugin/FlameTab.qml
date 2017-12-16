@@ -1,27 +1,54 @@
 import QtQuick 2.9
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
+import Qt.labs.settings 1.0
 
 Item {
+    Settings {
+        id: settings
+        category: "Flamee"
+        property real temperatureLow: 1600
+        onTemperatureLowChanged: Flame.temperatureLow = temperatureLow
+
+        property real temperatureHigh: 3000
+        onTemperatureHighChanged: Flame.temperatureHigh = temperatureHigh
+
+        property alias flickerRate: flickerRate.value
+        onFlickerRateChanged: Flame.flickerRate = flickerRate.value
+
+        property alias brightness: brightness.value
+        onBrightnessChanged: Flame.brightness = brightness.value
+    }
+
     GridLayout {
         anchors.margins: 20
         anchors.fill: parent
         columns: 2
+
         Label {
             text: "Temperture"
         }
 
         RangeSlider {
+            id: temperature
             Layout.fillWidth: true
             from: 1000.0
             to: 10000.0
             first {
-                value: Flame.temperatureLow
-                onValueChanged: Flame.temperatureLow = first.value
+                value: settings.temperatureLow
+                onValueChanged: {
+                    if (settings.temperatureLow !== first.value) {
+                        settings.temperatureLow = first.value
+                    }
+                }
             }
             second {
-                value: Flame.temperatureHigh
-                onValueChanged: Flame.temperatureHigh = second.value
+                value: settings.temperatureHigh
+                onValueChanged: {
+                    if (settings.temperatureHigh !== second.value) {
+                        settings.temperatureHigh = second.value
+                    }
+                }
             }
         }
 
@@ -30,11 +57,11 @@ Item {
         }
 
         Slider {
+            id: brightness
             Layout.fillWidth: true
             from: 0.0
             to: 10.0
-            value: Flame.brightness
-            onValueChanged: Flame.brightness = value
+            value: 1.0
         }
 
         Label {
@@ -42,11 +69,11 @@ Item {
         }
 
         Slider {
+            id: flickerRate
             Layout.fillWidth: true
             from: 0.0
             to: 1.0
-            value: Flame.flickerRate
-            onValueChanged: Flame.flickerRate = value
+            value: 0.33
         }
 
         Item {

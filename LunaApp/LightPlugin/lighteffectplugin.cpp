@@ -30,5 +30,5 @@ int LightEffectPlugin::displayOrder() const {
 }
 
 QUrl LightEffectPlugin::itemUrl() const {
-    return QUrl("qrc:/LightPlugin.qml");
+    return QUrl("qrc:/LightPlugin/Main.qml");
 }

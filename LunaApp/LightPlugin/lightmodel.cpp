@@ -4,51 +4,35 @@
 
 using namespace luna;
 
-static const QString whitenessSettingName("whiteness");
-static const QString colorSettingName("color");
-static const QString themeColorSettingName("themeColor");
-
 LightModel::LightModel(QObject * parent) :
     QObject(parent),
-    mSettings()
-{
-    mSettings.beginGroup("Light");
-
-    mColor = mSettings.value(colorSettingName, QColor(1.0, 1.0, 1.0, 1.0)).value<QColor>();
-    mWhiteness = mSettings.value(whitenessSettingName, 0.1).toReal();
-    mThemeColor = mSettings.value(themeColorSettingName, false).toBool();
-
-}
+    mColor(),
+    mWhiteness(0.0),
+    mTemperature(5500.0),
+    mBrightness(1.0)
+{}
 
 LightModel::~LightModel() {
-    mSettings.setValue(colorSettingName, mColor);
-    mSettings.setValue(whitenessSettingName, mWhiteness);
-    mSettings.setValue(themeColorSettingName, mThemeColor);
 }
 
 void LightModel::provider(std::weak_ptr<LightProvider> ptr) {
     mProvider = ptr;
-    if (auto p = mProvider.lock()) {
-        p->color(qColorToColor(mColor));
-        p->whiteness(static_cast<luna::ColorScalar>(mWhiteness));
-        p->shouldGetColorFromTheme(mThemeColor);
-    }
+    setSource(mSource);
 }
 
 QColor LightModel::color() const {
     return mColor;
 }
 
-void LightModel::setColor(QColor value) {
-    if (mColor == value) {
-        return;
+void LightModel::setColor(const QColor & value) {
+    if (auto p = mProvider.lock()) {
+        p->setColor(qColorToColor(value));
     }
 
-    mColor = value;
-    if (auto p = mProvider.lock()) {
-        p->color(qColorToColor(value));
+    if (mColor != value) {
+        mColor = value;
+        colorChanged(value);
     }
-    colorChanged(value);
 }
 
 qreal LightModel::whiteness() const {
@@ -56,30 +40,77 @@ qreal LightModel::whiteness() const {
 }
 
 void LightModel::setWhiteness(qreal value) {
-    if (mWhiteness == value) {
-        return;
-    }
-
-    mWhiteness = value;
     if (auto p = mProvider.lock()) {
-        p->whiteness(static_cast<luna::ColorScalar>(value));
-    }
-    whitenessChanged(value);
-}
-
-
-bool LightModel::themeColor() const {
-    return mThemeColor;
-}
-
-void LightModel::setThemeColor(bool value) {
-    if (mThemeColor == value) {
-        return;
+        p->setWhiteness(static_cast<luna::ColorScalar>(value));
     }
 
-    mThemeColor = value;
+    if (mWhiteness != value) {
+        mWhiteness = value;
+        whitenessChanged(value);
+    }
+}
+
+qreal LightModel::temperature() const {
+    return mTemperature;
+}
+
+void LightModel::setTemperature(qreal value) {
     if (auto p = mProvider.lock()) {
-        p->shouldGetColorFromTheme(value);
+        p->setColorFromTemperature(static_cast<luna::ColorScalar>(value));
     }
-    themeColorChanged(value);
+
+    if (mTemperature != value) {
+        mTemperature = value;
+        temperatureChanged(mTemperature);
+    }
 }
+
+qreal LightModel::brightness() const {
+    return mBrightness;
+}
+
+void LightModel::setBrightness(qreal value) {
+    if (auto p = mProvider.lock()) {
+        p->setBrightness(static_cast<luna::ColorScalar>(value));
+    }
+
+    if (mBrightness != value) {
+        mBrightness = value;
+        brightnessChanged(value);
+    }
+}
+
+int LightModel::source() const {
+    return mSource;
+}
+
+void LightModel::setSource(int value) {
+    if (auto p = mProvider.lock()) {
+        auto source = static_cast<LightProvider::Source>(value);
+        qDebug() << value;
+        p->setSource(source);
+        switch (source) {
+        case LightProvider::Source::ColorPicker:
+            p->setColor(qColorToColor(mColor));
+            break;
+        case LightProvider::Source::Temperature:
+            p->setColorFromTemperature(mTemperature);
+            break;
+        case LightProvider::Source::Manual:
+            p->setColor(qColorToColor(mColor));
+            p->setWhiteness(static_cast<ColorScalar>(mWhiteness));
+            break;
+        case LightProvider::Source::Theme:
+
+            break;
+        }
+        p->setBrightness(static_cast<ColorScalar>(mBrightness));
+    }
+
+    if (mSource != value) {
+        sourceChanged(mSource);
+        mSource = value;
+    }
+}
+
+

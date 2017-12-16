@@ -2,6 +2,7 @@
 #define COLORUTILS_H
 
 #include <vector>
+#include <unordered_map>
 
 #include <Eigen/Core>
 #include <Eigen/StdVector>
@@ -14,6 +15,8 @@ namespace luna {
     typedef float ColorScalar;
     typedef Eigen::Matrix<ColorScalar, 4, 1> Color;
     typedef std::vector<Color, Eigen::aligned_allocator<Color>> ColorVector;
+    template<typename K, typename V>
+    using aligned_unordered_map = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, Eigen::aligned_allocator<std::pair<const K, V>>>;
 
     Color LUNACORESHARED_EXPORT rgbToHsv(const Color & rgb);
     Color LUNACORESHARED_EXPORT hsvToRgb(const Color & hsv);

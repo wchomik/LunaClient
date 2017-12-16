@@ -31,6 +31,14 @@ namespace luna {
         mXyzToRgb = mRgbToXyz.inverse();
     }
 
+    Color ColorSpace::fromRgbToXyz(const Color & source) const {
+        return mRgbToXyz * source;
+    }
+
+    Color ColorSpace::fromXyzToRgb(const Color & source) const {
+        return mXyzToRgb * source;
+    }
+
     const ColorSpace & ColorSpace::cieXyz() {
         static const ColorSpace ret;
         return ret;

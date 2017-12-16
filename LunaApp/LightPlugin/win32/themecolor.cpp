@@ -80,7 +80,9 @@ Color ThemeColor::get() {
         false,
         0);
 
-    return uintToColor(color).array().pow(2.2f).matrix();
+    Color ret = uintToColor(color).array().pow(2.2f).matrix();
+    ret[3] = 0.0;
+    return ret;
 }
 
 

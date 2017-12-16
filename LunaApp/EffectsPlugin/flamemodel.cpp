@@ -3,29 +3,19 @@
 #include "flameprovider.h"
 
 
-static const QString temperatureLowSettingName("temperatureLow");
-static const QString temperatureHighSettingName("temperatureHigh");
-static const QString flickerRateSettingName("flickerRate");
-static const QString brightnessSettingName("brightness");
 
 FlameModel::FlameModel(QObject * parent) :
     QObject(parent),
-    mSettings()
+    mTemperatureLow(1000.0),
+    mTemperatureHigh(5000.0),
+    mFlickerRate(0.0),
+    mBrightness(1.0)
 {
-    mSettings.beginGroup("Flame");
 
-    mTemperatureLow = mSettings.value(temperatureLowSettingName, 1000.0).value<qreal>();
-    mTemperatureHigh = mSettings.value(temperatureHighSettingName, 5000.0).value<qreal>();
-    mFlickerRate = mSettings.value(flickerRateSettingName, 0.2f).value<qreal>();
-    mBrightness = mSettings.value(brightnessSettingName, 1.0).value<qreal>();
 }
 
 FlameModel::~FlameModel()
 {
-    mSettings.setValue(temperatureLowSettingName, mTemperatureLow);
-    mSettings.setValue(temperatureHighSettingName, mTemperatureHigh);
-    mSettings.setValue(flickerRateSettingName, mFlickerRate);
-    mSettings.setValue(brightnessSettingName, mBrightness);
 }
 
 void FlameModel::provider(std::weak_ptr<FlameProvider> value)

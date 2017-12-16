@@ -38,7 +38,6 @@ signals:
 
 private:
     std::weak_ptr<FlameProvider> mProvider;
-    QSettings mSettings;
     qreal mTemperatureLow;
     qreal mTemperatureHigh;
     qreal mFlickerRate;

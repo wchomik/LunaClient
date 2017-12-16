@@ -15,6 +15,9 @@ namespace luna {
         ColorSpace(const cieCoord_t & white, const cieCoord_t & red,
                    const cieCoord_t & green, const cieCoord_t & blue);
 
+        Color fromRgbToXyz(const Color & source) const;
+        Color fromXyzToRgb(const Color & source) const;
+
         typedef Eigen::Matrix<ColorScalar, 4, 4> Transformation;
 
         static const ColorSpace & cieXyz();

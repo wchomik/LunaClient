@@ -136,7 +136,7 @@ namespace luna {
                 - 0.37001483f;
         }
 
-        return Color(x, y, 1 - x - y, 0);
+        return Color(x, y, 1 - x - y, 0) / y;
     }
 
     Color qColorToColor(const QColor &source) {
