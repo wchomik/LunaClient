@@ -36,15 +36,18 @@ namespace luna {
 
         const Config & config() const;
         Color * pixels();
+        Eigen::Vector3f positionOf(unsigned index);
 
         void applyColorProcessing();
 
         void setDirectColorMode();
         void setSpaceConversionColorMode(const ColorSpace & sourceColorSpace);
+        void setAll(const Color & color);
     private:
         Config mConfig;
         ColorVector mPixels;
         std::unique_ptr<ColorProcessor> mColorProcessor;
+        float mPositionInterpolationFactor;
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

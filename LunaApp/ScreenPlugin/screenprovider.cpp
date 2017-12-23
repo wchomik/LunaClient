@@ -26,12 +26,8 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
         }
         strand->setSpaceConversionColorMode(ColorSpace::sRGB());
 
-        const luna::ColorScalar tMul = 1.0f / std::max<float>(count - 1, 1);
-
         for (uint32_t i = 0; i < count; ++i) {
-            const float t = static_cast<float>(i) * tMul;
-            const Vector3f lightPosition = config.begin * (1.0f - t) + config.end * t;
-
+            const Vector3f lightPosition = strand->positionOf(i);
             const float x = lightPosition.x();
             const float y = lightPosition.y();
 

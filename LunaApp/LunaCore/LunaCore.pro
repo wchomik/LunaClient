@@ -26,4 +26,5 @@ HEADERS += \
     event.h \
     manager.h \
     provider.h \
-    strand.h
+    strand.h \
+    range.h

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/Effects">
         <file>FlameTab.qml</file>
+        <file>PlasmaTab.qml</file>
     </qresource>
 </RCC>

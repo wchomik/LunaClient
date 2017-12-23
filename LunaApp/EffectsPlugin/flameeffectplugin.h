@@ -1,7 +1,6 @@
 #ifndef FLAMEEFFECTPLUGIN_H
 #define FLAMEEFFECTPLUGIN_H
 
-#include <QObject>
 #include <effectplugin.h>
 
 #include "flamemodel.h"

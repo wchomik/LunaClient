@@ -3,6 +3,7 @@
 #include <luna.h>
 
 #include "flameeffectplugin.h"
+#include "plasmaeffectplugin.h"
 
 QString EffectsPlugin::name() const {
     return "Effects";
@@ -10,6 +11,7 @@ QString EffectsPlugin::name() const {
 
 void EffectsPlugin::initialize(luna::Luna * luna) {
     luna->addEffect(std::make_unique<FlameEffectPlugin>());
+    luna->addEffect(std::make_unique<PlasmaEffectPlugin>());
 }
 
 void EffectsPlugin::finalize(luna::Luna * luna) {
