@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/LightPlugin">
+    <qresource prefix="/Light">
         <file>Main.qml</file>
         <file>ManualControl.qml</file>
         <file>ColorPickerControl.qml</file>

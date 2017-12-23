@@ -8,12 +8,15 @@
 namespace luna {
     class Luna;
 
-    class LUNAPLUGINSHARED_EXPORT LunaPlugin {
+    class LUNAPLUGINSHARED_EXPORT LunaPlugin : public QObject {
     public:
+        explicit LunaPlugin(QObject * parent = nullptr);
         virtual ~LunaPlugin();
 
+        virtual QString name() const = 0;
         virtual void initialize(Luna * luna) = 0;
         virtual void finalize(Luna * luna) = 0;
+
     };
 }
 

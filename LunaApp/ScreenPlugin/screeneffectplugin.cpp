@@ -26,5 +26,5 @@ int ScreenEffectPlugin::displayOrder() const {
 }
 
 QUrl ScreenEffectPlugin::itemUrl() const {
-    return QUrl("qrc:/ScreenPlugin.qml");
+    return QUrl("qrc:/Screen/Main.qml");
 }

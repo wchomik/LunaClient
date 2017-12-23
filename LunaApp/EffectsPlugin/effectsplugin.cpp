@@ -4,6 +4,10 @@
 
 #include "flameeffectplugin.h"
 
+QString EffectsPlugin::name() const {
+    return "Effects";
+}
+
 void EffectsPlugin::initialize(luna::Luna * luna) {
     luna->addEffect(std::make_unique<FlameEffectPlugin>());
 }

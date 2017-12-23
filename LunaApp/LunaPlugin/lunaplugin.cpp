@@ -5,6 +5,11 @@
 #include <QQmlContext>
 
 namespace luna {
+    LunaPlugin::LunaPlugin(QObject *parent) :
+        QObject(parent),
+        mTranslator(nullptr)
+    {}
+
     LunaPlugin::~LunaPlugin() {}
 }
 

@@ -3,12 +3,13 @@
 
 #include <lunaplugin.h>
 
-class EffectsPlugin : public QObject, public luna::LunaPlugin
+class EffectsPlugin : public luna::LunaPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.luna.effects")
     Q_INTERFACES(luna::LunaPlugin)
 public:
+    QString name() const override;
     void initialize(luna::Luna * luna) override;
     void finalize(luna::Luna * luna) override;
 };

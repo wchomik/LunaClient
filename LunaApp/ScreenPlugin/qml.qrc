@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
-        <file>ScreenPlugin.qml</file>
+    <qresource prefix="/Screen">
+        <file>Main.qml</file>
     </qresource>
 </RCC>

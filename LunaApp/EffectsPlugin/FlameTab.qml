@@ -6,7 +6,7 @@ import Qt.labs.settings 1.0
 Item {
     Settings {
         id: settings
-        category: "Flamee"
+        category: "Flame"
         property real temperatureLow: 1600
         onTemperatureLowChanged: Flame.temperatureLow = temperatureLow
 
@@ -26,7 +26,7 @@ Item {
         columns: 2
 
         Label {
-            text: "Temperture"
+            text: qsTr("Temperture")
         }
 
         RangeSlider {
@@ -53,7 +53,7 @@ Item {
         }
 
         Label {
-            text: "Brightness"
+            text: qsTr("Brightness")
         }
 
         Slider {
@@ -65,7 +65,7 @@ Item {
         }
 
         Label {
-            text: "Flicker"
+            text: qsTr("Flicker")
         }
 
         Slider {

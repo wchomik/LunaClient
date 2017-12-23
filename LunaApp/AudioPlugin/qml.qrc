@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
-        <file>AudioPlugin.qml</file>
+    <qresource prefix="/Audio">
+        <file>Main.qml</file>
     </qresource>
 </RCC>

@@ -26,5 +26,5 @@ QObject * FlameEffectPlugin::model() {
 }
 
 QUrl FlameEffectPlugin::itemUrl() const {
-    return QUrl("qrc:/FlameTab.qml");
+    return QUrl("qrc:/Effects/FlameTab.qml");
 }

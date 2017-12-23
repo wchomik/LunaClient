@@ -20,5 +20,5 @@ int AudioEffectPlugin::displayOrder() const {
 }
 
 QUrl AudioEffectPlugin::itemUrl() const {
-    return QUrl("qrc:/AudioPlugin.qml");
+    return QUrl("qrc:/Audio/Main.qml");
 }

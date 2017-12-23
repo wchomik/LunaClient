@@ -40,22 +40,22 @@ Item {
             model: ListModel {
                 ListElement {
                     name: QT_TR_NOOP("Color from system theme")
-                    qml: "qrc:/LightPlugin/ColorFromThemeControl.qml"
+                    qml: "ColorFromThemeControl.qml"
                     source: 3
                 }
                 ListElement {
                     name: QT_TR_NOOP("Color picker")
-                    qml: "qrc:/LightPlugin/ColorPickerControl.qml"
+                    qml: "ColorPickerControl.qml"
                     source: 0
                 }
                 ListElement {
                     name: QT_TR_NOOP("Temperature")
-                    qml: "qrc:/LightPlugin/TemperatureControl.qml"
+                    qml: "TemperatureControl.qml"
                     source: 1
                 }
                 ListElement {
                     name: QT_TR_NOOP("Manual control")
-                    qml: "qrc:/LightPlugin/ManualControl.qml"
+                    qml: "ManualControl.qml"
                     source: 2
                 }
             }

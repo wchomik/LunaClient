@@ -18,7 +18,7 @@ LightEffectPlugin::~LightEffectPlugin() {
 }
 
 QString LightEffectPlugin::displayName() const {
-    return QString("Light");
+    return "Light";
 }
 
 QObject * LightEffectPlugin::model() {
@@ -30,5 +30,5 @@ int LightEffectPlugin::displayOrder() const {
 }
 
 QUrl LightEffectPlugin::itemUrl() const {
-    return QUrl("qrc:/LightPlugin/Main.qml");
+    return QUrl("qrc:/Light/Main.qml");
 }
