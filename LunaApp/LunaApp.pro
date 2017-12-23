@@ -33,5 +33,5 @@ SUBDIRS += LegacyUdpPlugin
 LegacyUdpPlugin.depends = LunaPlugin
 Luna.depends += LegacyUdpPlugin
 
-
+TRANSLATIONS += lunaapp_pl.ts
 

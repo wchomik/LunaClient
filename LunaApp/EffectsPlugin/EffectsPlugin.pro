@@ -14,3 +14,5 @@ HEADERS += \
 
 RESOURCES += \
     qml.qrc
+
+TRANSLATIONS += lunaeffects_pl.ts

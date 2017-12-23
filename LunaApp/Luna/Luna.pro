@@ -16,3 +16,5 @@ LIBS += -L../LunaApp -lLunaPlugin
 
 INCLUDEPATH += $$PWD/../LunaPlugin
 DEPENDPATH += $$PWD/../LunaPlugin
+
+TRANSLATIONS += luna_pl.ts

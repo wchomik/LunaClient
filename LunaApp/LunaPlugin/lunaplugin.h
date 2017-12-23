@@ -2,6 +2,7 @@
 #define LUNAPLUGIN_H
 
 #include <QtPlugin>
+#include <QTranslator>
 
 #include "lunaplugin_global.h"
 
@@ -17,6 +18,11 @@ namespace luna {
         virtual void initialize(Luna * luna) = 0;
         virtual void finalize(Luna * luna) = 0;
 
+    protected:
+        void loadTranslation();
+        void unloadTranslation();
+    private:
+        QTranslator * mTranslator;
     };
 }
 

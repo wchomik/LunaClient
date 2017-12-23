@@ -9,9 +9,11 @@ QString ScreenPlugin::name() const {
 }
 
 void ScreenPlugin::initialize(luna::Luna * luna) {
+    loadTranslation();
+
     luna->addEffect(std::make_unique<ScreenEffectPlugin>());
 }
 
 void ScreenPlugin::finalize(luna::Luna * luna) {
-
+    unloadTranslation();
 }

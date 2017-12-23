@@ -31,3 +31,5 @@ win32 {
 DISTFILES += \
     win32/PassThrough.hlsl \
     win32/VertexShader.hlsl
+
+TRANSLATIONS += translation.pl.ts

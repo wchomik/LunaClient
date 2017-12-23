@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/Screen">
         <file>Main.qml</file>
+        <file>translation.pl.qm</file>
     </qresource>
 </RCC>

@@ -35,3 +35,5 @@ win32 {
     LIBS += -lmmdevapi -lole32 -llibfftw3f-3
     LIBS += -L$$PWD/lib/
 }
+
+TRANSLATIONS += lunaaudio_pl.ts

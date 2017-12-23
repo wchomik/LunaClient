@@ -21,3 +21,5 @@ win32 {
     SOURCES += \
         win32/themecolor.cpp
 }
+
+TRANSLATIONS += translation.pl.ts
