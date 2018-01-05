@@ -37,19 +37,11 @@ void FlameProvider::getData(std::vector<Strand *> & strands) {
         }
         StrandData & data = mStrandData[strand];
 
-        data.burnRate += mFlickerRate * mTemperatureDistribution(mRandom);
-        // decay towards 1
+        data.burnRate += mFlickerRate * mTemperatureDistribution(mRandom) * 2.0f;
+
         const float decayFactor = 1.0f - mFlickerRate;
         data.burnRate = (data.burnRate - 0.5f) * decayFactor + 0.5f;
         data.burnRate = clamp(data.burnRate, 0.0f, 1.0f);
-
-
-        // decay temperature and add sparkles
-        const float coolRate = 1.0f / config.count;
-        for (int i = 0; i < config.count; ++i) {
-            float & temperature = data.temperatures[i];
-            temperature -= coolRate;
-        }
 
         for (unsigned i = config.count - 1; i > 0; --i) {
             data.temperatures[i] = data.temperatures[i - 1];
@@ -60,7 +52,7 @@ void FlameProvider::getData(std::vector<Strand *> & strands) {
         strand->setSpaceConversionColorMode(ColorSpace::cieXyz());
 
         for (unsigned i = 0; i < config.count; ++i) {
-            float temperature = data.temperatures[i];
+            float temperature = data.temperatures[i] - static_cast<float>(i) / static_cast<float>(config.count);
             const float brightness = std::sqrt(std::max(0.0f, temperature)) * mBrightness;
             const float fadeStart = std::min(1.0f, i * 15.0f * config.count);
             Color color = temperatureToCieXyz(temperature * (mTemperatureHigh - mTemperatureLow) + mTemperatureLow) * brightness * fadeStart;

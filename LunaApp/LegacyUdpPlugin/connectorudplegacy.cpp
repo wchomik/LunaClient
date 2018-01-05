@@ -4,6 +4,9 @@
 #include <limits>
 #include <algorithm>
 
+#include <QDebug>
+#include <sstream>
+
 using namespace std::chrono_literals;
 using namespace luna;
 
@@ -119,6 +122,8 @@ ConnectorUDPLegacy::ConnectorUDPLegacy(uint16_t port) :
     mSocket.bind(any);
 
     mNextDiscovery = std::chrono::steady_clock::now();
+
+    m_interfaces = net::NetworkInterface::list();
 }
 
 ConnectorUDPLegacy::~ConnectorUDPLegacy() {
@@ -137,8 +142,12 @@ void ConnectorUDPLegacy::sendDiscovery() {
     auto now = std::chrono::steady_clock::now();
     if((mHosts.size() == 0) && (mNextDiscovery < now)) {
         mNextDiscovery = now + mDiscoveryInterval;
-        net::Address broadcast(net::Address::BROADCAST, mPort);
-        mSocket.sendTo(helloMessage, helloLen, broadcast);
+
+        for (auto & interface : m_interfaces) {
+            auto address = interface.broadcast();
+            address.setPort(mPort);
+            mSocket.sendTo(helloMessage, helloLen, address);
+        }
     }
 }
 

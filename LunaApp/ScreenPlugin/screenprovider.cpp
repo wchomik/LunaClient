@@ -4,6 +4,7 @@
 
 #include <colorspace.h>
 #include <strand.h>
+#include <range.h>
 
 using namespace Eigen;
 using namespace luna;
@@ -19,14 +20,12 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
         const uint32_t count = config.count;
         Color * const pixels = strand->pixels();
         if ((config.colorChannels & ColorChannels::rgb) != ColorChannels::rgb) {
-            for (uint32_t i = 0; i < count; ++i) {
-                pixels[i] = Color::Zero();
-            }
+            strand->setAll(Color::Zero());
             continue;
         }
         strand->setSpaceConversionColorMode(ColorSpace::sRGB());
 
-        for (uint32_t i = 0; i < count; ++i) {
+        for (auto i : range(count)) {
             const Vector3f lightPosition = strand->positionOf(i);
             const float x = lightPosition.x();
             const float y = lightPosition.y();
@@ -46,7 +45,7 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
 
             Color sum = Color::Zero();
 
-            for (int i = 0; i < mDepth; ++i) {
+            for (auto i : range(mDepth)) {
                 sum += screenPixels(column, i) * mDepthWeights[i];
             }
             sum = sum.cwiseMax(Color::Constant(mBlackLevel));

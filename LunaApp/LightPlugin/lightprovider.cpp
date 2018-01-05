@@ -43,11 +43,7 @@ void LightProvider::getData(std::vector<Strand *> & strands) {
 
         data.smoothColor = lerp(data.smoothColor, lightColor, smoothScale);
 
-        uint32_t count = strand->config().count;
-        Color * pixels = strand->pixels();
-        for (uint32_t i = 0; i < count; ++i) {
-            pixels[i] = data.smoothColor;
-        }
+        strand->setAll(data.smoothColor);
     }
 }
 

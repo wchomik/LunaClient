@@ -5,6 +5,7 @@ QT -= gui
 QT += quick
 DEFINES += LUNACORE_LIBRARY
 
+DESTDIR = ../LunaApp
 
 SOURCES += \
     colorprocessor.cpp \

@@ -60,7 +60,7 @@ Item {
             id: brightness
             Layout.fillWidth: true
             from: 0.0
-            to: 10.0
+            to: 1.0
             value: 1.0
         }
 

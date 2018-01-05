@@ -1,7 +1,4 @@
 #include <QGuiApplication>
-
-#include <QDebug>
-
 #include <luna.h>
 
 using namespace luna;

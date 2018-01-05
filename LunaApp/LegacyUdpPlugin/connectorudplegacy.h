@@ -12,6 +12,8 @@
 
 #include "binarystream.h"
 #include "socket.h"
+#include "address.h"
+#include "networkinterface.h"
 
 
 class HostUDPLegacy : public luna::Host {
@@ -56,6 +58,7 @@ private:
     std::vector<std::unique_ptr<HostUDPLegacy>> mHosts;
     std::chrono::steady_clock::time_point mNextDiscovery;
     uint16_t mPort;
+    std::vector<net::NetworkInterface> m_interfaces;
 };
 
 #endif // CONNECTORUDPLEGACY_H
