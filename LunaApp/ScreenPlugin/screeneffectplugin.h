@@ -1,7 +1,7 @@
 #ifndef SCREENEFFECTPLUGIN_H
 #define SCREENEFFECTPLUGIN_H
 
-#include <effectplugin.h>
+#include <lunaplugin/effectplugin.h>
 
 #include "screenmodel.h"
 

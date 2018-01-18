@@ -1,7 +1,7 @@
 #ifndef EFFECTSPLUGIN_H
 #define EFFECTSPLUGIN_H
 
-#include <lunaplugin.h>
+#include <lunaplugin/lunaplugin.h>
 
 class EffectsPlugin : public luna::LunaPlugin
 {

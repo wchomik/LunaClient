@@ -1,6 +1,6 @@
 #include "screenplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 
 #include "screeneffectplugin.h"
 

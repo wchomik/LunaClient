@@ -2,7 +2,7 @@
 #define LUNASCREENPROVIDER_H
 
 #include <mutex>
-#include <provider.h>
+#include <lunacore/provider.h>
 #include "screencapture.h"
 
 class ScreenProvider : public luna::Provider

@@ -1,7 +1,7 @@
 #ifndef LEGACYUDPPLUGIN_H
 #define LEGACYUDPPLUGIN_H
 
-#include <lunaplugin.h>
+#include <lunaplugin/lunaplugin.h>
 
 class LegacyUdpPlugin : public luna::LunaPlugin
 {

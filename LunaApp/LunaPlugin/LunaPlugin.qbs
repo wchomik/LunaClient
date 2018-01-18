@@ -9,26 +9,27 @@ DynamicLibrary {
     Export {
         Depends { name: "cpp" }
         Depends { name: "LunaCore" }
-        cpp.includePaths: product.sourceDirectory
+        cpp.includePaths: product.sourceDirectory + "/include"
     }
 
     cpp.defines: ['LUNAPLUGIN_LIBRARY=1']
+    cpp.includePaths: "include/lunaplugin"
 
     files: [
-        "lunaplugin.cpp",
-        "luna.cpp",
-        "tabsmodel.cpp",
-        "connectorplugin.cpp",
-        "configurableplugin.cpp",
-        "effectplugin.cpp",
+        "source/lunaplugin.cpp",
+        "source/luna.cpp",
+        "source/tabsmodel.cpp",
+        "source/connectorplugin.cpp",
+        "source/configurableplugin.cpp",
+        "source/effectplugin.cpp",
 
-        "lunaplugin.h",
-        "lunaplugin_global.h",
-        "luna.h",
-        "tabsmodel.h",
-        "connectorplugin.h",
-        "configurableplugin.h",
-        "effectplugin.h"
+        "include/lunaplugin/lunaplugin.h",
+        "include/lunaplugin/lunaplugin_global.h",
+        "include/lunaplugin/luna.h",
+        "include/lunaplugin/tabsmodel.h",
+        "include/lunaplugin/connectorplugin.h",
+        "include/lunaplugin/configurableplugin.h",
+        "include/lunaplugin/effectplugin.h"
     ]
 
     Group {

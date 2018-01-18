@@ -1,8 +1,8 @@
 #ifndef THEMECOLOR_H
 #define THEMECOLOR_H
 
-#include <colorutils.h>
 #include <Windows.h>
+#include <lunacore/colorutils.h>
 
 class ThemeColor
 {

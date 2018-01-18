@@ -1,6 +1,6 @@
 #include "audioprovider.h"
 
-#include <strand.h>
+#include <lunacore/strand.h>
 
 using namespace luna;
 

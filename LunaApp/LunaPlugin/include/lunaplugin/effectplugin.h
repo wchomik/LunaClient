@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include <provider.h>
+#include <lunacore/provider.h>
 
 #include "lunaplugin_global.h"
 #include "configurableplugin.h"

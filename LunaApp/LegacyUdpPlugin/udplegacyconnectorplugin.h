@@ -1,7 +1,7 @@
 #ifndef UDPLEGACYCONNECTORPLUGIN_H
 #define UDPLEGACYCONNECTORPLUGIN_H
 
-#include <connectorplugin.h>
+#include <lunaplugin/connectorplugin.h>
 
 class UdpLegacyConnectorPlugin : public luna::ConnectorPlugin
 {

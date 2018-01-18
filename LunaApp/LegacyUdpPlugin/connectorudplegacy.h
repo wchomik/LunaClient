@@ -6,9 +6,9 @@
 #include <memory>
 #include <vector>
 
-#include <connector.h>
-#include <colorutils.h>
-#include <strand.h>
+#include <lunacore/connector.h>
+#include <lunacore/colorutils.h>
+#include <lunacore/strand.h>
 
 #include "binarystream.h"
 #include "socket.h"

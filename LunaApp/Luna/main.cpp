@@ -1,5 +1,5 @@
 #include <QGuiApplication>
-#include <luna.h>
+#include <lunaplugin/luna.h>
 
 using namespace luna;
 

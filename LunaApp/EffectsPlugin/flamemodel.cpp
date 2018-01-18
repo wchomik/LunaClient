@@ -3,7 +3,6 @@
 #include "flameprovider.h"
 
 
-
 FlameModel::FlameModel(QObject * parent) :
     QObject(parent),
     mTemperatureLow(1000.0),

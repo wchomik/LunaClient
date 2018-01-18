@@ -1,6 +1,6 @@
 #include "legacyudpplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 
 #include "udplegacyconnectorplugin.h"
 

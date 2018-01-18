@@ -1,10 +1,10 @@
 #ifndef LUNALightProvider_H
 #define LUNALightProvider_H
 
-#include <provider.h>
-#include <colorspace.h>
-#include <colorutils.h>
-#include <strand.h>
+#include <lunacore/provider.h>
+#include <lunacore/colorspace.h>
+#include <lunacore/colorutils.h>
+#include <lunacore/strand.h>
 
 #include "themecolor.h"
 

@@ -2,7 +2,7 @@
 #define AUDIOEFFECTPLUGIN_H
 
 #include <QObject>
-#include <effectplugin.h>
+#include <lunaplugin/effectplugin.h>
 
 #include "audiomodel.h"
 

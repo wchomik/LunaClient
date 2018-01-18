@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <lunaplugin.h>
+#include <lunaplugin/lunaplugin.h>
 
 class AudioPlugin : public luna::LunaPlugin
 {

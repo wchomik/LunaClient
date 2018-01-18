@@ -1,10 +1,10 @@
 #include "plasmaprovider.h"
 
-using namespace luna;
+#include <lunacore/strand.h>
+#include <lunacore/range.h>
+#include <lunacore/colorutils.h>
 
-#include <strand.h>
-#include <range.h>
-#include <colorutils.h>
+using namespace luna;
 
 PlasmaProvider::PlasmaProvider() :
     mBeginTime(clock::now())

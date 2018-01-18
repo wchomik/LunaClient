@@ -1,7 +1,7 @@
 #ifndef FLAMEEFFECTPLUGIN_H
 #define FLAMEEFFECTPLUGIN_H
 
-#include <effectplugin.h>
+#include <lunaplugin/effectplugin.h>
 
 #include "flamemodel.h"
 

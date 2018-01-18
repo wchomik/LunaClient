@@ -6,8 +6,6 @@
 
 #include <ostream>
 
-#include "lunacore_global.h"
-
 class BinaryStream;
 
 namespace net {

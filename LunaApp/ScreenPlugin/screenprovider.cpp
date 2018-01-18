@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include <colorspace.h>
-#include <strand.h>
-#include <range.h>
+#include <lunacore/colorspace.h>
+#include <lunacore/strand.h>
+#include <lunacore/range.h>
 
 using namespace Eigen;
 using namespace luna;

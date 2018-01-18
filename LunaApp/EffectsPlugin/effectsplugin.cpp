@@ -1,6 +1,6 @@
 #include "effectsplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 
 #include "flameeffectplugin.h"
 #include "plasmaeffectplugin.h"

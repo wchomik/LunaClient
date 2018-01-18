@@ -5,7 +5,7 @@
 #include <QUrl>
 #include <QObject>
 
-#include <manager.h>
+#include <lunacore/manager.h>
 
 #include "lunaplugin_global.h"
 

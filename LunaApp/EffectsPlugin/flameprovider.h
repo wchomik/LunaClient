@@ -5,7 +5,7 @@
 #include <chrono>
 #include <random>
 
-#include "provider.h"
+#include <lunacore/provider.h>
 
 
 class FlameProvider : public luna::Provider

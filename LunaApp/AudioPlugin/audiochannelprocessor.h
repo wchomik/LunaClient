@@ -5,7 +5,7 @@
 #include <vector>
 #include <Eigen/Core>
 
-#include "colorutils.h"
+#include <lunacore/colorutils.h>
 
 struct AudioChannelConfig {
     class FFT * fft = nullptr;

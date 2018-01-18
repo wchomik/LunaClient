@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <lunaplugin.h>
+#include <lunaplugin/lunaplugin.h>
 
 class ScreenPlugin : public luna::LunaPlugin
 {

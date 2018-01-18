@@ -2,7 +2,7 @@
 #define LIGHTEFFECTPLUGIN_H
 
 #include <QObject>
-#include <effectplugin.h>
+#include <lunaplugin/effectplugin.h>
 
 #include "lightmodel.h"
 

@@ -2,7 +2,7 @@
 #define LUNAAUDIOPROVIDER_H
 
 #include <unordered_map>
-#include <provider.h>
+#include <lunacore/provider.h>
 
 #include "audiocapture.h"
 #include "fft.h"

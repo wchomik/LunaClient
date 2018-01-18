@@ -9,7 +9,7 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 
-#include <manager.h>
+#include <lunacore/manager.h>
 
 #include "lunaplugin_global.h"
 #include "lunaplugin.h"

@@ -1,6 +1,6 @@
 #include "lighteffectplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 #include "lightprovider.h"
 
 LightEffectPlugin::LightEffectPlugin() :

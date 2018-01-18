@@ -5,7 +5,7 @@
 #include <dxgi1_5.h>
 #include <wrl.h>
 
-#include <colorutils.h>
+#include <lunacore/colorutils.h>
 #include "array2d.h"
 
 class ScreenCapture

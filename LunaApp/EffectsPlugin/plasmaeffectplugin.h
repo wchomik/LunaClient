@@ -1,7 +1,7 @@
 #ifndef PLASMAEFFECTPLUGIN_H
 #define PLASMAEFFECTPLUGIN_H
 
-#include <effectplugin.h>
+#include <lunaplugin/effectplugin.h>
 
 #include "plasmamodel.h"
 

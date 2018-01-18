@@ -1,7 +1,7 @@
 #include "lightprovider.h"
 
 #include <cstdint>
-#include <strand.h>
+#include <lunacore/strand.h>
 
 using namespace luna;
 

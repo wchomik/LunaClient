@@ -16,7 +16,7 @@ DynamicLibrary {
         Depends { name: "Qt.gui" }
         Depends { name: "Eigen3" }
         cpp.cxxLanguageVersion: "c++14"
-        cpp.includePaths: product.sourceDirectory
+        cpp.includePaths: product.sourceDirectory + "/include"
 
 
         Properties {
@@ -27,28 +27,29 @@ DynamicLibrary {
 
     cpp.defines: ['LUNACORE_LIBRARY=1']
     cpp.cxxLanguageVersion: "c++14"
+    cpp.includePaths: "include/lunacore"
 
     files: [
-        "colorprocessor.cpp",
-        "colorspace.cpp",
-        "colorutils.cpp",
-        "connector.cpp",
-        "manager.cpp",
-        "provider.cpp",
-        "strand.cpp",
+        "source/colorprocessor.cpp",
+        "source/colorspace.cpp",
+        "source/colorutils.cpp",
+        "source/connector.cpp",
+        "source/manager.cpp",
+        "source/provider.cpp",
+        "source/strand.cpp",
 
-        "lunacore_global.h",
-        "colormode.h",
-        "colorprocessor.h",
-        "colorspace.h",
-        "colorutils.h",
-        "connector.h",
-        "delegate.h",
-        "event.h",
-        "manager.h",
-        "provider.h",
-        "strand.h",
-        "range.h"
+        "include/lunacore/lunacore_global.h",
+        "include/lunacore/colormode.h",
+        "include/lunacore/colorprocessor.h",
+        "include/lunacore/colorspace.h",
+        "include/lunacore/colorutils.h",
+        "include/lunacore/connector.h",
+        "include/lunacore/delegate.h",
+        "include/lunacore/event.h",
+        "include/lunacore/manager.h",
+        "include/lunacore/provider.h",
+        "include/lunacore/strand.h",
+        "include/lunacore/range.h"
     ]
 
     Group {

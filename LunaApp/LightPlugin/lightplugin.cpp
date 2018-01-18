@@ -1,6 +1,6 @@
 #include "lightplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 #include "lighteffectplugin.h"
 
 QString LightPlugin::name() const {

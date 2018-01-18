@@ -1,6 +1,6 @@
 #include "audioplugin.h"
 
-#include <luna.h>
+#include <lunaplugin/luna.h>
 
 #include "audioeffectplugin.h"
 

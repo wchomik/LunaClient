@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include <connector.h>
+#include <lunacore/connector.h>
 
 #include "lunaplugin_global.h"
 

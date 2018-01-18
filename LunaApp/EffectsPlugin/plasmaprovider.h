@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-#include <provider.h>
+#include <lunacore/provider.h>
 
 #include "noise.h"
 
