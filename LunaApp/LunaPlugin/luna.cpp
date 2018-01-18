@@ -59,6 +59,11 @@ namespace luna {
 
         qDebug() << "Loading plugins from" << pluginsDir.absolutePath();
 
+#ifdef WIN32
+        auto path = pluginsDir.absolutePath().toStdWString();
+        SetDllDirectory(path.c_str());
+#endif
+
         for (auto fileName : pluginsDir.entryList(QDir::Files)) {
             if (!QLibrary::isLibrary(fileName)) {
                 continue;

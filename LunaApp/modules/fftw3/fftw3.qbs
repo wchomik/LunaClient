@@ -8,4 +8,12 @@ Module {
 
     cpp.staticLibraries: "libfftw3f-3"
     cpp.dynamicLibraries: "libfftw3f-3"
+
+    Group {
+        name: "fftw3 installation"
+        prefix: Environment.getEnv("FFTW3_DIR") + "/"
+        files: ["libfftw3f-3.dll"]
+        qbs.install: true
+        qbs.installDir: project.pluginsDir
+    }
 }
