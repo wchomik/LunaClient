@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Pixel.qml</file>
+        <file>Strand.qml</file>
+        <file>DragHandle.qml</file>
+    </qresource>
+</RCC>
