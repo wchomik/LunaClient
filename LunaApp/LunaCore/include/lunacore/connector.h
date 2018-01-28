@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-#include <QtPlugin>
-
 #include "lunacore_global.h"
 
 namespace luna {
@@ -27,9 +25,5 @@ namespace luna {
         virtual void getHosts(std::vector<Host *> & hosts) = 0;
     };
 }
-
-#define LunaConnector_iid "org.luna.connector"
-
-Q_DECLARE_INTERFACE(luna::Connector, LunaConnector_iid)
 
 #endif // CONNECTOR_H

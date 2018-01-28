@@ -4,36 +4,44 @@
 #include <algorithm>
 
 namespace luna {
-    Color rgbToHsv(const Color &rgb) {
-        ColorScalar minimum, maximum, chroma,
-            hue = 0.0f,
-            saturation = 0.0f,
-            value = 0.0f;
+    struct ColorProperties {
+        ColorScalar minimum;
+        ColorScalar maximum;
+        ColorScalar chroma;
+        ColorScalar hue;
+    };
 
-        minimum = std::min<ColorScalar>({rgb[0], rgb[1], rgb[3]});
-        maximum = std::max<ColorScalar>({rgb[0], rgb[1], rgb[3]});
-        if(maximum != 0.0f) {
-            chroma = maximum - minimum;
+    static ColorProperties getColorProperties(const Color & rgb) {
+        ColorProperties ret;
+        ret.minimum = std::min<ColorScalar>({rgb[0], rgb[1], rgb[2]});
+        ret.maximum = std::max<ColorScalar>({rgb[0], rgb[1], rgb[2]});
+        if(ret.maximum != 0.0f) {
+            ret.chroma = ret.maximum - ret.minimum;
 
-            hue = 0;
-            if (rgb[0] == maximum) {
-                hue =( rgb[1] - rgb[2]) / chroma;
-                if (hue < 0) hue += 6;
-            } else if (rgb[1] == maximum) {
-                hue = (rgb[2] - rgb[0]) / chroma;
-            }else if (rgb[2] == maximum) {
-                hue = (rgb[0] - rgb[1]) / chroma;
+            if (rgb[0] == ret.maximum) {
+                ret.hue =( rgb[1] - rgb[2]) / ret.chroma;
+                if (ret.hue < 0) ret.hue += 6;
+            } else if (rgb[1] == ret.maximum) {
+                ret.hue = (rgb[2] - rgb[0]) / ret.chroma + 2;
+            }else if (rgb[2] == ret.maximum) {
+                ret.hue = (rgb[0] - rgb[1]) / ret.chroma + 4;
             }
-            hue /= 6.0f;
-
-            value = maximum;
-
-            saturation = chroma / value;
+            ret.hue /= 6.0f;
+        } else {
+            ret.chroma = 0.0f;
+            ret.hue = 0.0f;
         }
 
-        Color hsv;
-        hsv << hue, saturation, value, rgb[3];
-        return hsv;
+        return ret;
+    }
+
+    Color rgbToHsv(const Color &rgb) {
+        auto colorProperties = getColorProperties(rgb);
+
+        auto value = colorProperties.maximum;
+        auto saturation = colorProperties.chroma / value;
+
+        return Color(colorProperties.hue, saturation, value, rgb[3]);
     }
 
     Color hsvToRgb(const Color & hsv)
@@ -52,6 +60,20 @@ namespace luna {
         rgb = (rgb.cwiseMax(0).cwiseMin(1) * sat + Color::Constant(1 - sat)) * val;
         rgb[3] = hsv[3];
         return rgb;
+    }
+
+    Color rgbToHsl(const Color &rgb) {
+        auto colorProperties = getColorProperties(rgb);
+        auto lightness = (colorProperties.maximum + colorProperties.minimum) / 2;
+
+        ColorScalar saturation;
+        if (lightness < 0.5f) {
+            saturation = colorProperties.chroma / (2.0f * lightness);
+        } else {
+            saturation = colorProperties.chroma / (2.0f - 2.0f * lightness);
+        }
+
+        return Color(colorProperties.hue, saturation, lightness, rgb[3]);
     }
 
     Color uintToColor(uint32_t integer) {
@@ -85,15 +107,13 @@ namespace luna {
         color[3] = w;
     }
 
-    void clampColorToGamutAbsolute(Color & color)
-    {
+    void clampColorToGamutAbsolute(Color & color) {
         static const Color minimum(0.0f, 0.0f, 0.0f, 0.0f);
         static const Color maximum(1.0f, 1.0f, 1.0f, 1.0f);
         color = color.cwiseMax(minimum).cwiseMin(maximum);
     }
 
-    Color temperatureToCieXyz(float t)
-    {
+    Color temperatureToCieXyz(float t) {
         float t2 = t * t;
         float t3 = t2 * t;
 
@@ -146,5 +166,4 @@ namespace luna {
     QColor colorToQColor(const Color &source) {
         return QColor(source.x(), source.y(), source.z(), source.w());
     }
-
 }

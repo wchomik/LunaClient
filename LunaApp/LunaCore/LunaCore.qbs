@@ -8,6 +8,8 @@ DynamicLibrary {
     Depends { name: "Qt.quick" }
     Depends { name: "Qt.gui" }
     Depends { name: "Eigen3" }
+    Depends { name: "cpufeatures" }
+
 
     Export {
         Depends { name: "cpp" }
@@ -15,8 +17,10 @@ DynamicLibrary {
         Depends { name: "Qt.quick" }
         Depends { name: "Qt.gui" }
         Depends { name: "Eigen3" }
+        Depends { name: "cpufeatures" }
         cpp.cxxLanguageVersion: "c++14"
         cpp.includePaths: product.sourceDirectory + "/include"
+        cpufeatures.x86_avx: true
 
 
         Properties {
@@ -28,6 +32,7 @@ DynamicLibrary {
     cpp.defines: ['LUNACORE_LIBRARY=1']
     cpp.cxxLanguageVersion: "c++14"
     cpp.includePaths: "include/lunacore"
+    cpufeatures.x86_avx: true
 
     files: [
         "source/colorprocessor.cpp",

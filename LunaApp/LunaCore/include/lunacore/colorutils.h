@@ -20,6 +20,9 @@ namespace luna {
 
     Color LUNACORESHARED_EXPORT rgbToHsv(const Color & rgb);
     Color LUNACORESHARED_EXPORT hsvToRgb(const Color & hsv);
+
+    Color LUNACORESHARED_EXPORT rgbToHsl(const Color & rgb);
+
     Color LUNACORESHARED_EXPORT uintToColor(uint32_t integer);
     Color LUNACORESHARED_EXPORT temperatureToCieXyz(float temperature);
 
