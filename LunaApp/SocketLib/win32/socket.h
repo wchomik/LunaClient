@@ -23,7 +23,6 @@ namespace net {
         int receive(void * buffer, int bufferSize);
         int receiveFrom(void * buffer, int bufferSize, Address & retAddress);
         int send(const void * buffer, int bufferSize);
-        int send(const BinaryStream & stream);
         int sendTo(const void * buffer, int bufferSize, Address & address);
 
         bool setNonBlock(bool shouldBlock);

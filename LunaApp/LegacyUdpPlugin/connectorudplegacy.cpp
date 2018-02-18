@@ -67,14 +67,14 @@ void HostUDPLegacy::connect() {
     mBuffer.reset();
     mBuffer << static_cast<uint8_t>(101);
     mBuffer << static_cast<uint8_t>(1);
-    mSocket.send(mBuffer);
+    mSocket.send(mBuffer.data(), mBuffer.count());
     mIsConnected = true;
 }
 
 void HostUDPLegacy::disconnect() {
     mBuffer.reset();
     mBuffer << static_cast<uint8_t>(99);
-    mSocket.send(mBuffer);
+    mSocket.send(mBuffer.data(), mBuffer.count());
 }
 
 bool HostUDPLegacy::isConnected() const {
@@ -109,7 +109,7 @@ void HostUDPLegacy::send() {
         }
     }
 
-    mSocket.send(mBuffer);
+    mSocket.send(mBuffer.data(), mBuffer.count());
 }
 
 ConnectorUDPLegacy::ConnectorUDPLegacy(uint16_t port) :

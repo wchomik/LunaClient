@@ -1,6 +1,5 @@
 #include "socket.h"
 
-#include "binarystream.h"
 #include "address.h"
 
 namespace net {
@@ -59,10 +58,6 @@ namespace net {
     int SocketUdp::send(const void *buffer, int bufferSize)
     {
         return ::send(mSocket, reinterpret_cast<const char *>(buffer), bufferSize, 0);
-    }
-
-    int SocketUdp::send(const BinaryStream & stream) {
-        return send(stream.data(), static_cast<int>(stream.count()));
     }
 
     int SocketUdp::sendTo(const void *buffer, int bufferSize, Address & address)

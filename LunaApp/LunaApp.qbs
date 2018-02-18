@@ -2,16 +2,19 @@ import qbs
 
 Project {
     references: [
+        "TLS.qbs",
         "LunaCore/LunaCore.qbs",
         "LunaPlugin/LunaPlugin.qbs",
         "Luna/Luna.qbs",
+        "SocketLib/SocketLib.qbs",
 
         "LegacyUdpPlugin/LegacyUdpPlugin.qbs",
 
         "LightPlugin/LightPlugin.qbs",
         "EffectsPlugin/EffectsPlugin.qbs",
         "ScreenPlugin/ScreenPlugin.qbs",
-        "AudioPlugin/AudioPlugin.qbs"
+        "AudioPlugin/AudioPlugin.qbs",
+        "SecureNetworkPlugin/SecureNetworkPlugin.qbs",
     ]
 
     property string binDir: "bin"
