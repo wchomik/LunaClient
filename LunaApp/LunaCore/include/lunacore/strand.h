@@ -12,7 +12,7 @@
 #include "colorprocessor.h"
 
 namespace luna {
-    enum ColorChannels {
+    enum ColorChannels : uint32_t {
         red = 1 << 0,
         green = 1 << 1,
         blue = 1 << 2,

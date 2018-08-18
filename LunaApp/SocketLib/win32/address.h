@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <string>
 
 namespace net {
     class Address{
@@ -20,6 +21,9 @@ namespace net {
         Address(SpecialAddress special, uint16_t port);
 
         void setPort(uint16_t port);
+        uint16_t port() const;
+
+        std::string toString() const;
     private:
         sockaddr_in mSockAddrIn;
         sockaddr * asSockAddr(){ return reinterpret_cast<sockaddr *>(&mSockAddrIn); }

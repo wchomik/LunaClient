@@ -1,5 +1,8 @@
 #include "address.h"
 
+#include <Ws2tcpip.h>
+#include <stdexcept>
+
 namespace net {
     Address::Address(uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint16_t port)
     {
@@ -31,6 +34,22 @@ namespace net {
 
     void Address::setPort(uint16_t port) {
         mSockAddrIn.sin_port = htons(port);
+    }
+
+    uint16_t Address::port() const {
+        return ntohs(mSockAddrIn.sin_port);
+    }
+
+    std::string Address::toString() const {
+        char buffer[16];
+        auto ret = InetNtopA(AF_INET, reinterpret_cast<const void *>(&mSockAddrIn.sin_addr),
+          buffer, sizeof(buffer));
+
+        if (nullptr == ret) {
+            throw std::runtime_error("Failed to convert ip address to string.");
+        }
+
+        return std::string(buffer);
     }
 
     bool Address::operator==(const Address & other) const {

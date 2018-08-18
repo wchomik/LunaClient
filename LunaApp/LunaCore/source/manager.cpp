@@ -7,6 +7,8 @@
 #include "connector.h"
 #include "strand.h"
 
+#include <QDebug>
+
 namespace ch = std::chrono;
 using namespace std::chrono_literals;
 
@@ -61,6 +63,7 @@ namespace luna {
         for (auto && host : hosts) {
             host->getStrands(strands);
         }
+        //qDebug() << strands.size() << "Strands";
         if (nullptr != mActiveProvider) {
             mActiveProvider->getData(strands);
         }

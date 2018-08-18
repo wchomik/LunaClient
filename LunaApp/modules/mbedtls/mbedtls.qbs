@@ -9,6 +9,11 @@ Module {
     cpp.staticLibraries: [
         "mbedcrypto",
         "mbedtls",
-        "mbedx509"
+        "mbedx509",
+        "Advapi32"
+    ]
+
+    cpp.dynamicLibraries: [
+        "Advapi32"
     ]
 }

@@ -10,7 +10,7 @@ public:
     QString displayName() const override;
     int displayOrder() const override;
     QUrl itemUrl() const override;
-    QObject *model() override;
+    QObject * model() override;
 };
 
 #endif // SECURENETWORKCONNECTORPLUGIN_H

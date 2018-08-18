@@ -4,7 +4,6 @@ Application {
     name: "Luna"
 
     Depends { name: "LunaPlugin" }
-    consoleApplication: false
 
     files: [
         "main.cpp",
