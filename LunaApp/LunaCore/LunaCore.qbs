@@ -19,7 +19,7 @@ DynamicLibrary {
         Depends { name: "Eigen3" }
         Depends { name: "cpufeatures" }
         cpp.cxxLanguageVersion: "c++14"
-        cpp.includePaths: product.sourceDirectory + "/include"
+        cpp.includePaths: [product.sourceDirectory + "/include"]
         cpufeatures.x86_avx: true
 
 
@@ -31,7 +31,7 @@ DynamicLibrary {
 
     cpp.defines: ['LUNACORE_LIBRARY=1']
     cpp.cxxLanguageVersion: "c++14"
-    cpp.includePaths: "include/lunacore"
+    cpp.includePaths: ["include/lunacore"]
     cpufeatures.x86_avx: true
 
     files: [

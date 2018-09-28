@@ -1,39 +1,60 @@
 #include "hostdiscovery.h"
 
-HostDiscovery::HostDiscovery(HostDiscovery::callback_t &&callback, std::chrono::steady_clock::duration interval) :
-    mDiscoveryInterval(interval),
-    mOnHostDiscovered(callback)
-{
-    mInterfaces = net::NetworkInterface::list();
-    net::Address addr(0, 0, 0, 0, 0);
-    mSocket.bind(addr);
-    mSocket.setNonBlock(true);
+#include <chrono>
 
-    mNextDiscovery = std::chrono::steady_clock::now();
+using namespace std::chrono_literals;
+
+HostDiscovery::HostDiscovery() :
+    mDiscoveryTimer()
+{
+    mSocket.bind(QHostAddress::AnyIPv4);
+
+    QObject::connect(&mDiscoveryTimer, &QTimer::timeout,
+        this, &HostDiscovery::discover);
+
+    QObject::connect(&mSocket, &QUdpSocket::readyRead,
+        this, &HostDiscovery::handleResponse);
+
+    mDiscoveryTimer.start(1s);
+    QTimer::singleShot(0, this, &HostDiscovery::discover);
 }
 
 void HostDiscovery::discover()
 {
-    bool shouldDiscover = std::chrono::steady_clock::now() >= mNextDiscovery;
+    //qDebug() << "Discovery";
+    QByteArray message("Dupa blada");
+    uint16_t port = 9510;
 
-    if (shouldDiscover) {
-        for (auto & interface : mInterfaces) {
-            auto addr = interface.broadcast();
-            addr.setPort(9510);
-            char msg[] = "Dupa blada";
-            mSocket.sendTo(msg, sizeof(msg), addr);
+    for (auto const & interface : QNetworkInterface::allInterfaces()) {
+        if (interface.flags() & QNetworkInterface::IsLoopBack) continue;
+        for (auto const & entry : interface.addressEntries()) {
+            auto const & address = entry.broadcast();
+            if (address.isNull()) continue;
+            //qDebug() << "sending to" << address.toString();
+            mSocket.writeDatagram(message, address, port);
         }
-        mNextDiscovery = std::chrono::steady_clock::now() + mDiscoveryInterval;
     }
+}
 
-    char buffer[1024];
-    do {
-        net::Address from;
-        auto bufferSize = mSocket.receiveFrom(buffer, sizeof(buffer), from);
-        if (bufferSize >= 0) {
-            mOnHostDiscovered(from);
-        } else {
+void HostDiscovery::handleResponse()
+{
+    //qDebug() << "got something";
+
+    QHostAddress hostAddress;
+    char data[16];
+    uint16_t port;
+    mSocket.readDatagram(data, 16, &hostAddress, &port);
+
+    bool exists = false;
+    for (auto const & host : mKnownHosts) {
+        if (host.address == hostAddress) {
+            exists = true;
             break;
         }
-    } while (true);
+    }
+
+    if (!exists) {
+        mKnownHosts.emplace_back(Host{hostAddress});
+        hostDiscovered(hostAddress);
+    }
 }

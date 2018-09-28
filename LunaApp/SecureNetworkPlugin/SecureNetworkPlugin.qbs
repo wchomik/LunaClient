@@ -2,15 +2,18 @@ import qbs
 import Plugin
 
 Plugin {
+    name: "SecureNetworkPlugin"
     files: [
         "qml.qrc",
     ]
-    Depends { name: "TLS" }
-    Depends { name: "SocketLib" }
 
+    Depends { name: "libLuna" }
+    Depends { name: "Qt.network" }
     Group {
         name: "sources"
         files: [
+            "dtlssocket.cpp",
+            "securehost.cpp",
             "securenetworkconnector.cpp",
             "securenetworkconnectorplugin.cpp",
             "securenetworkplugin.cpp",
@@ -21,22 +24,13 @@ Plugin {
     Group {
         name: "headers"
         files: [
-            "client_command_decoder.cpp",
-            "client_command_decoder.h",
-            "client_encoder.cpp",
-            "client_encoder.h",
-            "client_handler.h",
-            "command_decoder.h",
-            "command_dispatcher.cpp",
-            "command_dispatcher.h",
-            "command_encoder.cpp",
-            "command_encoder.h",
-            "packets.h",
+            "dtlssocket.h",
+            "securehost.h",
             "securenetworkconnector.h",
             "securenetworkconnectorplugin.h",
             "securenetworkplugin.h",
             "hostdiscovery.h",
-            "serializer.h",
+            "sslsink.hpp",
         ]
     }
 }

@@ -1,26 +1,34 @@
 #ifndef HOSTDISCOVERY_H
 #define HOSTDISCOVERY_H
 
-#include <functional>
-#include <chrono>
+#include <QObject>
+#include <QNetworkInterface>
+#include <QTimer>
+#include <QUdpSocket>
+#include <QHostAddress>
 
-#include <address.h>
-#include <networkinterface.h>
-#include <socket.h>
+#include <cstdint>
+#include <list>
 
-class HostDiscovery
+class HostDiscovery : public QObject
 {
+    Q_OBJECT
 public:
-    using callback_t = std::function<void(const net::Address &)>;
-    HostDiscovery(callback_t && callback, std::chrono::steady_clock::duration interval);
+    HostDiscovery();
+signals:
+    void hostDiscovered(QHostAddress hostAddress);
+    void hostLost();
+private slots:
     void discover();
+    void handleResponse();
 private:
-    std::vector<net::NetworkInterface> mInterfaces;
-    net::SocketUdp mSocket;
-    uint16_t mPort;
-    std::chrono::steady_clock::duration mDiscoveryInterval;
-    std::chrono::steady_clock::time_point mNextDiscovery;
-    callback_t mOnHostDiscovered;
+    struct Host {
+        QHostAddress address;
+    };
+
+    std::list<Host> mKnownHosts;
+    QTimer mDiscoveryTimer;
+    QUdpSocket mSocket;
 };
 
 #endif // HOSTDISCOVERY_H

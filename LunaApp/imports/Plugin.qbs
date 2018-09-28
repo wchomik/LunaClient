@@ -1,6 +1,6 @@
 import qbs
 
-DynamicLibrary {
+LoadableModule {
     Depends { name: "LunaPlugin" }
 
     Group {

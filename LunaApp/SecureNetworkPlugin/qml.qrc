@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/SecureNetwork">
         <file>SecureNetworkPage.qml</file>
+        <file>ca.crt</file>
+        <file>own.crt</file>
+        <file>own.key</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>

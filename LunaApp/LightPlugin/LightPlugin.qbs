@@ -2,6 +2,7 @@ import qbs
 import Plugin
 
 Plugin {
+    name: "LightPlugin"
     Depends { name: "cpp" }
 
     files: [

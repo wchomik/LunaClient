@@ -2,13 +2,9 @@ import qbs
 
 Project {
     references: [
-        "TLS.qbs",
         "LunaCore/LunaCore.qbs",
         "LunaPlugin/LunaPlugin.qbs",
         "Luna/Luna.qbs",
-        "SocketLib/SocketLib.qbs",
-
-        "LegacyUdpPlugin/LegacyUdpPlugin.qbs",
 
         "LightPlugin/LightPlugin.qbs",
         "EffectsPlugin/EffectsPlugin.qbs",
