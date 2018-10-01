@@ -9,20 +9,20 @@
 #include "audiochannelprocessor.h"
 #include "samplebuffer.h"
 
-class AudioProvider : public luna::Provider
+class AudioProvider : public lunacore::Provider
 {
 public:
     AudioProvider();
     virtual ~AudioProvider();
 
-    void getData(std::vector<luna::Strand *> &strands) override;
+    void getData(std::vector<lunacore::Strand *> &strands) override;
 private:
     std::unique_ptr<SampleBuffer> mBuffer;
     AudioCapture mAudioCapture;
     FFT mFFT;
-    std::unordered_map<const luna::Strand *, std::unique_ptr<AudioChannelProcessor>> mProcessors;
+    std::unordered_map<const lunacore::Strand *, std::unique_ptr<AudioChannelProcessor>> mProcessors;
 
-    void createAudioProcessor(const luna::Strand * strand);
+    void createAudioProcessor(const lunacore::Strand * strand);
 };
 
 

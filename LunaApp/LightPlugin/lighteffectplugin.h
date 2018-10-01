@@ -6,13 +6,13 @@
 
 #include "lightmodel.h"
 
-class LightEffectPlugin : public luna::EffectPlugin
+class LightEffectPlugin : public lunacore::EffectPlugin
 {
 public:
     LightEffectPlugin();
     ~LightEffectPlugin();
 
-    std::shared_ptr<luna::Provider> createProvider() override;
+    std::shared_ptr<lunacore::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QObject * model() override;

@@ -8,10 +8,10 @@ QString AudioPlugin::name() const {
     return "Audio";
 }
 
-void AudioPlugin::initialize(luna::Luna * luna) {
+void AudioPlugin::initialize(lunacore::Luna * luna) {
     luna->addEffect(std::make_unique<AudioEffectPlugin>());
 }
 
-void AudioPlugin::finalize(luna::Luna * luna) {
+void AudioPlugin::finalize(lunacore::Luna * luna) {
 
 }

@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-using namespace luna;
+using namespace lunacore;
 
 LightModel::LightModel(QObject * parent) :
     QObject(parent),
@@ -41,7 +41,7 @@ qreal LightModel::whiteness() const {
 
 void LightModel::setWhiteness(qreal value) {
     if (auto p = mProvider.lock()) {
-        p->setWhiteness(static_cast<luna::ColorScalar>(value));
+        p->setWhiteness(static_cast<lunacore::ColorScalar>(value));
     }
 
     if (mWhiteness != value) {
@@ -56,7 +56,7 @@ qreal LightModel::temperature() const {
 
 void LightModel::setTemperature(qreal value) {
     if (auto p = mProvider.lock()) {
-        p->setColorFromTemperature(static_cast<luna::ColorScalar>(value));
+        p->setColorFromTemperature(static_cast<lunacore::ColorScalar>(value));
     }
 
     if (mTemperature != value) {
@@ -71,7 +71,7 @@ qreal LightModel::brightness() const {
 
 void LightModel::setBrightness(qreal value) {
     if (auto p = mProvider.lock()) {
-        p->setBrightness(static_cast<luna::ColorScalar>(value));
+        p->setBrightness(static_cast<lunacore::ColorScalar>(value));
     }
 
     if (mBrightness != value) {

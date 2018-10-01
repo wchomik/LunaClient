@@ -7,7 +7,7 @@
 
 #include "lunacore_global.h"
 
-namespace luna {
+namespace lunacore {
     class LUNACORESHARED_EXPORT Host {
     public:
         virtual ~Host();

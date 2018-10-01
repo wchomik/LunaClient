@@ -8,7 +8,7 @@ LightEffectPlugin::LightEffectPlugin() :
 {
 }
 
-std::shared_ptr<luna::Provider> LightEffectPlugin::createProvider() {
+std::shared_ptr<lunacore::Provider> LightEffectPlugin::createProvider() {
     auto ret = std::shared_ptr<LightProvider>(new LightProvider());
     mModel->provider(ret);
     return ret;

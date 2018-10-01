@@ -9,7 +9,7 @@ class ThemeColor
 public:
     ThemeColor();
     ~ThemeColor();
-    luna::Color get();
+    lunacore::Color get();
 private:
     using GetImmersiveColorFromColorSetEx_t =
         unsigned int __stdcall (

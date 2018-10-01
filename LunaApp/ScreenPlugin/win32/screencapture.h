@@ -15,7 +15,7 @@ public:
     ~ScreenCapture();
 
     void configure(const unsigned width, const unsigned height);
-    Array2D<luna::Color> & pixels(){ return mPixels; }
+    Array2D<lunacore::Color> & pixels(){ return mPixels; }
     bool getNextFrame();
 private:
     void processFrame(Microsoft::WRL::ComPtr<IDXGIResource> & desktopResource);
@@ -51,7 +51,7 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mCPUTexture;
 
-    Array2D<luna::Color> mPixels;
+    Array2D<lunacore::Color> mPixels;
 };
 
 

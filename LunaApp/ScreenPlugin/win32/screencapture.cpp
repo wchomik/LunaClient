@@ -10,7 +10,7 @@
 
 
 using namespace Microsoft::WRL;
-using namespace luna;
+using namespace lunacore;
 
 ScreenCapture::ScreenCapture() :
     mHasOutput(false),

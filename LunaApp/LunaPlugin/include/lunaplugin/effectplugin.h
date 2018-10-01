@@ -8,12 +8,12 @@
 #include "lunaplugin_global.h"
 #include "configurableplugin.h"
 
-namespace luna {
+namespace lunacore {
     class LUNAPLUGINSHARED_EXPORT EffectPlugin : public ConfigurablePlugin
     {
     public:
         virtual ~EffectPlugin();
-        virtual std::shared_ptr<luna::Provider> createProvider() = 0;
+        virtual std::shared_ptr<lunacore::Provider> createProvider() = 0;
     };
 }
 

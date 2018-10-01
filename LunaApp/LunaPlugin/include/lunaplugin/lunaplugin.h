@@ -5,7 +5,7 @@
 
 #include "lunaplugin_global.h"
 
-namespace luna {
+namespace lunacore {
     class Luna;
 
     class LUNAPLUGINSHARED_EXPORT LunaPlugin : public QObject {
@@ -14,12 +14,12 @@ namespace luna {
         virtual ~LunaPlugin();
 
         virtual QString name() const = 0;
-        virtual void initialize(Luna * luna) = 0;
-        virtual void finalize(Luna * luna) = 0;
+        virtual void initialize(Luna * lunacore) = 0;
+        virtual void finalize(Luna * lunacore) = 0;
 
     };
 }
 
-Q_DECLARE_INTERFACE(luna::LunaPlugin, "org.luna.plugin")
+Q_DECLARE_INTERFACE(lunacore::LunaPlugin, "org.luna.plugin")
 
 #endif // LUNAPLUGIN_H

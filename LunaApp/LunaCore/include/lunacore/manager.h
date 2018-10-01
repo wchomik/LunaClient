@@ -14,7 +14,7 @@
 #include "colorspace.h"
 #include "provider.h"
 
-namespace luna {
+namespace lunacore {
     class LUNACORESHARED_EXPORT Manager
     {
     public:

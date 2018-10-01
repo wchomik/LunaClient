@@ -1,7 +1,7 @@
 #ifndef COLORMODE_H
 #define COLORMODE_H
 
-namespace luna {
+namespace lunacore {
     enum class ColorMode {
         fullDirect,
         fullWhiteBalanced,

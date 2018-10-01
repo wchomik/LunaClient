@@ -1,5 +1,7 @@
 #include "hostdiscovery.h"
 
+#include <QNetworkInterface>
+
 #include <chrono>
 
 using namespace std::chrono_literals;
@@ -21,7 +23,6 @@ HostDiscovery::HostDiscovery() :
 
 void HostDiscovery::discover()
 {
-    //qDebug() << "Discovery";
     QByteArray message("Dupa blada");
     uint16_t port = 9510;
 
@@ -30,7 +31,6 @@ void HostDiscovery::discover()
         for (auto const & entry : interface.addressEntries()) {
             auto const & address = entry.broadcast();
             if (address.isNull()) continue;
-            //qDebug() << "sending to" << address.toString();
             mSocket.writeDatagram(message, address, port);
         }
     }
@@ -38,23 +38,10 @@ void HostDiscovery::discover()
 
 void HostDiscovery::handleResponse()
 {
-    //qDebug() << "got something";
-
     QHostAddress hostAddress;
     char data[16];
     uint16_t port;
     mSocket.readDatagram(data, 16, &hostAddress, &port);
 
-    bool exists = false;
-    for (auto const & host : mKnownHosts) {
-        if (host.address == hostAddress) {
-            exists = true;
-            break;
-        }
-    }
-
-    if (!exists) {
-        mKnownHosts.emplace_back(Host{hostAddress});
-        hostDiscovered(hostAddress);
-    }
+    hostDiscovered(hostAddress);
 }

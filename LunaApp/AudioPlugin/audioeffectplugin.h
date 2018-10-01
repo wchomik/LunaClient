@@ -6,10 +6,10 @@
 
 #include "audiomodel.h"
 
-class AudioEffectPlugin : public luna::EffectPlugin
+class AudioEffectPlugin : public lunacore::EffectPlugin
 {
 public:
-    std::shared_ptr<luna::Provider> createProvider() override;
+    std::shared_ptr<lunacore::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QUrl itemUrl() const override;

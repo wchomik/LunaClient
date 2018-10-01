@@ -7,7 +7,7 @@ ScreenEffectPlugin::ScreenEffectPlugin() :
 {
 }
 
-std::shared_ptr<luna::Provider> ScreenEffectPlugin::createProvider() {
+std::shared_ptr<lunacore::Provider> ScreenEffectPlugin::createProvider() {
     auto ret = std::make_shared<ScreenProvider>();
     mModel->provider(ret);
     return ret;

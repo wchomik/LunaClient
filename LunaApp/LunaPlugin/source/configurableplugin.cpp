@@ -1,5 +1,5 @@
 #include "configurableplugin.h"
 
-namespace luna {
+namespace lunacore {
     ConfigurablePlugin::~ConfigurablePlugin() {}
 }

@@ -20,14 +20,14 @@ struct AudioChannelConfig {
 class AudioChannelProcessor {
 public:
     explicit AudioChannelProcessor(const AudioChannelConfig & config);
-    void process(luna::Color * output, const Eigen::ArrayXf & input);
+    void process(lunacore::Color * output, const Eigen::ArrayXf & input);
 private:
     class FFT * mFFT;
     const uint32_t mCount;
     std::vector<uint32_t> mIndices;
     Eigen::ArrayXf mSums;
     Eigen::ArrayXf mFilter;
-    luna::ColorVector mBaseColors;
+    lunacore::ColorVector mBaseColors;
     const float mLogMul;
     float mFilteredNorm;
 };

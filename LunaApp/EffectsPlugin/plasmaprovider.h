@@ -7,11 +7,11 @@
 
 #include "noise.h"
 
-class PlasmaProvider : public luna::Provider
+class PlasmaProvider : public lunacore::Provider
 {
 public:
     PlasmaProvider();
-    void getData(std::vector<luna::Strand *> & strands) override;
+    void getData(std::vector<lunacore::Strand *> & strands) override;
     Noise mNoise;
 private:
     using clock = std::chrono::steady_clock;

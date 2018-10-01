@@ -2,7 +2,7 @@
 
 #include <lunacore/strand.h>
 
-using namespace luna;
+using namespace lunacore;
 
 AudioProvider::AudioProvider() :
     mFFT(1 << 13, FFT::magnitude)

@@ -2,7 +2,7 @@
 
 #include <QtDebug>
 
-using namespace luna;
+using namespace lunacore;
 
 const wchar_t * const dllName = L"uxtheme.dll";
 

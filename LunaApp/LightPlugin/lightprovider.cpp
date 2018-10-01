@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <lunacore/strand.h>
 
-using namespace luna;
+using namespace lunacore;
 
 LightProvider::LightProvider() :
     mSource(Source::ColorPicker),

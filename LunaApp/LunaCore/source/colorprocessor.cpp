@@ -1,11 +1,11 @@
 #include "colorprocessor.h"
 
-namespace luna {
+namespace lunacore {
 
     ColorProcessor::~ColorProcessor() {}
 
     // direct
-    void ColorProcessorDirect::process(luna::ColorVector &)
+    void ColorProcessorDirect::process(lunacore::ColorVector &)
     {}
 
     // white balanced

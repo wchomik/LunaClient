@@ -6,10 +6,11 @@
 #include "lunacore_global.h"
 #include "colorutils.h"
 
-namespace luna {
+namespace lunacore {
+    using cieCoord_t = Eigen::Matrix<ColorScalar, 2, 1>;
+
     class LUNACORESHARED_EXPORT ColorSpace
     {
-        typedef Eigen::Matrix<ColorScalar, 2, 1> cieCoord_t;
     public:
         ColorSpace();
         ColorSpace(const cieCoord_t & white, const cieCoord_t & red,

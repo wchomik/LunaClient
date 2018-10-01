@@ -2,7 +2,7 @@
 
 #include "audioprovider.h"
 
-std::shared_ptr<luna::Provider> AudioEffectPlugin::createProvider() {
+std::shared_ptr<lunacore::Provider> AudioEffectPlugin::createProvider() {
     auto ret = std::make_shared<AudioProvider>();
     return ret;
 }

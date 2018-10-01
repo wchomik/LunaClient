@@ -9,12 +9,12 @@
 
 #include "configurableplugin.h"
 
-namespace luna {
+namespace lunacore {
     class LUNAPLUGINSHARED_EXPORT ConnectorPlugin : public ConfigurablePlugin
     {
     public:
         virtual ~ConnectorPlugin();
-        virtual std::shared_ptr<luna::Connector> createConnector() = 0;
+        virtual std::shared_ptr<lunacore::Connector> createConnector() = 0;
     };
 }
 

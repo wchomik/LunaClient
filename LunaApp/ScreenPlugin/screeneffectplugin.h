@@ -5,11 +5,11 @@
 
 #include "screenmodel.h"
 
-class ScreenEffectPlugin : public luna::EffectPlugin
+class ScreenEffectPlugin : public lunacore::EffectPlugin
 {
 public:
     ScreenEffectPlugin();
-    std::shared_ptr<luna::Provider> createProvider() override;
+    std::shared_ptr<lunacore::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QUrl itemUrl() const override;

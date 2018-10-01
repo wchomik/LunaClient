@@ -8,7 +8,7 @@
 
 #include "themecolor.h"
 
-class LightProvider : public luna::Provider {
+class LightProvider : public lunacore::Provider {
 public:
     enum class Source {
         ColorPicker,
@@ -19,31 +19,31 @@ public:
 
     LightProvider();
 
-    void getData(std::vector<luna::Strand *> & strands) override;
+    void getData(std::vector<lunacore::Strand *> & strands) override;
 
-    void setColor(const luna::Color & value);
+    void setColor(const lunacore::Color & value);
     void setColorFromTemperature(const float value);
-    void setWhiteness(luna::ColorScalar value);
-    void setBrightness(luna::ColorScalar value);
+    void setWhiteness(lunacore::ColorScalar value);
+    void setBrightness(lunacore::ColorScalar value);
 
     void setSource(Source value);
 private:
     struct LightData {
-        explicit LightData(luna::Strand * strand);
-        luna::Color smoothColor;
-        luna::ColorSpace::Transformation screenToStrandTransformation;
+        explicit LightData(lunacore::Strand * strand);
+        lunacore::Color smoothColor;
+        lunacore::ColorSpace::Transformation screenToStrandTransformation;
     };
 
     Source mSource;
 
-    luna::Color mColor;
-    luna::ColorScalar mWhiteness;
+    lunacore::Color mColor;
+    lunacore::ColorScalar mWhiteness;
 
     ThemeColor mThemeColor;
 
-    luna::ColorScalar mBrightness;
+    lunacore::ColorScalar mBrightness;
 
-    luna::StrandData<LightData> mStrandData;
+    lunacore::StrandData<LightData> mStrandData;
 private:
     void update();
 public:

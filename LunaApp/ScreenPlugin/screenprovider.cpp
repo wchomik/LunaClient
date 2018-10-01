@@ -7,7 +7,7 @@
 #include <lunacore/range.h>
 
 using namespace Eigen;
-using namespace luna;
+using namespace lunacore;
 
 void ScreenProvider::getData(std::vector<Strand *> & strands) {
     std::lock_guard<std::mutex> lock(mMutex);
@@ -69,13 +69,13 @@ void ScreenProvider::setDepth(int value) {
     makeDepthWeights();
 }
 
-void ScreenProvider::setBrightness(luna::ColorScalar value) {
+void ScreenProvider::setBrightness(lunacore::ColorScalar value) {
     std::lock_guard<std::mutex> lock(mMutex);
     mBrightness = value;
     makeDepthWeights();
 }
 
-void ScreenProvider::setGamma(luna::ColorScalar value) {
+void ScreenProvider::setGamma(lunacore::ColorScalar value) {
     mGamma = value;
 }
 

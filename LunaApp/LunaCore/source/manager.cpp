@@ -12,7 +12,7 @@
 namespace ch = std::chrono;
 using namespace std::chrono_literals;
 
-namespace luna {
+namespace lunacore {
     Manager::Manager() :
         mShouldRun(true)
     {

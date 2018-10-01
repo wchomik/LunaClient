@@ -12,6 +12,7 @@ Plugin {
     Group {
         name: "sources"
         files: [
+            "controlsocket.cpp",
             "dtlssocket.cpp",
             "securehost.cpp",
             "securenetworkconnector.cpp",
@@ -24,6 +25,7 @@ Plugin {
     Group {
         name: "headers"
         files: [
+            "controlsocket.h",
             "dtlssocket.h",
             "securehost.h",
             "securenetworkconnector.h",

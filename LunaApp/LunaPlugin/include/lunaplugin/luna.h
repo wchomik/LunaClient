@@ -16,7 +16,7 @@
 #include "effectplugin.h"
 #include "connectorplugin.h"
 
-namespace luna {
+namespace lunacore {
     class LUNAPLUGINSHARED_EXPORT Luna : public QObject
     {
         Q_OBJECT
@@ -29,7 +29,7 @@ namespace luna {
         void addConnector(std::unique_ptr<ConnectorPlugin> && connector);
         Manager & manager();
     private:
-        using PluginPtr = std::unique_ptr<luna::LunaPlugin>;
+        using PluginPtr = std::unique_ptr<lunacore::LunaPlugin>;
         using PluginVector = std::vector<PluginPtr>;
 
         using EffectPtr = std::unique_ptr<EffectPlugin>;
@@ -44,7 +44,7 @@ namespace luna {
         void instantiateTabs();
 
         QQmlApplicationEngine * mEngine;
-        luna::Manager mManager;
+        lunacore::Manager mManager;
         PluginVector mPlugins;
 
         EffectVector mEffects;

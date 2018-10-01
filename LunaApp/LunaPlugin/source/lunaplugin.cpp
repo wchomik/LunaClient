@@ -1,6 +1,6 @@
 #include "lunaplugin.h"
 
-namespace luna {
+namespace lunacore {
     LunaPlugin::LunaPlugin(QObject *parent) :
         QObject(parent)
     {}

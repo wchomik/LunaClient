@@ -2,7 +2,7 @@
 
 #include "colorprocessor.h"
 
-namespace luna {
+namespace lunacore {
     Strand::Strand(const Strand::Config & config) :
         mConfig(config),
         mPixels(config.count),

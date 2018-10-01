@@ -1,5 +1,5 @@
 #include "provider.h"
 
-namespace luna {
+namespace lunacore {
     Provider::~Provider() {}
 }

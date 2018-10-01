@@ -5,15 +5,15 @@
 
 #include <lunaplugin/lunaplugin.h>
 
-class LightPlugin : public luna::LunaPlugin
+class LightPlugin : public lunacore::LunaPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.luna.light")
-    Q_INTERFACES(luna::LunaPlugin)
+    Q_INTERFACES(lunacore::LunaPlugin)
 public:
     QString name() const override;
-    void initialize(luna::Luna *luna) override;
-    void finalize(luna::Luna *luna) override;
+    void initialize(lunacore::Luna *lunacore) override;
+    void finalize(lunacore::Luna *lunacore) override;
 };
 
 #endif // LIGHTPLUGIN_H

@@ -12,6 +12,7 @@ class DtlsSocket : public QObject
     Q_OBJECT
 public:
     DtlsSocket(QHostAddress const & address, uint16_t port, QByteArray const & sharedKey);
+    ~DtlsSocket() override = default;
     void write(uint8_t const * data, size_t dataSize);
 signals:
     void dataReady(QByteArray data);

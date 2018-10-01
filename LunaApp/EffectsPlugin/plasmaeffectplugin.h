@@ -5,7 +5,7 @@
 
 #include "plasmamodel.h"
 
-class PlasmaEffectPlugin : public luna::EffectPlugin
+class PlasmaEffectPlugin : public lunacore::EffectPlugin
 {
 public:
     PlasmaEffectPlugin();
@@ -13,7 +13,7 @@ public:
     int displayOrder() const override;
     QUrl itemUrl() const override;
     QObject *model() override;
-    std::shared_ptr<luna::Provider> createProvider() override;
+    std::shared_ptr<lunacore::Provider> createProvider() override;
 private:
     std::unique_ptr<PlasmaModel> mModel;
 };

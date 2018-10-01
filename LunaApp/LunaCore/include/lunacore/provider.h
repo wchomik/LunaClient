@@ -4,7 +4,7 @@
 #include <vector>
 #include "lunacore_global.h"
 
-namespace luna {
+namespace lunacore {
     class LUNACORESHARED_EXPORT Provider
     {
     public:

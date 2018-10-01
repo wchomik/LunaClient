@@ -10,7 +10,7 @@
 #include "lunaplugin.h"
 #include "tabsmodel.h"
 
-namespace luna {
+namespace lunacore {
     Luna::Luna(QObject * parent) :
         QObject(parent),
         mEngine(new QQmlApplicationEngine(this)),
@@ -77,7 +77,7 @@ namespace luna {
             }
             QObject * plugin = pluginLoader.instance();
             if (plugin) {
-                auto lunaPlugin = qobject_cast<luna::LunaPlugin *>(plugin);
+                auto lunaPlugin = qobject_cast<lunacore::LunaPlugin *>(plugin);
                 if (nullptr != lunaPlugin) {
                     qDebug() << fileName << "loaded";
                     mPlugins.emplace_back(lunaPlugin);

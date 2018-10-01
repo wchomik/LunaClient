@@ -2,7 +2,7 @@
 
 #include "fft.h"
 
-using namespace luna;
+using namespace lunacore;
 
 AudioChannelProcessor::AudioChannelProcessor(const AudioChannelConfig & config) :
     mFFT(config.fft),

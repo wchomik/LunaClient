@@ -1,6 +1,6 @@
 #include "connector.h"
 
-namespace luna {
+namespace lunacore {
     Host::~Host() {}
     Connector::~Connector() {}
 }

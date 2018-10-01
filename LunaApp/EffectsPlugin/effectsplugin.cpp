@@ -9,11 +9,11 @@ QString EffectsPlugin::name() const {
     return "Effects";
 }
 
-void EffectsPlugin::initialize(luna::Luna * luna) {
+void EffectsPlugin::initialize(lunacore::Luna * luna) {
     luna->addEffect(std::make_unique<FlameEffectPlugin>());
     luna->addEffect(std::make_unique<PlasmaEffectPlugin>());
 }
 
-void EffectsPlugin::finalize(luna::Luna * luna) {
+void EffectsPlugin::finalize(lunacore::Luna * luna) {
 }
 

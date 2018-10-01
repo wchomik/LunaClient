@@ -1,7 +1,7 @@
 #include "tabsmodel.h"
 
-namespace luna {
-    luna::TabsModel::TabsModel(QObject *parent)  :
+namespace lunacore {
+    lunacore::TabsModel::TabsModel(QObject *parent)  :
         QObject(parent)
     {
 

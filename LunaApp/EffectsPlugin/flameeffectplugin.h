@@ -5,11 +5,11 @@
 
 #include "flamemodel.h"
 
-class FlameEffectPlugin : public luna::EffectPlugin
+class FlameEffectPlugin : public lunacore::EffectPlugin
 {
 public:
     FlameEffectPlugin();
-    std::shared_ptr<luna::Provider> createProvider() override;
+    std::shared_ptr<lunacore::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QObject * model() override;

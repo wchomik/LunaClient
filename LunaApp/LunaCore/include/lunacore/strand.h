@@ -11,7 +11,7 @@
 #include "colorspace.h"
 #include "colorprocessor.h"
 
-namespace luna {
+namespace lunacore {
     enum ColorChannels : uint32_t {
         red = 1 << 0,
         green = 1 << 1,

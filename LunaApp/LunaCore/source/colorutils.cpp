@@ -3,7 +3,7 @@
 #include <cmath>
 #include <algorithm>
 
-namespace luna {
+namespace lunacore {
     struct ColorProperties {
         ColorScalar minimum;
         ColorScalar maximum;

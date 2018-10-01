@@ -11,7 +11,7 @@
 
 #include "lunacore_global.h"
 
-namespace luna {
+namespace lunacore {
     typedef float ColorScalar;
     typedef Eigen::Matrix<ColorScalar, 4, 1> Color;
     typedef std::vector<Color, Eigen::aligned_allocator<Color>> ColorVector;

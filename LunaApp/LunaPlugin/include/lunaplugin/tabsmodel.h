@@ -6,7 +6,7 @@
 
 #include "lunaplugin_global.h"
 
-namespace luna {
+namespace lunacore {
     class LUNAPLUGINSHARED_EXPORT TabsModel : public QObject
     {
         Q_OBJECT

@@ -3,7 +3,7 @@
 #include <lunacore/strand.h>
 
 using namespace Eigen;
-using namespace luna;
+using namespace lunacore;
 
 FlameProvider::FlameProvider() :
     mTemperatureDistribution(-1.0f, 1.0f),

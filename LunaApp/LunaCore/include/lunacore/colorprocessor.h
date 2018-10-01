@@ -5,7 +5,7 @@
 #include "colorutils.h"
 #include "colorspace.h"
 
-namespace luna {
+namespace lunacore {
     class LUNACORESHARED_EXPORT ColorProcessor
     {
     public:

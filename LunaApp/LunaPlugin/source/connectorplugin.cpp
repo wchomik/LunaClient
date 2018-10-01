@@ -1,6 +1,6 @@
 #include "connectorplugin.h"
 
 
-namespace luna {
-    luna::ConnectorPlugin::~ConnectorPlugin() { }
+namespace lunacore {
+    lunacore::ConnectorPlugin::~ConnectorPlugin() { }
 }

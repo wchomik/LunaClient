@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-namespace luna {
+namespace lunacore {
     ColorSpace::ColorSpace() :
         mRgbToXyz(Transformation::Identity()),
         mXyzToRgb(Transformation::Identity())

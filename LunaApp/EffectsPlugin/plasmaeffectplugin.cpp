@@ -22,6 +22,6 @@ QObject * PlasmaEffectPlugin::model() {
     return mModel.get();
 }
 
-std::shared_ptr<luna::Provider> PlasmaEffectPlugin::createProvider() {
+std::shared_ptr<lunacore::Provider> PlasmaEffectPlugin::createProvider() {
     return std::make_shared<PlasmaProvider>();
 }

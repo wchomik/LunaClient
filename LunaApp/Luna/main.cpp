@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <lunaplugin/luna.h>
 
-using namespace luna;
+using namespace lunacore;
 
 int main(int argc, char *argv[])
 {
