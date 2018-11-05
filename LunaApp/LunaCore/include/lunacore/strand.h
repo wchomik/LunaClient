@@ -36,6 +36,7 @@ namespace lunacore {
 
         const Config & config() const;
         Color * pixels();
+        Color const * pixels() const;
         Eigen::Vector3f positionOf(unsigned index);
 
         void applyColorProcessing();

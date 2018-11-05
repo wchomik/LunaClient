@@ -2,6 +2,7 @@
 
 #include "dtlssocket.h"
 #include "controlsocket.h"
+#include "StrandSerializer.h"
 
 #include <lunacore/connector.h>
 
@@ -12,7 +13,7 @@
 
 struct StrandData {
     std::unique_ptr<lunacore::Strand> strand;
-    luna::BitDepth bitDepth;
+    std::unique_ptr<StrandSerializer> serializer;
 };
 
 class SecureHost :

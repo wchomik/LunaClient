@@ -1,12 +1,12 @@
 #include "securehost.h"
 
 #include <lunacore/strand.h>
+#include <luna/ByteStream.hpp>
 
 #include <QDebug>
 
 #include <array>
 #include <algorithm>
-
 
 SecureHost::SecureHost(QHostAddress hostAddress) :
     mAddress(hostAddress),
@@ -27,44 +27,11 @@ void SecureHost::send()
     constexpr size_t BUFFER_SIZE = 1024 * 2;
     uint8_t buffer[BUFFER_SIZE];
     luna::ByteStream s(buffer, BUFFER_SIZE);
+
     for (auto const& data : mStrands) {
-        auto & strand = data.strand;
-        lunacore::Color * pixels = strand->pixels();
-        lunacore::Color error = lunacore::Color::Zero();
-        lunacore::ColorChannels channels = strand->config().colorChannels;
+        auto & strand = *data.strand;
 
-        int range;
-        std::function<void(luna::ByteStream &, lunacore::ColorScalar)> writer;
-        switch (data.bitDepth) {
-            case luna::BitDepth::integer8: {
-                range = (1 << 8) - 1;
-                writer = [](luna::ByteStream & s, lunacore::ColorScalar value) {
-                    s << static_cast<uint8_t>(value);
-                };
-                break;
-            }
-        case luna::BitDepth::integer16: {
-                range = (1 << 16) - 1;
-                writer = [](luna::ByteStream & s, lunacore::ColorScalar value) {
-                    s << static_cast<uint16_t>(value);
-                };
-                break;
-            }
-            default: throw std::out_of_range("Enum value out of range");
-        }
-
-        size_t const pixelCount = strand->config().count;
-        for (size_t i = 0; i < pixelCount; ++i){
-            lunacore::Color corrected = pixels[i] * range + error;
-            lunacore::Color clampedRounded = corrected.array().max(0).min(range).round().matrix();
-            error = corrected - clampedRounded;
-
-            for (int j = 0; j < 4; ++j) {
-                if (0 != ((1 << j) & channels)) {
-                    writer(s, clampedRounded(j));
-                }
-            }
-        }
+        data.serializer->serialize(strand, s);
     }
 
     if (s.size() > 0) {
@@ -97,8 +64,6 @@ void SecureHost::getStrands(std::vector<lunacore::Strand *> & strands)
     }
 }
 
-
-
 void SecureHost::strandConfigurationReceived(const luna::LunaConfiguration &configuration)
 {
     for (auto const & strand : configuration.strands) {
@@ -106,8 +71,10 @@ void SecureHost::strandConfigurationReceived(const luna::LunaConfiguration &conf
 
         auto const & cs = strand.colorSpace;
         auto conv = [](auto const & coords) {
+            qDebug() << coords.u << coords.v;
             return lunacore::cieCoord_t{coords.u, coords.v};
         };
+
         config.colorSpace = lunacore::ColorSpace(
             conv(cs.white),
             conv(cs.red),
@@ -125,7 +92,18 @@ void SecureHost::strandConfigurationReceived(const luna::LunaConfiguration &conf
         config.end = Eigen::Vector3f(e.x, e.y, e.z);
 
         auto s = std::make_unique<lunacore::Strand>(config);
-        mStrands.emplace_back(StrandData{std::move(s), strand.bitDepth});
+
+        auto serializer = [format = strand.bitDepth]() -> std::unique_ptr<StrandSerializer> {
+            switch(format) {
+            case luna::BitDepth::integer8:
+                return std::make_unique<StrandSerializer8Bit>();
+            case luna::BitDepth::integer16:
+                return std::make_unique<StrandSerializer16Bit>();
+            }
+            throw 5;
+        }();
+
+        mStrands.emplace_back(StrandData{std::move(s), std::move(serializer) });
     }
 
     mControlSocket->encoder().requestDataChannel();

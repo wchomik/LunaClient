@@ -20,6 +20,11 @@ namespace lunacore {
         return mPixels.data();
     }
 
+    Color const * Strand::pixels() const {
+        return mPixels.data();
+    }
+
+
     Eigen::Vector3f Strand::positionOf(unsigned index) {
         const float t = (static_cast<float>(index) + 0.5f) * mPositionInterpolationFactor;
         return mConfig.begin * (1.0f - t) + mConfig.end * t;

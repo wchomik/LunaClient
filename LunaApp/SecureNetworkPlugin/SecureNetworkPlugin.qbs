@@ -18,6 +18,7 @@ Plugin {
             "securenetworkconnector.cpp",
             "securenetworkconnectorplugin.cpp",
             "securenetworkplugin.cpp",
+            "StrandSerializer.cpp",
             "hostdiscovery.cpp",
         ]
     }
@@ -31,6 +32,7 @@ Plugin {
             "securenetworkconnector.h",
             "securenetworkconnectorplugin.h",
             "securenetworkplugin.h",
+            "StrandSerializer.h",
             "hostdiscovery.h",
             "sslsink.hpp",
         ]
