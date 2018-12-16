@@ -1,6 +1,6 @@
 #include "connector.h"
 
 namespace lunacore {
-    Host::~Host() {}
-    Connector::~Connector() {}
+    Host::~Host() = default;
+    Connector::~Connector() = default;
 }

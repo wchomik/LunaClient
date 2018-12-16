@@ -47,7 +47,7 @@ namespace lunacore {
     Color hsvToRgb(const Color & hsv)
     {
         ColorScalar i;
-        ColorScalar h6 = modf(hsv[0], &i) * 6;
+        ColorScalar h6 = std::modf(hsv[0], &i) * 6;
         ColorScalar sat = clamp(hsv[1], 0.0f, 1.0f);
         ColorScalar val = clamp(hsv[2], 0.0f, 1.0f);
 

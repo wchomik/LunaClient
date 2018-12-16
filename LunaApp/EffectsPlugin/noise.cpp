@@ -2,6 +2,7 @@
 
 #include <random>
 #include <cmath>
+#include <algorithm>
 
 static float fade(float t) {
     return t * t * t * (t * (t * 6 - 15) + 10);
@@ -32,7 +33,10 @@ Noise::Noise() {
     for (unsigned i = 0; i < c; ++i) {
         mP[i] = i;
     }
-    std::random_shuffle(mP.begin(), mP.begin() + c);
+
+    std::random_device rd;
+    std::default_random_engine re(rd());
+    std::shuffle(mP.begin(), mP.begin() + c, re);
     for (unsigned i = 0; i < c; ++i) {
         mP[i + c] = mP[i];
     }

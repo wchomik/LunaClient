@@ -55,12 +55,12 @@ namespace lunacore {
 
     void Luna::loadDynamicPlugins() {
         QDir pluginsDir(qApp->applicationDirPath());
-        pluginsDir.cd("plugins");
+        pluginsDir.cd("../lib");
 
         qDebug() << "Loading plugins from" << pluginsDir.absolutePath();
 
 #ifdef WIN32
-        auto path = pluginsDir.absolutePath().toStdWString();
+        auto path = pluginsDir.absolutePath().toStdString();
         SetDllDirectory(path.c_str());
 #endif
 

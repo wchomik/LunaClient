@@ -4,7 +4,7 @@
 
 using namespace lunacore;
 
-const wchar_t * const dllName = L"uxtheme.dll";
+const char * const dllName = "uxtheme.dll";
 
 const char * const GetImmersiveColorFromColorSetEx_Name =
     reinterpret_cast<char *>(95);

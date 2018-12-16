@@ -1,0 +1,10 @@
+[requires]
+fftw/3.3.8@bincrafters/stable
+eigen/3.3.4@conan/stable
+
+[options]
+fftw:precision=single
+fftw:shared=True
+
+[generators]
+cmake
