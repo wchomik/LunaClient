@@ -8,3 +8,8 @@ fftw:shared=True
 
 [generators]
 cmake
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin
+lib, *.so* -> ./bin
