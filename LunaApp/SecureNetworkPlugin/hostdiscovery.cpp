@@ -17,7 +17,7 @@ HostDiscovery::HostDiscovery() :
     QObject::connect(&mSocket, &QUdpSocket::readyRead,
         this, &HostDiscovery::handleResponse);
 
-    mDiscoveryTimer.start(1s);
+    mDiscoveryTimer.start(5s);
     QTimer::singleShot(0, this, &HostDiscovery::discover);
 }
 
@@ -39,9 +39,13 @@ void HostDiscovery::discover()
 void HostDiscovery::handleResponse()
 {
     QHostAddress hostAddress;
-    char data[16];
+    char data[1024];
     uint16_t port;
-    mSocket.readDatagram(data, 16, &hostAddress, &port);
+    auto size = mSocket.readDatagram(data, 1024, &hostAddress, &port);
 
-    hostDiscovered(hostAddress);
+    using namespace luna::proto;
+
+    auto discovery = GetDiscovery(data);
+
+    hostDiscovered(hostAddress, discovery);
 }

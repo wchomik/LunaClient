@@ -9,49 +9,34 @@ static size_t countSet(lunacore::ColorChannels channels)
     return std::bitset<4>(channels).count();
 }
 
-
-void StrandSerializer8Bit::serialize(lunacore::Strand const & strand, luna::ByteStream & stream) const
+luna::proto::StrandDataBuilder StrandSerializerRGB::serialize(flatbuffers::FlatBufferBuilder & builder, lunacore::Strand const & strand) const
 {
     lunacore::Color const * pixels = strand.pixels();
     lunacore::Color error = lunacore::Color::Zero();
-    lunacore::ColorChannels channels = strand.config().colorChannels;
     size_t const pixelCount = strand.config().count;
 
     constexpr lunacore::ColorScalar range = (1 << 8) - 1;
 
-    stream << static_cast<uint16_t>(pixelCount * countSet(channels));
+    using namespace luna::proto;
+
+
+    std::vector<RGB> rgb;
 
     for (size_t i = 0; i < pixelCount; ++i){
         lunacore::Color const corrected = pixels[i] * range + error;
         lunacore::Color const clampedRounded = corrected.array().max(0).min(range).round().matrix();
         error = corrected - clampedRounded;
 
-        for (int j = 0; j < 4; ++j) {
-            if (0 != ((1 << j) & channels)) {
-                stream << static_cast<uint8_t>(clampedRounded(j));
-            }
-        }
+        Eigen::Matrix<uint8_t, 4, 1> color = clampedRounded.cast<uint8_t>();
+
+        rgb.emplace_back(color.x(), color.y(), color.z());
     }
-}
 
-void StrandSerializer16Bit::serialize(lunacore::Strand const & strand, luna::ByteStream & stream) const
-{
-    lunacore::Color const * pixels = strand.pixels();
-    lunacore::ColorChannels channels = strand.config().colorChannels;
-    size_t const pixelCount = strand.config().count;
+    auto rgbdata = CreateRGBDataDirect(builder, &rgb);
 
-    constexpr lunacore::ColorScalar range = (1 << 16) - 1;
+    StrandDataBuilder sdb(builder);
+    sdb.add_data(rgbdata.Union());
+    sdb.add_data_type(RawData_RGBData);
 
-    stream << static_cast<uint16_t>(pixelCount * countSet(channels));
-
-    for (size_t i = 0; i < pixelCount; ++i){
-        lunacore::Color const corrected = pixels[i] * range;
-        lunacore::Color const clampedRounded = corrected.array().max(0).min(range).round().matrix();
-
-        for (int j = 0; j < 4; ++j) {
-            if (0 != ((1 << j) & channels)) {
-                stream << static_cast<uint8_t>(clampedRounded(j));
-            }
-        }
-    }
+    return sdb;
 }

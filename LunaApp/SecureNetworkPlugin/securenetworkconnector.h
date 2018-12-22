@@ -7,8 +7,9 @@
 
 #include <memory>
 
-class SecureNetworkConnector : public lunacore::Connector
+class SecureNetworkConnector : public QObject, public lunacore::Connector
 {
+    Q_OBJECT
 public:
     explicit SecureNetworkConnector();
     SecureNetworkConnector(SecureNetworkConnector const &) = delete;
@@ -16,6 +17,8 @@ public:
 
     void update() override;
     void getHosts(std::vector<lunacore::Host *> & hosts) override;
+private slots:
+    void onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties);
 private:
     void removeHost(SecureHost * hostToRemove);
 

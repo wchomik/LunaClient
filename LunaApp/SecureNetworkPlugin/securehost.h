@@ -1,13 +1,12 @@
 #pragma once
 
 #include "dtlssocket.h"
-#include "controlsocket.h"
 #include "StrandSerializer.h"
 
 #include <lunacore/connector.h>
 
 #include <luna/BitDepth.hpp>
-#include <luna/client/Listener.hpp>
+#include <luna/proto/Discovery_generated.h>
 
 #include <QObject>
 
@@ -18,12 +17,11 @@ struct StrandData {
 
 class SecureHost :
     public QObject,
-    public lunacore::Host,
-    private luna::client::Listener
+    public lunacore::Host
 {
     Q_OBJECT
 public:
-    explicit SecureHost(QHostAddress hostAddress);
+    explicit SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * properties);
     ~SecureHost() override;
 
     QHostAddress address() const noexcept;
@@ -37,16 +35,14 @@ public:
 signals:
     void disconnected();
 
+private slots:
+    void onConnected(bool value);
+
 private:
     QHostAddress mAddress;
-    std::unique_ptr<ControlSocket> mControlSocket;
     std::unique_ptr<DtlsSocket> mDataSocket;
 
     std::vector<StrandData> mStrands;
     bool mConnected;
-
-private:
-    void strandConfigurationReceived(const luna::LunaConfiguration &configuration) override;
-    void dataChannelOpened(const luna::DataChannelConfiguration &configuration) override;
 };
 

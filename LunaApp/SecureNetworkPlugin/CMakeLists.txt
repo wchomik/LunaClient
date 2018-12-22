@@ -32,5 +32,6 @@ luna_plugin(
 find_package(Qt5Network CONFIG REQUIRED)
 target_link_libraries(${PLUGIN_NAME} 
     libLuna
+    lunaProto
     Qt5::Network
 )

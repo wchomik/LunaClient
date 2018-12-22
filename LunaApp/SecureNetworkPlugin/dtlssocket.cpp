@@ -3,10 +3,22 @@
 #include <QSslPreSharedKeyAuthenticator>
 #include <QSslConfiguration>
 #include <QSslCipher>
+#include <QSslEllipticCurve>
+#include <QFile>
+
+static QByteArray readResource(QString const & path)
+{
+    QFile resource(path);
+    resource.open(QIODevice::ReadOnly);
+    return resource.readAll();
+}
 
 #include <QDebug>
 
-DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port, QByteArray const & sharedKey) :
+DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port) :
+    mLocalCertificate(readResource(":/SecureNetwork/own.crt")),
+    mCaCertificate(readResource(":/SecureNetwork/own.key")),
+    mPrivateKey(readResource(":/SecureNetwork/own.key"), QSsl::KeyAlgorithm::Ec),
     mSocket(),
     mDtls(QSslSocket::SslClientMode),
     mConnected(false)
@@ -14,23 +26,22 @@ DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port, QByteArray c
     mSocket.connectToHost(address, port);
 
     auto configuration = QSslConfiguration::defaultDtlsConfiguration();
-    configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+    configuration.setCaCertificates({mCaCertificate});
+    configuration.setLocalCertificate(mLocalCertificate);
+    configuration.setPrivateKey(mPrivateKey);
+    configuration.setPeerVerifyMode(QSslSocket::VerifyPeer);
+    configuration.setProtocol(QSsl::SslProtocol::DtlsV1_2);
     mDtls.setDtlsConfiguration(configuration);
     mDtls.setPeer(address, port);
-
-    QObject::connect(&mDtls, &QDtls::pskRequired,
-        [sharedKey](QSslPreSharedKeyAuthenticator *authenticator){
-            qDebug() << "DTLS PSK";
-            QByteArray identity("Luna", 4);
-            authenticator->setIdentity(identity);
-            authenticator->setPreSharedKey(sharedKey);
-        });
 
     QObject::connect(&mDtls, &QDtls::handshakeTimeout,
         this, &DtlsSocket::handleHandshakeTimeout);
 
     QObject::connect(&mSocket, &QUdpSocket::readyRead,
         this, &DtlsSocket::handleDatagram);
+
+//    QObject::connect(&mDtls, &QDtls::,
+//        this, &DtlsSocket::handleHandshakeTimeout);
 
     mDtls.doHandshake(&mSocket);
 }
@@ -57,10 +68,18 @@ void DtlsSocket::handleDatagram()
         dataReady(buffer);
     } else {
         if (!mDtls.doHandshake(&mSocket, buffer)) {
-            qDebug() << "DTLS Error";
-            // TODO handle error
-        } else if (mDtls.isConnectionEncrypted()) {
-            qDebug() << "DTLS Connected";
+            qDebug() << "DTLS Error" << (int) mDtls.dtlsError();
+            for (auto & e : mDtls.peerVerificationErrors()){
+                qDebug() << e;
+            }
+
+            mDtls.ignoreVerificationErrors(mDtls.peerVerificationErrors());
+            if (!mDtls.resumeHandshake(&mSocket)) {
+                qDebug() << "DTLS Resume error";
+            }
+        }
+        if (mDtls.isConnectionEncrypted()) {
+            connected(true);
         }
     }
 }

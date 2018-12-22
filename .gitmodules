@@ -1,3 +1,6 @@
 [submodule "libLuna"]
 	path = libLuna
 	url = https://github.com/romanchom/libLuna.git
+[submodule "lunaProto"]
+	path = lunaProto
+	url = git@github.com:romanchom/lunaProto.git

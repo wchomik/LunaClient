@@ -6,6 +6,8 @@
 #include <QUdpSocket>
 #include <QHostAddress>
 
+#include <luna/proto/Discovery_generated.h>
+
 class HostDiscovery : public QObject
 {
     Q_OBJECT
@@ -13,7 +15,7 @@ public:
     HostDiscovery();
 
 signals:
-    void hostDiscovered(QHostAddress hostAddress);
+    void hostDiscovered(QHostAddress hostAddress, luna::proto::Discovery const * properties);
 
 private slots:
     void discover();

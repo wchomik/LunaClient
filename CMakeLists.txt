@@ -6,4 +6,5 @@ include("${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
 conan_basic_setup(TARGETS)
 
 add_subdirectory(libLuna)
+add_subdirectory(lunaProto)
 add_subdirectory(LunaApp)

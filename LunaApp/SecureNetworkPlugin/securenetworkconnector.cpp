@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QString>
+#include <QHostAddress>
 
 #include <algorithm>
 
@@ -10,13 +11,9 @@ using namespace lunacore;
 
 SecureNetworkConnector::SecureNetworkConnector()
 {
-    QObject::connect(&mDiscovery, &HostDiscovery::hostDiscovered,
-        [this](QHostAddress address) {
-            auto const existing = std::find_if(mHosts.begin(), mHosts.end(), [address](auto const & host){ return host->address() == address; });
-            if (existing == mHosts.end()) {
-                mHosts.emplace_back(std::make_unique<SecureHost>(address));
-            }
-        });
+    QObject::connect(
+        &mDiscovery, &HostDiscovery::hostDiscovered,
+        this, &SecureNetworkConnector::onHostDiscovered);
 }
 
 void SecureNetworkConnector::update() {
@@ -30,6 +27,14 @@ void SecureNetworkConnector::update() {
 void SecureNetworkConnector::getHosts(std::vector<lunacore::Host *> & hosts) {
     for (auto & host : mHosts) {
         hosts.emplace_back(host.get());
+    }
+}
+
+void SecureNetworkConnector::onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties)
+{
+    auto const existing = std::find_if(mHosts.begin(), mHosts.end(), [address](auto const & host){ return host->address() == address; });
+    if (existing == mHosts.end()) {
+        mHosts.emplace_back(std::make_unique<SecureHost>(address, properties));
     }
 }
 
