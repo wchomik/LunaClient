@@ -35,6 +35,12 @@ void SecureNetworkConnector::onHostDiscovered(QHostAddress address, luna::proto:
     auto const existing = std::find_if(mHosts.begin(), mHosts.end(), [address](auto const & host){ return host->address() == address; });
     if (existing == mHosts.end()) {
         mHosts.emplace_back(std::make_unique<SecureHost>(address, properties));
+        auto & host = mHosts.back();
+        QObject::connect(host.get(), &SecureHost::disconnected,
+            [this, host = host.get()](){
+                removeHost(host);
+            }
+        );
     }
 }
 
@@ -44,5 +50,5 @@ void SecureNetworkConnector::removeHost(SecureHost * hostToRemove)
     auto const existing = std::find_if(mHosts.begin(), mHosts.end(),
         [hostToRemove](auto const & host){ return host.get() == hostToRemove; });
 
-    //mHosts.erase(existing);
+    mHosts.erase(existing);
 }

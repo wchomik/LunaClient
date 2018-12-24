@@ -9,41 +9,55 @@
 #include <algorithm>
 #include <vector>
 
+
+static lunacore::cieCoord_t fromProto(luna::proto::UV const & uv)
+{
+    return {uv.u(), uv.v()};
+}
+
+static lunacore::ColorSpace fromProto(luna::proto::ColorSpace const & cs)
+{
+    return {
+        fromProto(cs.white()),
+        fromProto(cs.red()),
+        fromProto(cs.green()),
+        fromProto(cs.blue())
+    };
+}
+
+static Eigen::Vector3f fromProto(luna::proto::Point const & p)
+{
+    return {p.x(), p.y(), p.z()};
+}
+
 SecureHost::SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * properties) :
     mAddress(hostAddress),
     mDataSocket(std::make_unique<DtlsSocket>(hostAddress, properties->port())),
-    mConnected(false)
+    mConnected(false),
+    mHeartbeatsSkipped(0),
+    mShouldSendAck(false),
+    mCommandId(0)
 {
     QObject::connect(mDataSocket.get(), &DtlsSocket::connected,
         this, &SecureHost::onConnected);
+
+    QObject::connect(mDataSocket.get(), &DtlsSocket::dataReady,
+        this, &SecureHost::onResponse);
+
+    QObject::connect(&mHeartbeat, &QTimer::timeout,
+        this, &SecureHost::onHeartbeat);
 
     auto strands = properties->strands();
     if (nullptr == strands) return;
     for (auto const strand : *strands) {
         lunacore::Strand::Config config;
 
-//        auto const & cs = strand.colorSpace;
-//        auto conv = [](auto const & coords) {
-//            qDebug() << coords.u << coords.v;
-//            return lunacore::cieCoord_t{coords.u, coords.v};
-//        };
-
-//        config.colorSpace = lunacore::ColorSpace(
-//            conv(cs.white),
-//            conv(cs.red),
-//            conv(cs.green),
-//            conv(cs.blue)
-//        );
-        config.colorSpace = lunacore::ColorSpace::ws2812();
+        config.colorSpace = fromProto(strand->colorSpace());
 
         config.colorChannels = static_cast<lunacore::ColorChannels>(strand->channels());
-        config.count = strand->pixelCount();
-
-        auto const & b = strand->begin();
-        config.begin = Eigen::Vector3f(b.x(), b.y(), b.z());
-
-        auto const & e = strand->end();
-        config.end = Eigen::Vector3f(e.x(), e.y(), e.z());
+        config.count = static_cast<uint32_t>(strand->pixelCount());
+        config.begin = fromProto(strand->begin());
+        config.end = fromProto(strand->end());
 
         auto s = std::make_unique<lunacore::Strand>(config);
 
@@ -51,6 +65,9 @@ SecureHost::SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * 
 
         mStrands.emplace_back(StrandData{std::move(s), std::move(serializer) });
     }
+
+    mHeartbeat.setInterval(2000);
+    mHeartbeat.start();
 }
 
 SecureHost::~SecureHost() = default;
@@ -66,9 +83,8 @@ void SecureHost::send()
 
     using namespace luna::proto;
 
-
     std::vector<flatbuffers::Offset<luna::proto::StrandData>> offsets;
-    for (int i = 0; i < mStrands.size(); ++i){
+    for (size_t i = 0; i < mStrands.size(); ++i){
         auto & strand = *mStrands[i].strand;
 
         auto strandData = mStrands[i].serializer->serialize(builder, strand);
@@ -77,11 +93,11 @@ void SecureHost::send()
         offsets.emplace_back(strandData.Finish());
     }
 
-    auto asd = CreateSetColor(builder, builder.CreateVector(offsets));
+    auto setColorCommand = CreateSetColor(builder, builder.CreateVector(offsets));
 
-    auto qwe = CreateCommand(builder, false, AnyCommand_SetColor, asd.Union());
+    auto command = CreateCommand(builder, nextAckId(), 0, AnyCommand_SetColor, setColorCommand.Union());
 
-    builder.Finish(qwe);
+    builder.Finish(command);
 
     mDataSocket->write(builder.GetBufferPointer(), builder.GetSize());
 }
@@ -113,6 +129,50 @@ void SecureHost::getStrands(std::vector<lunacore::Strand *> & strands)
 
 void SecureHost::onConnected(bool value)
 {
-    qDebug() << "Connected";
-    mConnected = true;
+    if (value) {
+        qDebug() << "Connected";
+        mConnected = true;
+    } else {
+        disconnected();
+    }
+}
+
+void SecureHost::onResponse(QByteArray const & array)
+{
+    mHeartbeatsSkipped = 0;
+
+    using namespace luna::proto;
+
+    auto command = GetCommand(array.data());
+    auto ackId = command->ack();
+}
+
+void SecureHost::onHeartbeat()
+{
+    ++mHeartbeatsSkipped;
+    if (mShouldSendAck) {
+        flatbuffers::FlatBufferBuilder builder(64);
+
+        auto keepAlive = luna::proto::CreateCommand(builder, nextAckId(), 0);
+        builder.Finish(keepAlive);
+
+        mDataSocket->write(builder.GetBufferPointer(), builder.GetSize());
+    } else {
+        mShouldSendAck = true;
+    }
+
+    if (mHeartbeatsSkipped >= 5) {
+        disconnected();
+    }
+}
+
+uint32_t SecureHost::nextAckId()
+{
+    uint32_t ackId = 0;
+    if(mShouldSendAck) {
+        ++mCommandId;
+        ackId = mCommandId;
+        mShouldSendAck = false;
+    }
+    return ackId;
 }

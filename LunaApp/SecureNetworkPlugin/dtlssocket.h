@@ -14,7 +14,7 @@ class DtlsSocket : public QObject
     Q_OBJECT
 public:
     DtlsSocket(QHostAddress const & address, uint16_t port);
-    ~DtlsSocket() override = default;
+    ~DtlsSocket() override;
     void write(uint8_t const * data, size_t dataSize);
 signals:
     void dataReady(QByteArray data);
@@ -23,6 +23,12 @@ private slots:
     void handleDatagram();
     void handleHandshakeTimeout();
 private:
+    using StepFunction = void(DtlsSocket::*)(QByteArray const & buffer);
+
+    void doHandshake(QByteArray const & buffer);
+    void readDatagram(QByteArray const & buffer);
+
+    StepFunction mStep;
     QSslCertificate mLocalCertificate;
     QSslCertificate mCaCertificate;
     QSslKey mPrivateKey;
@@ -30,6 +36,10 @@ private:
     QUdpSocket mSocket;
     QDtls mDtls;
     bool mConnected;
+
+
+
+    unsigned mTimeoutCount;
 };
 
 #endif // DTLSSOCKET_H

@@ -17,16 +17,18 @@ static QByteArray readResource(QString const & path)
 
 DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port) :
     mLocalCertificate(readResource(":/SecureNetwork/own.crt")),
-    mCaCertificate(readResource(":/SecureNetwork/own.key")),
+    mCaCertificate(readResource(":/SecureNetwork/ca.crt")),
     mPrivateKey(readResource(":/SecureNetwork/own.key"), QSsl::KeyAlgorithm::Ec),
     mSocket(),
     mDtls(QSslSocket::SslClientMode),
-    mConnected(false)
+    mConnected(false),
+    mTimeoutCount(0)
 {
     mSocket.connectToHost(address, port);
 
     auto configuration = QSslConfiguration::defaultDtlsConfiguration();
-    configuration.setCaCertificates({mCaCertificate});
+
+//    configuration.setCaCertificates({mCaCertificate});
     configuration.setLocalCertificate(mLocalCertificate);
     configuration.setPrivateKey(mPrivateKey);
     configuration.setPeerVerifyMode(QSslSocket::VerifyPeer);
@@ -40,16 +42,23 @@ DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port) :
     QObject::connect(&mSocket, &QUdpSocket::readyRead,
         this, &DtlsSocket::handleDatagram);
 
-//    QObject::connect(&mDtls, &QDtls::,
-//        this, &DtlsSocket::handleHandshakeTimeout);
+    mStep = &DtlsSocket::doHandshake;
 
     mDtls.doHandshake(&mSocket);
+}
+
+DtlsSocket::~DtlsSocket()
+{
+    mDtls.shutdown(&mSocket);
 }
 
 void DtlsSocket::write(uint8_t const * data, size_t dataSize)
 {
     if (mDtls.isConnectionEncrypted()) {
-        mDtls.writeDatagramEncrypted(&mSocket, QByteArray((char const *) data, dataSize));
+        auto buffer = QByteArray::fromRawData(
+            reinterpret_cast<char const *>(data),
+            static_cast<int>(dataSize));
+        mDtls.writeDatagramEncrypted(&mSocket, buffer);
     }
 }
 
@@ -58,36 +67,46 @@ void DtlsSocket::handleDatagram()
     QByteArray buffer(mSocket.pendingDatagramSize(), Qt::Initialization::Uninitialized);
     mSocket.read(buffer.data(), buffer.size());
 
-    if (mDtls.isConnectionEncrypted()) {
-        QByteArray const plainText = mDtls.decryptDatagram(&mSocket, buffer);
-        if (mDtls.dtlsError() == QDtlsError::RemoteClosedConnectionError) {
-            // TODO handle error
-            return;
-        }
-
-        dataReady(buffer);
-    } else {
-        if (!mDtls.doHandshake(&mSocket, buffer)) {
-            qDebug() << "DTLS Error" << (int) mDtls.dtlsError();
-            for (auto & e : mDtls.peerVerificationErrors()){
-                qDebug() << e;
-            }
-
-            mDtls.ignoreVerificationErrors(mDtls.peerVerificationErrors());
-            if (!mDtls.resumeHandshake(&mSocket)) {
-                qDebug() << "DTLS Resume error";
-            }
-        }
-        if (mDtls.isConnectionEncrypted()) {
-            connected(true);
-        }
-    }
+    (this->*mStep)(buffer);
 }
 
 void DtlsSocket::handleHandshakeTimeout()
 {
-    if(!mDtls.handleTimeout(&mSocket)) {
-        qDebug() << "DTLS Timeout";
-        // TODO handle error
+    ++mTimeoutCount;
+    qDebug() << "DTLS Timeout count" << mTimeoutCount;
+    if (mTimeoutCount >= 5) {
+        connected(false);
+    } else {
+        mDtls.handleTimeout(&mSocket);
+    }
+}
+
+void DtlsSocket::doHandshake(const QByteArray &buffer)
+{
+    mTimeoutCount = 0;
+    if (!mDtls.doHandshake(&mSocket, buffer)) {
+        qDebug() << "DTLS Error" << (int) mDtls.dtlsError();
+        for (auto & e : mDtls.peerVerificationErrors()){
+            qDebug() << e << e.certificate().digest();
+        }
+
+        mDtls.ignoreVerificationErrors(mDtls.peerVerificationErrors());
+        if (!mDtls.resumeHandshake(&mSocket)) {
+            qDebug() << "DTLS Resume error";
+        }
+    }
+    if (mDtls.isConnectionEncrypted()) {
+        mStep = &DtlsSocket::readDatagram;
+        connected(true);
+    }
+}
+
+void DtlsSocket::readDatagram(QByteArray const & buffer)
+{
+    QByteArray const plainText = mDtls.decryptDatagram(&mSocket, buffer);
+    if (mDtls.dtlsError() != QDtlsError::NoError) {
+        connected(false);
+    } else {
+        dataReady(plainText);
     }
 }

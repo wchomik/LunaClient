@@ -19,8 +19,8 @@ public:
     void getHosts(std::vector<lunacore::Host *> & hosts) override;
 private slots:
     void onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties);
-private:
     void removeHost(SecureHost * hostToRemove);
+private:
 
     HostDiscovery mDiscovery;
     std::vector<std::unique_ptr<SecureHost>> mHosts;

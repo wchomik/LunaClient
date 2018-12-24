@@ -6,8 +6,7 @@ luna_plugin(
     NAME 
         ${PLUGIN_NAME}
     SOURCES
-    
-    "controlsocket.cpp"
+
     "dtlssocket.cpp"
     "securehost.cpp"
     "securenetworkconnector.cpp"
@@ -16,7 +15,6 @@ luna_plugin(
     "StrandSerializer.cpp"
     "hostdiscovery.cpp"
 
-    "controlsocket.h"
     "dtlssocket.h"
     "securehost.h"
     "securenetworkconnector.h"
@@ -24,7 +22,6 @@ luna_plugin(
     "securenetworkplugin.h"
     "StrandSerializer.h"
     "hostdiscovery.h"
-    "sslsink.hpp"
 
     "qml.qrc"
 )

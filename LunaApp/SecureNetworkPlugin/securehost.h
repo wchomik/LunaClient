@@ -9,6 +9,7 @@
 #include <luna/proto/Discovery_generated.h>
 
 #include <QObject>
+#include <QTimer>
 
 struct StrandData {
     std::unique_ptr<lunacore::Strand> strand;
@@ -37,12 +38,20 @@ signals:
 
 private slots:
     void onConnected(bool value);
-
+    void onResponse(QByteArray const & array);
+    void onHeartbeat();
 private:
+    uint32_t nextAckId();
+
     QHostAddress mAddress;
     std::unique_ptr<DtlsSocket> mDataSocket;
 
     std::vector<StrandData> mStrands;
     bool mConnected;
+
+    QTimer mHeartbeat;
+    unsigned mHeartbeatsSkipped;
+    bool mShouldSendAck;
+    uint32_t mCommandId;
 };
 
