@@ -8,6 +8,7 @@
 #include "strand.h"
 
 #include <QDebug>
+#include <QTimer>
 
 namespace ch = std::chrono;
 using namespace std::chrono_literals;
@@ -16,23 +17,38 @@ namespace lunacore {
     Manager::Manager() :
         mShouldRun(true)
     {
-        mThread = std::thread([this]() {
-            threadFunc();
-        });
+//        mThread = std::thread([this]() {
+//            threadFunc();
+//        });
+        QTimer * timer;
+        timer = new QTimer();
+        timer->setTimerType(Qt::PreciseTimer);
+        timer->setInterval(10);
+        timer->moveToThread(&mThread);
+        QObject::connect(timer, &QTimer::timeout, [this](){ update(); });
+        QObject::connect(&mThread, &QThread::started, timer, qOverload<>(&QTimer::start), Qt::DirectConnection);
+        QObject::connect(&mThread, &QThread::finished, timer, &QTimer::deleteLater, Qt::DirectConnection);
+        mThread.start();
     }
 
     Manager::~Manager() {
         mShouldRun = false;
-        mThread.join();
+        mThread.quit();
+        mThread.wait();
+//        mThread.join();
+    }
+
+    void Manager::postToThread(std::function<void (Manager &)> && message)
+    {
+        std::lock_guard<std::mutex> guard(mMutex);
+        mMessages.emplace_back(std::move(message));
     }
 
     void Manager::setProvider(std::shared_ptr<Provider> provider) {
-        std::lock_guard<std::mutex> guard(mMutex);
         mActiveProvider = provider;
     }
 
     void Manager::addConnector(std::shared_ptr<Connector> connector) {
-        std::lock_guard<std::mutex> guard(mMutex);
         mConnectors.emplace_back(std::move(connector));
     }
 
@@ -56,6 +72,12 @@ namespace lunacore {
     void Manager::update() {
         std::vector<Host *> hosts;
         std::lock_guard<std::mutex> guard(mMutex);
+
+        for (auto const & message : mMessages) {
+            message(*this);
+        }
+        mMessages.clear();
+
         for (auto && connector : mConnectors) {
             connector->getHosts(hosts);
         }
@@ -63,7 +85,7 @@ namespace lunacore {
         for (auto && host : hosts) {
             host->getStrands(strands);
         }
-        //qDebug() << strands.size() << "Strands";
+
         if (nullptr != mActiveProvider) {
             mActiveProvider->getData(strands);
         }

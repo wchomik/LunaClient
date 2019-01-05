@@ -95,7 +95,11 @@ void DtlsSocket::doHandshake(const QByteArray &buffer)
             qDebug() << "DTLS Resume error";
         }
     }
-    if (mDtls.isConnectionEncrypted()) {
+
+    if (mDtls.handshakeState() == QDtls::HandshakeComplete) {
+        QObject::disconnect(&mDtls, &QDtls::handshakeTimeout,
+            this, &DtlsSocket::handleHandshakeTimeout);
+
         mStep = &DtlsSocket::readDatagram;
         connected(true);
     }

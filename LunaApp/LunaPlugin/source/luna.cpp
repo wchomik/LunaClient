@@ -32,6 +32,12 @@ namespace lunacore {
 
         instantiateTabs();
 
+        mManager.postToThread([this](Manager & manager){
+            for (auto & connector : mConnectors) {
+                manager.addConnector(connector->createConnector());
+            }
+        });
+
         auto rootContext = mEngine->rootContext();
         rootContext->setContextProperty("EffectsModel", mEffectsModel);
         rootContext->setContextProperty("ConnectorsModel", mConnectorsModel);
@@ -151,11 +157,12 @@ namespace lunacore {
             if (nullptr == quickItem) continue;
             QString name = connector->displayName();
             mConnectorsModel->addTab(quickItem, name);
-            mManager.addConnector(connector->createConnector());
         }
     }
 
     void Luna::setSelectedIndex(int index) {
-        mManager.setProvider(mEffects[index]->createProvider());
+        mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
+            manager.setProvider(effect->createProvider());
+        });
     }
 }

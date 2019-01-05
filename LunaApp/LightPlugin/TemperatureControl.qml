@@ -18,10 +18,14 @@ RowLayout {
         Layout.fillWidth: true
         from: 1666
         to: 12000
-        value: 5500
         onValueChanged: {
             Light.temperature = value
         }
+    }
+
+    Label {
+        Layout.minimumWidth: 50
+        text: Light.temperature.toFixed(0)
     }
 }
 

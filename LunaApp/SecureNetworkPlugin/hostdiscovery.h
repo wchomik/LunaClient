@@ -6,7 +6,7 @@
 #include <QUdpSocket>
 #include <QHostAddress>
 
-#include <luna/proto/Discovery_generated.h>
+#include <luna/proto/Discovery.hpp>
 
 class HostDiscovery : public QObject
 {

@@ -6,7 +6,7 @@
 #include <lunacore/connector.h>
 
 #include <luna/BitDepth.hpp>
-#include <luna/proto/Discovery_generated.h>
+#include <luna/proto/Discovery.hpp>
 
 #include <QObject>
 #include <QTimer>

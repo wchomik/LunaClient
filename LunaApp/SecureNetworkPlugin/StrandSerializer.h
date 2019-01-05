@@ -3,19 +3,21 @@
 
 #include <lunacore/strand.h>
 #include <luna/ByteStream.hpp>
-#include <luna/proto/SetColor_generated.h>
+#include <luna/proto/SetColor.hpp>
+#include <luna/proto/Builder.hpp>
+
 
 class StrandSerializer
 {
 public:
     virtual ~StrandSerializer();
-    virtual luna::proto::StrandDataBuilder serialize(flatbuffers::FlatBufferBuilder & builder, lunacore::Strand const & strand) const = 0;
+    virtual void serialize(luna::proto::Builder & builder, luna::proto::StrandData& dst, lunacore::Strand const & strand) const = 0;
 };
 
 class StrandSerializerRGB : public StrandSerializer
 {
 public:
-    luna::proto::StrandDataBuilder serialize(flatbuffers::FlatBufferBuilder & builder, lunacore::Strand const & strand) const override;
+    void serialize(luna::proto::Builder & builder, luna::proto::StrandData& dst, lunacore::Strand const & strand) const override;
 };
 
 

@@ -45,7 +45,7 @@ void HostDiscovery::handleResponse()
 
     using namespace luna::proto;
 
-    auto discovery = GetDiscovery(data);
+    auto discovery = reinterpret_cast<luna::proto::Discovery *>(data);
 
     hostDiscovered(hostAddress, discovery);
 }

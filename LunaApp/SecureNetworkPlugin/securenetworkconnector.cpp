@@ -32,7 +32,10 @@ void SecureNetworkConnector::getHosts(std::vector<lunacore::Host *> & hosts) {
 
 void SecureNetworkConnector::onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties)
 {
-    auto const existing = std::find_if(mHosts.begin(), mHosts.end(), [address](auto const & host){ return host->address() == address; });
+    auto const existing = std::find_if(mHosts.begin(), mHosts.end(),
+        [address](auto const & host){ return host->address().isEqual(address, QHostAddress::TolerantConversion); }
+    );
+
     if (existing == mHosts.end()) {
         mHosts.emplace_back(std::make_unique<SecureHost>(address, properties));
         auto & host = mHosts.back();
