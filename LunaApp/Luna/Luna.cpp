@@ -55,10 +55,6 @@ namespace lunacore {
         mConnectors.emplace_back(std::move(connector));
     }
 
-    Manager & Luna::manager() {
-        return mManager;
-    }
-
     void Luna::loadDynamicPlugins() {
         QDir pluginsDir(qApp->applicationDirPath());
         pluginsDir.cd("../lib");

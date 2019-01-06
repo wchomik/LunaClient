@@ -1,7 +1,6 @@
 #include "plasmaprovider.h"
 
 #include <lunacore/strand.h>
-#include <lunacore/range.h>
 #include <lunacore/colorutils.h>
 
 using namespace lunacore;
@@ -27,7 +26,7 @@ void PlasmaProvider::getData(std::vector<Strand *> & strands) {
             continue;
         }
 
-        for (auto i : range(config.count)) {
+        for (uint32_t i = 0; i < config.count; ++i) {
             auto position = strand->positionOf(i);
             position.z() += t;
             position = position.cwiseProduct(mFrequency);

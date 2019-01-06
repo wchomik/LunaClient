@@ -4,7 +4,6 @@
 
 #include <lunacore/colorspace.h>
 #include <lunacore/strand.h>
-#include <lunacore/range.h>
 
 using namespace Eigen;
 using namespace lunacore;
@@ -25,7 +24,7 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
         }
         strand->setSpaceConversionColorMode(ColorSpace::sRGB());
 
-        for (auto i : range(count)) {
+        for (uint32_t i = 0; i < count; ++i) {
             const Vector3f lightPosition = strand->positionOf(i);
             const float x = lightPosition.x();
             const float y = lightPosition.y();
@@ -45,7 +44,7 @@ void ScreenProvider::getData(std::vector<Strand *> & strands) {
 
             Color sum = Color::Zero();
 
-            for (auto i : range(mDepth)) {
+            for (int i = 0; i < mDepth; ++i) {
                 sum += screenPixels(column, i) * mDepthWeights[i];
             }
             sum = sum.cwiseMax(Color::Constant(mBlackLevel));

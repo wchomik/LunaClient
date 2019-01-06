@@ -1,6 +1,5 @@
 project(LunaCore)
 
-
 find_package(Qt5Quick CONFIG REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
@@ -9,7 +8,6 @@ add_library(${PROJECT_NAME} SHARED
     "source/colorspace.cpp"
     "source/colorutils.cpp"
     "source/connector.cpp"
-    "source/manager.cpp"
     "source/provider.cpp"
     "source/strand.cpp"
 
@@ -19,12 +17,8 @@ add_library(${PROJECT_NAME} SHARED
     "include/lunacore/colorspace.h"
     "include/lunacore/colorutils.h"
     "include/lunacore/connector.h"
-    "include/lunacore/delegate.h"
-    "include/lunacore/event.h"
-    "include/lunacore/manager.h"
     "include/lunacore/provider.h"
     "include/lunacore/strand.h"
-    "include/lunacore/range.h"
 )
 
 target_include_directories(${PROJECT_NAME} 
@@ -34,7 +28,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     Qt5::Quick
-    CONAN_PKG::eigen
+    Eigen3::Eigen
 )
 
 target_compile_definitions(${PROJECT_NAME}

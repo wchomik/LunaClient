@@ -1,15 +1,8 @@
 #include "StrandSerializer.h"
 
-#include <bitset>
-
 StrandSerializer::~StrandSerializer() = default;
 
-static size_t countSet(lunacore::ColorChannels channels)
-{
-    return std::bitset<4>(channels).count();
-}
-
-void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto::StrandData& dst, lunacore::Strand const & strand) const
+void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst, lunacore::Strand const & strand) const
 {
     lunacore::Color const * pixels = strand.pixels();
     lunacore::Color error = lunacore::Color::Zero();
@@ -18,7 +11,6 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
     constexpr lunacore::ColorScalar range = (1 << 8) - 1;
 
     using namespace luna::proto;
-
 
     auto vector = builder.allocate<Array<RGB>>();
     auto vec = builder.allocate<RGB>(pixelCount);
