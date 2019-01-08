@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/Light">
         <file>Main.qml</file>
-        <file>ManualControl.qml</file>
         <file>ColorPickerControl.qml</file>
         <file>ColorFromThemeControl.qml</file>
         <file>TemperatureControl.qml</file>

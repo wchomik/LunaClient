@@ -1,164 +1,160 @@
-#include "luna.h"
-
-#include <algorithm>
+#include "Luna.hpp"
 
 #include <QtQuick>
 #include <QPluginLoader>
 #include <QDir>
 #include <QDebug>
 
-#include "lunaplugin.h"
-#include "tabsmodel.h"
+#include <algorithm>
 
-namespace lunacore {
-    Luna::Luna(QObject * parent) :
-        QObject(parent),
-        mEngine(new QQmlApplicationEngine(this)),
-        mEffectsModel(new TabsModel(this)),
-        mConnectorsModel(new TabsModel(this))
-    {
-        QObject::connect(mEffectsModel, &TabsModel::tabSelected,
-            this, &Luna::setSelectedIndex);
+using namespace luna::interface;
+
+Luna::Luna() :
+    mEngine(new QQmlApplicationEngine(this)),
+    mEffectsModel(new TabsModel(this)),
+    mConnectorsModel(new TabsModel(this))
+{
+    QObject::connect(mEffectsModel, &TabsModel::tabSelected,
+        this, &Luna::setSelectedIndex);
+}
+
+Luna::~Luna() = default;
+
+void Luna::setup() {
+    loadStaticPlugins();
+    loadDynamicPlugins();
+    for (auto & plugin : mPlugins) {
+        plugin->initialize(this);
     }
 
-    Luna::~Luna() {}
+    instantiateTabs();
 
-    void Luna::setup() {
-        loadStaticPlugins();
-        loadDynamicPlugins();
-        for (auto & plugin : mPlugins) {
-            plugin->initialize(this);
+    mManager.postToThread([this](Manager & manager){
+        for (auto & connector : mConnectors) {
+            manager.addConnector(connector->createConnector());
         }
+    });
 
-        instantiateTabs();
+    auto rootContext = mEngine->rootContext();
+    rootContext->setContextProperty("EffectsModel", mEffectsModel);
+    rootContext->setContextProperty("ConnectorsModel", mConnectorsModel);
 
-        mManager.postToThread([this](Manager & manager){
-            for (auto & connector : mConnectors) {
-                manager.addConnector(connector->createConnector());
-            }
-        });
+    mEngine->load(QUrl("qrc:/main.qml"));
 
-        auto rootContext = mEngine->rootContext();
-        rootContext->setContextProperty("EffectsModel", mEffectsModel);
-        rootContext->setContextProperty("ConnectorsModel", mConnectorsModel);
+    setSelectedIndex(0);
+}
 
-        mEngine->load(QUrl("qrc:/main.qml"));
+void Luna::addEffect(std::unique_ptr<EffectPlugin> && tab) {
+    mEffects.emplace_back(std::move(tab));
+}
 
-        setSelectedIndex(0);
-    }
+void Luna::addConnector(std::unique_ptr<ConnectorPlugin> && connector) {
+    mConnectors.emplace_back(std::move(connector));
+}
 
-    void Luna::addEffect(std::unique_ptr<EffectPlugin> && tab) {
-        mEffects.emplace_back(std::move(tab));
-    }
+void Luna::loadDynamicPlugins() {
+    QDir pluginsDir(qApp->applicationDirPath());
+    pluginsDir.cd("../lib");
 
-    void Luna::addConnector(std::unique_ptr<ConnectorPlugin> && connector) {
-        mConnectors.emplace_back(std::move(connector));
-    }
-
-    void Luna::loadDynamicPlugins() {
-        QDir pluginsDir(qApp->applicationDirPath());
-        pluginsDir.cd("../lib");
-
-        qDebug() << "Loading plugins from" << pluginsDir.absolutePath();
+    qDebug() << "Loading plugins from" << pluginsDir.absolutePath();
 
 #ifdef WIN32
-        auto path = pluginsDir.absolutePath().toStdString();
-        SetDllDirectory(path.c_str());
+    auto path = pluginsDir.absolutePath().toStdString();
+    SetDllDirectory(path.c_str());
 #endif
 
-        for (auto fileName : pluginsDir.entryList(QDir::Files)) {
-            if (!QLibrary::isLibrary(fileName)) {
-                continue;
-            }
+    for (auto fileName : pluginsDir.entryList(QDir::Files)) {
+        if (!QLibrary::isLibrary(fileName)) {
+            continue;
+        }
 
-            QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-            if (!pluginLoader.load()) {
-                qDebug() << "Failed to load" << fileName;
-                qDebug() <<  pluginLoader.errorString();
-                continue;
-            }
-            QObject * plugin = pluginLoader.instance();
-            if (plugin) {
-                auto lunaPlugin = qobject_cast<lunacore::LunaPlugin *>(plugin);
-                if (nullptr != lunaPlugin) {
-                    qDebug() << fileName << "loaded";
-                    mPlugins.emplace_back(lunaPlugin);
-                }
+        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+        if (!pluginLoader.load()) {
+            qDebug() << "Failed to load" << fileName;
+            qDebug() <<  pluginLoader.errorString();
+            continue;
+        }
+        QObject * plugin = pluginLoader.instance();
+        if (plugin) {
+            auto lunaPlugin = qobject_cast<Plugin *>(plugin);
+            if (nullptr != lunaPlugin) {
+                qDebug() << fileName << "loaded";
+                mPlugins.emplace_back(lunaPlugin);
             }
         }
     }
+}
 
-    void Luna::loadStaticPlugins() {
+void Luna::loadStaticPlugins() {
 
+}
+
+QQuickItem * Luna::instantiateTab(Configurable * tab) {
+    auto rootContext = mEngine->rootContext();
+
+    qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
+    QQmlComponent component(mEngine, tab->itemUrl());
+    if (!component.isReady()) {
+        qWarning() << "Error. Failed to load tab";
+        qWarning() << component.errorString();
+        return nullptr;
     }
 
-    QQuickItem * Luna::instantiateTab(ConfigurablePlugin * tab) {
-        auto rootContext = mEngine->rootContext();
+    auto context = new QQmlContext(rootContext, mEngine);
+    context->setContextProperty(tab->displayName(), tab->model());
 
-        qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
-        QQmlComponent component(mEngine, tab->itemUrl());
-        if (!component.isReady()) {
-            qWarning() << "Error. Failed to load tab";
-            qWarning() << component.errorString();
-            return nullptr;
-        }
+    auto object = component.create(context);
 
-        auto context = new QQmlContext(rootContext, mEngine);
-        context->setContextProperty(tab->displayName(), tab->model());
-
-        auto object = component.create(context);
-
-        if (nullptr == object) {
-            qWarning() << "Failed to create tab.";
-            delete object;
-            return nullptr;
-        }
-
-        auto quickItem = qobject_cast<QQuickItem *>(object);
-        if (nullptr == quickItem) {
-            qWarning() << "Created tab is not a QItem.";
-            delete quickItem;
-            return nullptr;
-        }
-
-        quickItem->setParent(mEngine);
-        return quickItem;
+    if (nullptr == object) {
+        qWarning() << "Failed to create tab.";
+        delete object;
+        return nullptr;
     }
 
-    void Luna::instantiateTabs() {
-        std::sort(mEffects.begin(), mEffects.end(),
-            [](const auto & a, const auto & b) -> bool {
-                return a->displayOrder() < b->displayOrder();
-            }
-        );
-
-        for (auto & effect : mEffects) {
-            auto quickItem = instantiateTab(effect.get());
-
-            if (nullptr == quickItem) continue;
-            QString name = effect->displayName();
-            mEffectsModel->addTab(quickItem, name);
-        }
-
-
-        std::sort(mConnectors.begin(), mConnectors.end(),
-            [](const auto & a, const auto & b) -> bool {
-                return a->displayOrder() < b->displayOrder();
-            }
-        );
-
-        for (auto & connector : mConnectors) {
-            auto quickItem = instantiateTab(connector.get());
-
-            if (nullptr == quickItem) continue;
-            QString name = connector->displayName();
-            mConnectorsModel->addTab(quickItem, name);
-        }
+    auto quickItem = qobject_cast<QQuickItem *>(object);
+    if (nullptr == quickItem) {
+        qWarning() << "Created tab is not a QItem.";
+        delete quickItem;
+        return nullptr;
     }
 
-    void Luna::setSelectedIndex(int index) {
-        mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
-            manager.setProvider(effect->createProvider());
-        });
+    quickItem->setParent(mEngine);
+    return quickItem;
+}
+
+void Luna::instantiateTabs() {
+    std::sort(mEffects.begin(), mEffects.end(),
+        [](const auto & a, const auto & b) -> bool {
+            return a->displayOrder() < b->displayOrder();
+        }
+    );
+
+    for (auto & effect : mEffects) {
+        auto quickItem = instantiateTab(effect.get());
+
+        if (nullptr == quickItem) continue;
+        QString name = effect->displayName();
+        mEffectsModel->addTab(quickItem, name);
     }
+
+
+    std::sort(mConnectors.begin(), mConnectors.end(),
+        [](const auto & a, const auto & b) -> bool {
+            return a->displayOrder() < b->displayOrder();
+        }
+    );
+
+    for (auto & connector : mConnectors) {
+        auto quickItem = instantiateTab(connector.get());
+
+        if (nullptr == quickItem) continue;
+        QString name = connector->displayName();
+        mConnectorsModel->addTab(quickItem, name);
+    }
+}
+
+void Luna::setSelectedIndex(int index) {
+    mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
+        manager.setProvider(effect->createProvider());
+    });
 }

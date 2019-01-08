@@ -1,52 +1,34 @@
-#include "lightmodel.h"
+#include "LightModel.hpp"
 
-#include <QDebug>
+#include <prism/Prism.hpp>
 
-using namespace lunacore;
+using namespace luna::interface;
 
-LightModel::LightModel(QObject * parent) :
-    QObject(parent),
+LightModel::LightModel() :
     mColor(),
-    mWhiteness(0.0),
     mTemperature(5500.0),
     mBrightness(1.0)
 {}
 
-LightModel::~LightModel() {
-}
+LightModel::~LightModel() = default;
 
-void LightModel::provider(std::weak_ptr<LightProvider> ptr) {
+void LightModel::provider(std::weak_ptr<LightProvider> ptr)
+{
     mProvider = ptr;
-    setSource(mSource);
+    notifyProvider();
 }
 
-QColor LightModel::color() const {
+QColor LightModel::color() const
+{
     return mColor;
 }
 
-void LightModel::setColor(const QColor & value) {
-    if (auto p = mProvider.lock()) {
-        p->setColor(qColorToColor(value));
-    }
-
+void LightModel::setColor(const QColor & value)
+{
     if (mColor != value) {
         mColor = value;
         colorChanged(value);
-    }
-}
-
-qreal LightModel::whiteness() const {
-    return mWhiteness;
-}
-
-void LightModel::setWhiteness(qreal value) {
-    if (auto p = mProvider.lock()) {
-        p->setWhiteness(static_cast<lunacore::ColorScalar>(value));
-    }
-
-    if (mWhiteness != value) {
-        mWhiteness = value;
-        whitenessChanged(value);
+        notifyProvider();
     }
 }
 
@@ -55,13 +37,10 @@ qreal LightModel::temperature() const {
 }
 
 void LightModel::setTemperature(qreal value) {
-    if (auto p = mProvider.lock()) {
-        p->setColorFromTemperature(static_cast<lunacore::ColorScalar>(value));
-    }
-
     if (mTemperature != value) {
         mTemperature = value;
         temperatureChanged(mTemperature);
+        notifyProvider();
     }
 }
 
@@ -70,13 +49,10 @@ qreal LightModel::brightness() const {
 }
 
 void LightModel::setBrightness(qreal value) {
-    if (auto p = mProvider.lock()) {
-        p->setBrightness(static_cast<lunacore::ColorScalar>(value));
-    }
-
     if (mBrightness != value) {
         mBrightness = value;
         brightnessChanged(value);
+        notifyProvider();
     }
 }
 
@@ -85,32 +61,42 @@ int LightModel::source() const {
 }
 
 void LightModel::setSource(int value) {
-    if (auto p = mProvider.lock()) {
-        auto source = static_cast<LightProvider::Source>(value);
-        qDebug() << value;
-        p->setSource(source);
-        switch (source) {
-        case LightProvider::Source::ColorPicker:
-            p->setColor(qColorToColor(mColor));
-            break;
-        case LightProvider::Source::Temperature:
-            p->setColorFromTemperature(mTemperature);
-            break;
-        case LightProvider::Source::Manual:
-            p->setColor(qColorToColor(mColor));
-            p->setWhiteness(static_cast<ColorScalar>(mWhiteness));
-            break;
-        case LightProvider::Source::Theme:
-
-            break;
-        }
-        p->setBrightness(static_cast<ColorScalar>(mBrightness));
-    }
-
     if (mSource != value) {
-        sourceChanged(mSource);
         mSource = value;
+        sourceChanged(mSource);
+        notifyProvider();
     }
 }
 
+void LightModel::notifyProvider()
+{
+    if (auto p = mProvider.lock()) {
+        auto source = static_cast<Source>(mSource);
+        
+        prism::CieXYZ color;
+        switch (source) {
+        case Source::ColorPicker:
+            {
+                prism::RGB rgb;
+                auto& v = rgb.values;
+                v[0] = mColor.red();
+                v[1] = mColor.green();
+                v[2] = mColor.blue();
+                v[3] = mColor.alpha();
+                rgb = prism::linearizeSRGB(rgb);
+                color = prism::sRGB().transform(rgb);
+            }
+            break;
+        case Source::Temperature:
+            color = prism::temperature(mTemperature);
+            break;
+        case Source::Theme:
+            color = mThemeColor.get();
+            break;
+        }
+        color.values *= mBrightness;
+
+        p->color(color);
+    }
+}
 

@@ -7,15 +7,19 @@ set(CMAKE_AUTORCC ON)
 
 add_executable(${PROJECT_NAME} 
     "main.cpp"
-    "manager.cpp"
+    "Manager.cpp"
+    "Luna.cpp"
+    "TabsModel.cpp"
 
-    "manager.h"
+    "Manager.hpp"
+    "Luna.hpp"
+    "TabsModel.hpp"
     
-    "qml.qrc"
+    "resources/qml.qrc"
 )
 
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Quick
-    LunaCore
-    LunaPlugin
+    PUBLIC 
+        Qt5::Quick
+        "interface"
 )

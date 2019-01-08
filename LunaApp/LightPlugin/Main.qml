@@ -39,11 +39,6 @@ Item {
             Layout.columnSpan: 2
             model: ListModel {
                 ListElement {
-                    name: QT_TR_NOOP("Color from system theme")
-                    qml: "ColorFromThemeControl.qml"
-                    source: 3
-                }
-                ListElement {
                     name: QT_TR_NOOP("Color picker")
                     qml: "ColorPickerControl.qml"
                     source: 0
@@ -54,8 +49,8 @@ Item {
                     source: 1
                 }
                 ListElement {
-                    name: QT_TR_NOOP("Manual control")
-                    qml: "ManualControl.qml"
+                    name: QT_TR_NOOP("Color from system theme")
+                    qml: "ColorFromThemeControl.qml"
                     source: 2
                 }
             }

@@ -1,16 +1,17 @@
-#include "lightplugin.h"
+#include "LightPlugin.hpp"
 
-#include <lunaplugin/luna.h>
-#include "lighteffectplugin.h"
+#include "LightEffectPlugin.hpp"
 
-QString LightPlugin::name() const {
+#include <luna/interface/Application.hpp>
+
+std::string LightPlugin::name() const {
     return "Light";
 }
 
-void LightPlugin::initialize(lunacore::Luna * luna) {
-    luna->addEffect(std::make_unique<LightEffectPlugin>());
+void LightPlugin::initialize(luna::interface::Application * application)
+{
+    application->addEffect(std::make_unique<LightEffectPlugin>());
 }
 
-void LightPlugin::finalize(lunacore::Luna * luna) {
-
-}
+void LightPlugin::finalize(luna::interface::Application * application)
+{}

@@ -1,77 +1,31 @@
-#include "lightprovider.h"
+#include "LightProvider.hpp"
+
+#include <luna/interface/Strand.hpp>
 
 #include <cstdint>
-#include <lunacore/strand.h>
 
-using namespace lunacore;
+using namespace luna::interface;
 
 LightProvider::LightProvider() :
-    mSource(Source::ColorPicker),
-    mColor(1, 1, 1, 1),
-    mWhiteness(0.0),
-    mBrightness(1.0)
-{
-}
+    mCurrentColor({{0, 0, 0, 0}}),
+    mTargetColor({{0, 0, 0, 0}})
+{}
 
-void LightProvider::getData(std::vector<Strand *> & strands) {
-    constexpr float smoothScale = 0.04f;
+LightProvider::~LightProvider() = default;
 
-    for (auto strand : strands) {
-        Color lightColor = mColor;
-        strand->setDirectColorMode();
-
-        auto & data = mStrandData[strand];
-
-        switch (mSource) {
-        case Source::Manual:
-            lightColor[3] = mWhiteness;
-            break;
-        case Source::Theme:
-            lightColor = mThemeColor.get();
-            // fallthrough
-        case Source::ColorPicker:
-            lightColor = data.screenToStrandTransformation * lightColor;
-            lightColor[3] = 0.0;
-            break;
-        case Source::Temperature:
-            lightColor = strand->config().colorSpace.fromXyzToRgb(lightColor);
-            lightColor[3] = 0.0;
-            break;
-        }
-
-        lightColor *= mBrightness;
-
-        data.smoothColor = lerp(data.smoothColor, lightColor, smoothScale);
-
-        strand->setAll(data.smoothColor);
+void LightProvider::getData(Strand & strand) {
+    for (size_t i = 0; i < strand.size(); ++i) {
+        strand[i].color(mCurrentColor);
     }
 }
 
-void LightProvider::setColor(const Color & value) {
-    mColor = value;
-}
-
-void LightProvider::setColorFromTemperature(const float value) {
-    mColor = temperatureToCieXyz(value);
-}
-
-void LightProvider::setWhiteness(ColorScalar value) {
-    mWhiteness = value;
-}
-
-void LightProvider::setBrightness(ColorScalar value) {
-    mBrightness = value;
-}
-
-void LightProvider::setSource(LightProvider::Source value) {
-    mSource = value;
-}
-
-LightProvider::LightData::LightData(Strand * strand) :
-    smoothColor(Color::Zero())
+void LightProvider::update()
 {
-    screenToStrandTransformation =
-        ColorSpace::combine(
-            ColorSpace::rec2020(),
-            strand->config().colorSpace);
+    constexpr float smoothScale = 0.04f;
+
+    mCurrentColor.values = mCurrentColor.values * (1 - smoothScale) + mTargetColor.values * smoothScale;
+}
+
+void LightProvider::color(prism::CieXYZ const & value) {
+    mTargetColor = value;
 }

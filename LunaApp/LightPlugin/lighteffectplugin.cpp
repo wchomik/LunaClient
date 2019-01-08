@@ -1,14 +1,15 @@
-#include "lighteffectplugin.h"
+#include "LightEffectPlugin.hpp"
 
-#include <lunaplugin/luna.h>
-#include "lightprovider.h"
+#include "LightProvider.hpp"
+
+#include <luna/interface/Application.hpp>
 
 LightEffectPlugin::LightEffectPlugin() :
     mModel(std::make_unique<LightModel>())
 {
 }
 
-std::shared_ptr<lunacore::Provider> LightEffectPlugin::createProvider() {
+std::shared_ptr<luna::interface::Provider> LightEffectPlugin::createProvider() {
     auto ret = std::shared_ptr<LightProvider>(new LightProvider());
     mModel->provider(ret);
     return ret;

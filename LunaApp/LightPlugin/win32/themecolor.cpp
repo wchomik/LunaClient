@@ -1,8 +1,6 @@
-#include "themecolor.h"
+#include "ThemeColor.hpp"
 
-#include <QtDebug>
-
-using namespace lunacore;
+#include <prism/Prism.hpp>
 
 const char * const dllName = "uxtheme.dll";
 
@@ -16,7 +14,7 @@ const char * const GetImmersiveUserColorSetPreference_Name =
     reinterpret_cast<char *>(98);
 
 ThemeColor::ThemeColor() :
-    allOk(true),
+    mLoaded(false),
     mDllHandle(0),
     GetImmersiveColorFromColorSetEx(nullptr),
     GetImmersiveColorTypeFromName(nullptr),
@@ -24,7 +22,6 @@ ThemeColor::ThemeColor() :
 {
     mDllHandle = LoadLibrary(dllName);
     if(NULL == mDllHandle) {
-        allOk = false;
         return;
     }
 
@@ -35,7 +32,6 @@ ThemeColor::ThemeColor() :
                 GetImmersiveColorFromColorSetEx_Name));
 
     if(nullptr == GetImmersiveColorFromColorSetEx) {
-        allOk = false;
         return;
     }
 
@@ -46,7 +42,6 @@ ThemeColor::ThemeColor() :
                 GetImmersiveColorTypeFromName_Name));
 
     if(nullptr == GetImmersiveColorTypeFromName) {
-        allOk = false;
         return;
     }
 
@@ -57,20 +52,21 @@ ThemeColor::ThemeColor() :
                 GetImmersiveUserColorSetPreference_Name));
 
     if(nullptr == GetImmersiveUserColorSetPreference) {
-        allOk = false;
         return;
     }
 
     mColorType = GetImmersiveColorTypeFromName(L"ImmersiveStartSelectionBackground");
+    mLoaded = true;
 }
 
-ThemeColor::~ThemeColor() {
+ThemeColor::~ThemeColor()
+{
     if(NULL != mDllHandle) FreeLibrary(mDllHandle);
 }
 
-Color ThemeColor::get() {
-    if(!allOk) {
-        return Color(1.0, 0.0, 1.0, 0.0);
+prism::CieXYZ ThemeColor::get() {
+    if(!mLoaded) {
+        return prism::CieXYZ({{1.0, 0.0, 1.0, 0.0}});
     }
 
     unsigned int userColorSet = GetImmersiveUserColorSetPreference(false, false);
@@ -80,9 +76,10 @@ Color ThemeColor::get() {
         false,
         0);
 
-    Color ret = uintToColor(color).array().pow(2.2f).matrix();
-    ret[3] = 0.0;
-    return ret;
+    auto rgb = prism::linearizeSRGB(prism::fromInteger(color));
+    rgb.values[3] = 0.0f;
+    
+    return prism::sRGB().transform(rgb);
 }
 
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <lunacore/manager.h>
-
 #include <QString>
 #include <QUrl>
 #include <QObject>

@@ -8,6 +8,6 @@ conan_basic_setup(TARGETS)
 set_target_properties(CONAN_PKG::eigen PROPERTIES IMPORTED_GLOBAL TRUE)
 add_library(Eigen3::Eigen ALIAS CONAN_PKG::eigen)
 
-add_subdirectory(libLuna)
+add_subdirectory(prism)
 add_subdirectory(lunaProto)
 add_subdirectory(LunaApp)

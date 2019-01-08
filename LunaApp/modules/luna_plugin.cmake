@@ -12,12 +12,10 @@ macro(luna_plugin)
     
     add_library(${PLUGIN_NAME} MODULE ${PLUGIN_SOURCES})
     
-    target_include_directories(${PLUGIN_NAME} PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}"
-    )
-
     target_link_libraries(${PLUGIN_NAME}
+    PUBLIC
         Qt5::Quick
-        LunaPlugin
+        "interface"
+        prism
     )
 endmacro()

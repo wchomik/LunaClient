@@ -1,15 +1,16 @@
-#ifndef THEMECOLOR_H
-#define THEMECOLOR_H
+#pragma once
+
+#include <prism/Prism.hpp>
 
 #include <Windows.h>
-#include <lunacore/colorutils.h>
+#undef interface
 
 class ThemeColor
 {
 public:
-    ThemeColor();
+    explicit ThemeColor();
     ~ThemeColor();
-    lunacore::Color get();
+    prism::CieXYZ get();
 private:
     using GetImmersiveColorFromColorSetEx_t =
         unsigned int __stdcall (
@@ -26,7 +27,7 @@ private:
             bool bForceCheckRegistry,
             bool bSkipCheckOnFail);
 
-    bool allOk;
+    bool mLoaded;
 
     HINSTANCE mDllHandle;
 
@@ -36,5 +37,3 @@ private:
 
     unsigned int mColorType;
 };
-
-#endif // THEMECOLOR_H
