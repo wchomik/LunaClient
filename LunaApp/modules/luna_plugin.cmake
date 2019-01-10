@@ -13,7 +13,6 @@ macro(luna_plugin)
     add_library(${PLUGIN_NAME} MODULE ${PLUGIN_SOURCES})
     
     target_link_libraries(${PLUGIN_NAME}
-    PUBLIC
         Qt5::Quick
         "interface"
         prism

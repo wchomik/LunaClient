@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
 add_subdirectory(interface)
 
-# add_subdirectory(SecureNetworkPlugin)
+add_subdirectory(SecureNetworkPlugin)
 
 add_subdirectory(LightPlugin)
 # add_subdirectory(EffectsPlugin)

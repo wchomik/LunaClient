@@ -1,15 +1,15 @@
 #ifndef FLAMEEFFECTPLUGIN_H
 #define FLAMEEFFECTPLUGIN_H
 
-#include <lunaplugin/effectplugin.h>
+#include <luna/interface/effectplugin.h>
 
 #include "flamemodel.h"
 
-class FlameEffectPlugin : public lunacore::EffectPlugin
+class FlameEffectPlugin : public luna::interface::EffectPlugin
 {
 public:
     FlameEffectPlugin();
-    std::shared_ptr<lunacore::Provider> createProvider() override;
+    std::shared_ptr<luna::interface::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QObject * model() override;

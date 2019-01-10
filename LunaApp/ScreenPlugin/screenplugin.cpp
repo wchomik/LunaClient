@@ -1,6 +1,6 @@
 #include "screenplugin.h"
 
-#include <lunaplugin/luna.h>
+#include <luna/interface/luna.h>
 
 #include "screeneffectplugin.h"
 
@@ -8,10 +8,10 @@ QString ScreenPlugin::name() const {
     return "Screen";
 }
 
-void ScreenPlugin::initialize(lunacore::Luna * luna) {
+void ScreenPlugin::initialize(luna::interface::Luna * luna) {
     luna->addEffect(std::make_unique<ScreenEffectPlugin>());
 }
 
-void ScreenPlugin::finalize(lunacore::Luna * luna) {
+void ScreenPlugin::finalize(luna::interface::Luna * luna) {
 
 }

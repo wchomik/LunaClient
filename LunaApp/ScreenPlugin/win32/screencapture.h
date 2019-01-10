@@ -5,7 +5,7 @@
 #include <dxgi1_5.h>
 #include <wrl.h>
 
-#include <lunacore/colorutils.h>
+#include <luna/interface/colorutils.h>
 #include "array2d.h"
 
 class ScreenCapture
@@ -15,7 +15,7 @@ public:
     ~ScreenCapture();
 
     void configure(const unsigned width, const unsigned height);
-    Array2D<lunacore::Color> & pixels(){ return mPixels; }
+    Array2D<luna::interface::Color> & pixels(){ return mPixels; }
     bool getNextFrame();
 private:
     void processFrame(Microsoft::WRL::ComPtr<IDXGIResource> & desktopResource);
@@ -51,7 +51,7 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mCPUTexture;
 
-    Array2D<lunacore::Color> mPixels;
+    Array2D<luna::interface::Color> mPixels;
 };
 
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <Eigen/Core>
 
-#include <lunacore/colorutils.h>
+#include <luna/interface/colorutils.h>
 
 struct AudioChannelConfig {
     class FFT * fft = nullptr;
@@ -20,14 +20,14 @@ struct AudioChannelConfig {
 class AudioChannelProcessor {
 public:
     explicit AudioChannelProcessor(const AudioChannelConfig & config);
-    void process(lunacore::Color * output, const Eigen::ArrayXf & input);
+    void process(luna::interface::Color * output, const Eigen::ArrayXf & input);
 private:
     class FFT * mFFT;
     const uint32_t mCount;
     std::vector<uint32_t> mIndices;
     Eigen::ArrayXf mSums;
     Eigen::ArrayXf mFilter;
-    lunacore::ColorVector mBaseColors;
+    luna::interface::ColorVector mBaseColors;
     const float mLogMul;
     float mFilteredNorm;
 };

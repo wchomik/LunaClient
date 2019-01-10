@@ -1,6 +1,6 @@
-#include "securehost.h"
+#include "SecureHost.hpp"
 
-#include <lunacore/strand.h>
+#include <luna/interface/Strand.hpp>
 #include <luna/proto/Builder.hpp>
 #include <luna/proto/SetColor.hpp>
 #include <luna/proto/Command.hpp>
@@ -11,13 +11,12 @@
 #include <algorithm>
 #include <vector>
 
-
-static lunacore::cieCoord_t fromProto(luna::proto::UV const & uv)
+static prism::CieXY fromProto(luna::proto::UV const & uv)
 {
     return {uv.u, uv.v};
 }
 
-static lunacore::ColorSpace fromProto(luna::proto::ColorSpace const & cs)
+static prism::RGBColorSpace fromProto(luna::proto::ColorSpace const & cs)
 {
     return {
         fromProto(cs.white),
@@ -52,20 +51,22 @@ SecureHost::SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * 
     auto & strands = properties->strands;
 
     for (auto & strand : strands) {
-        lunacore::Strand::Config config;
+        auto colorSpace = fromProto(strand.colorSpace);
 
-        config.colorSpace = fromProto(strand.colorSpace);
+        int colorChannels = strand.channels.get();
 
-        config.colorChannels = static_cast<lunacore::ColorChannels>(strand.channels.get());
-        config.count = static_cast<uint32_t>(strand.pixelCount);
-        config.begin = fromProto(strand.begin);
-        config.end = fromProto(strand.end);
+        auto pixels = std::make_unique<luna::interface::Strand>(
+            static_cast<uint32_t>(strand.pixelCount),
+            fromProto(strand.begin),
+            fromProto(strand.end)
+        );
 
-        auto s = std::make_unique<lunacore::Strand>(config);
+        auto serializer = std::make_unique<StrandSerializerRGB>(
+            std::move(pixels),
+            colorSpace
+        );
 
-        auto serializer = std::make_unique<StrandSerializerRGB>();
-
-        mStrands.emplace_back(StrandData{std::move(s), std::move(serializer) });
+        mStrands.emplace_back(std::move(serializer));
     }
 
     mHeartbeat.setInterval(2000);
@@ -81,7 +82,6 @@ QHostAddress SecureHost::address() const noexcept
 
 void SecureHost::send()
 {
-
     uint8_t storage[1024];
     auto builder = luna::proto::Builder(storage);
     auto command = builder.allocate<luna::proto::Command>();
@@ -92,37 +92,17 @@ void SecureHost::send()
     setColorCommand->strands.set(str, mStrands.size());
 
     for (size_t i = 0; i < mStrands.size(); ++i){
-        auto & strand = *mStrands[i].strand;
-
-        mStrands[i].serializer->serialize(builder, str[i], strand);
+        mStrands[i]->serialize(builder, str[i]);
         str[i].id = i;
     }
 
     mDataSocket->write(builder.data(), builder.size());
 }
 
-std::string SecureHost::displayName() const
-{
-    return "Secure";
-}
-
-void SecureHost::connect()
-{
-}
-
-void SecureHost::disconnect()
-{
-}
-
-bool SecureHost::isConnected() const
-{
-    return mConnected;
-}
-
-void SecureHost::getStrands(std::vector<lunacore::Strand *> & strands)
+void SecureHost::getStrands(std::vector<luna::interface::Strand *> & strands)
 {
     for (auto & strand : mStrands) {
-        strands.emplace_back(strand.strand.get());
+        strands.emplace_back(strand->strand());
     }
 }
 

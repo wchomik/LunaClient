@@ -1,6 +1,22 @@
 #include "Prism.hpp"
 
 namespace prism {
+    inline Coefficients lerp(Coefficients const & a, Coefficients const & b, ColorScalar t) {
+        return a * (1.0 - t) + b * t;
+    }
+
+    template<typename T>
+    constexpr const T & clamp(const T & value, const T & minimum, const T & maximum) {
+        return (value < minimum) ? minimum : ((value > maximum) ? maximum : value);
+    }
+
+    template<typename T>
+    const T modulus(const T value, const T divider) {
+        T integral = std::floor(value / divider);
+        return value - divider * integral;
+    }
+
+
     HSV toHsv(RGB const & rgb)
     {
         return {};
@@ -34,7 +50,7 @@ namespace prism {
 
         mXyzToRgb = mRgbToXyz.inverse();
 
-        detail::Coefficients scale;
+        Coefficients scale;
         scale << white.x(), white.y(), 1 - white.x() - white.y(), 1;
         scale = mXyzToRgb * (scale / white.y());
         scale[3] = 1.0f;
@@ -94,7 +110,7 @@ namespace prism {
         return ret;
     }
 
-    CieXYZ temperature(detail::ColorScalar t)
+    CieXYZ temperature(ColorScalar t)
     {
         float t2 = t * t;
         float t3 = t2 * t;

@@ -6,29 +6,27 @@ luna_plugin(
     NAME 
         ${PLUGIN_NAME}
     SOURCES
+        "DTLSSocket.cpp"
+        "SecureHost.cpp"
+        "SecureNetworkConnector.cpp"
+        "SecureNetworkConnectorPlugin.cpp"
+        "SecureNetworkPlugin.cpp"
+        "StrandSerializer.cpp"
+        "HostDiscovery.cpp"
 
-    "dtlssocket.cpp"
-    "securehost.cpp"
-    "securenetworkconnector.cpp"
-    "securenetworkconnectorplugin.cpp"
-    "securenetworkplugin.cpp"
-    "StrandSerializer.cpp"
-    "hostdiscovery.cpp"
+        "DTLSSocket.hpp"
+        "SecureHost.hpp"
+        "SecureNetworkConnector.hpp"
+        "SecureNetworkConnectorPlugin.hpp"
+        "SecureNetworkPlugin.hpp"
+        "StrandSerializer.hpp"
+        "HostDiscovery.hpp"
 
-    "dtlssocket.h"
-    "securehost.h"
-    "securenetworkconnector.h"
-    "securenetworkconnectorplugin.h"
-    "securenetworkplugin.h"
-    "StrandSerializer.h"
-    "hostdiscovery.h"
-
-    "qml.qrc"
+        "qml.qrc"
 )
 
 find_package(Qt5Network CONFIG REQUIRED)
 target_link_libraries(${PLUGIN_NAME} 
-    libLuna
     lunaProto
     Qt5::Network
 )

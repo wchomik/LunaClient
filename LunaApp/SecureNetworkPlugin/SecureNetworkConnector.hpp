@@ -1,13 +1,13 @@
 #pragma once
 
-#include "hostdiscovery.h"
-#include "securehost.h"
+#include "HostDiscovery.hpp"
+#include "SecureHost.hpp"
 
-#include <lunacore/connector.h>
+#include <luna/interface/Connector.hpp>
 
 #include <memory>
 
-class SecureNetworkConnector : public QObject, public lunacore::Connector
+class SecureNetworkConnector : public QObject, public luna::interface::Connector
 {
     Q_OBJECT
 public:
@@ -16,12 +16,13 @@ public:
     SecureNetworkConnector & operator=(SecureNetworkConnector const &) = delete;
 
     void update() override;
-    void getHosts(std::vector<lunacore::Host *> & hosts) override;
+    std::vector<luna::interface::Strand *> getStrands() const override;
+
 private slots:
     void onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties);
     void removeHost(SecureHost * hostToRemove);
-private:
 
+private:
     HostDiscovery mDiscovery;
     std::vector<std::unique_ptr<SecureHost>> mHosts;
 };

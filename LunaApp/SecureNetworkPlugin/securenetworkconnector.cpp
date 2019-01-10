@@ -1,4 +1,4 @@
-#include "securenetworkconnector.h"
+#include "SecureNetworkConnector.hpp"
 
 #include <QDebug>
 #include <QString>
@@ -7,7 +7,6 @@
 #include <algorithm>
 
 using namespace std::chrono_literals;
-using namespace lunacore;
 
 SecureNetworkConnector::SecureNetworkConnector()
 {
@@ -18,16 +17,19 @@ SecureNetworkConnector::SecureNetworkConnector()
 
 void SecureNetworkConnector::update() {
     for (auto & host : mHosts) {
-        if (host->isConnected()) {
+        if (host->connected()) {
             host->send();
         }
     }
 }
 
-void SecureNetworkConnector::getHosts(std::vector<lunacore::Host *> & hosts) {
+std::vector<luna::interface::Strand *> SecureNetworkConnector::getStrands() const
+{
+    std::vector<luna::interface::Strand *> ret;
     for (auto & host : mHosts) {
-        hosts.emplace_back(host.get());
+        host->getStrands(ret);
     }
+    return ret;
 }
 
 void SecureNetworkConnector::onHostDiscovered(QHostAddress address, luna::proto::Discovery const * properties)

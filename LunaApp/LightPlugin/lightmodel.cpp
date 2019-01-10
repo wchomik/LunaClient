@@ -7,7 +7,8 @@ using namespace luna::interface;
 LightModel::LightModel() :
     mColor(),
     mTemperature(5500.0),
-    mBrightness(1.0)
+    mBrightness(1.0),
+    mSource(0)
 {}
 
 LightModel::~LightModel() = default;
@@ -79,10 +80,10 @@ void LightModel::notifyProvider()
             {
                 prism::RGB rgb;
                 auto& v = rgb.values;
-                v[0] = mColor.red();
-                v[1] = mColor.green();
-                v[2] = mColor.blue();
-                v[3] = mColor.alpha();
+                v[0] = mColor.redF();
+                v[1] = mColor.greenF();
+                v[2] = mColor.blueF();
+                v[3] = mColor.alphaF();
                 rgb = prism::linearizeSRGB(rgb);
                 color = prism::sRGB().transform(rgb);
             }

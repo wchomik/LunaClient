@@ -3,15 +3,15 @@
 
 #include <chrono>
 
-#include <lunacore/provider.h>
+#include <luna/interface/provider.h>
 
 #include "noise.h"
 
-class PlasmaProvider : public lunacore::Provider
+class PlasmaProvider : public luna::interface::Provider
 {
 public:
     PlasmaProvider();
-    void getData(std::vector<lunacore::Strand *> & strands) override;
+    void getData(std::vector<luna::interface::Strand *> & strands) override;
     Noise mNoise;
 private:
     using clock = std::chrono::steady_clock;

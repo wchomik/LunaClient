@@ -7,7 +7,7 @@ FlameEffectPlugin::FlameEffectPlugin() :
     mModel(std::make_unique<FlameModel>())
 {}
 
-std::shared_ptr<lunacore::Provider> FlameEffectPlugin::createProvider() {
+std::shared_ptr<luna::interface::Provider> FlameEffectPlugin::createProvider() {
     auto provider = std::shared_ptr<FlameProvider>(new FlameProvider());
     mModel->provider(provider);
     return provider;

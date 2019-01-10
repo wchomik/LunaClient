@@ -5,14 +5,14 @@
 #include <chrono>
 #include <random>
 
-#include <lunacore/provider.h>
+#include <luna/interface/provider.h>
 
 
-class FlameProvider : public lunacore::Provider
+class FlameProvider : public luna::interface::Provider
 {
 public:
     FlameProvider();
-    void getData(std::vector<lunacore::Strand *> &strands) override;
+    void getData(std::vector<luna::interface::Strand *> &strands) override;
 
     void temperatureLow(float value);
     void temperatureHigh(float value);
@@ -27,8 +27,8 @@ private:
         float shift;
         float burnRate;
     };
-    void createStrandData(lunacore::Strand * strand);
-    std::unordered_map<lunacore::Strand *, StrandData> mStrandData;
+    void createStrandData(luna::interface::Strand * strand);
+    std::unordered_map<luna::interface::Strand *, StrandData> mStrandData;
     std::chrono::steady_clock mClock;
     std::chrono::steady_clock::time_point mPreviousTime;
     std::default_random_engine mRandom;

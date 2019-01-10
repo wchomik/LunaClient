@@ -1,21 +1,19 @@
-#include "securenetworkplugin.h"
+#include "SecureNetworkPlugin.hpp"
 
-#include <lunaplugin/luna.h>
+#include <luna/interface/Application.hpp>
 
-#include "securenetworkconnectorplugin.h"
+#include "SecureNetworkConnectorPlugin.hpp"
 
-
-QString SecureNetworkPlugin::name() const
+void SecureNetworkPlugin::initialize(luna::interface::Application * application)
 {
-    return QString("Secure Network");
+    application->addConnector(std::make_unique<SecureNetworkConnectorPlugin>());
 }
 
-void SecureNetworkPlugin::initialize(lunacore::Luna *luna)
+void SecureNetworkPlugin::finalize(luna::interface::Application * application)
 {
-    luna->addConnector(std::make_unique<SecureNetworkConnectorPlugin>());
 }
 
-void SecureNetworkPlugin::finalize(lunacore::Luna *luna)
+std::string SecureNetworkPlugin::name() const
 {
-
+    return "Secure Network";
 }

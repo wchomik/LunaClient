@@ -1,7 +1,7 @@
 #include "plasmaprovider.h"
 
-#include <lunacore/strand.h>
-#include <lunacore/colorutils.h>
+#include <luna/interface/strand.h>
+#include <luna/interface/colorutils.h>
 
 using namespace lunacore;
 
@@ -19,7 +19,7 @@ void PlasmaProvider::getData(std::vector<Strand *> & strands) {
     float t = timeDifference.count();
 
     for (auto strand : strands) {
-        strand->setSpaceConversionColorMode(lunacore::ColorSpace::rec2020());
+        strand->setSpaceConversionColorMode(luna::interface::ColorSpace::rec2020());
         auto config = strand->config();
         if ((config.colorChannels & ColorChannels::rgb) != ColorChannels::rgb) {
             strand->setAll(Color::Zero());

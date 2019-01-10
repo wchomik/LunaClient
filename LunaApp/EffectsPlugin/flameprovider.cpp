@@ -1,6 +1,6 @@
 #include "flameprovider.h"
 
-#include <lunacore/strand.h>
+#include <luna/interface/strand.h>
 
 using namespace Eigen;
 using namespace lunacore;

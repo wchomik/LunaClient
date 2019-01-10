@@ -1,5 +1,4 @@
-#ifndef DTLSSOCKET_H
-#define DTLSSOCKET_H
+#pragma once
 
 #include <QUdpSocket>
 #include <QDtls>
@@ -36,10 +35,5 @@ private:
     QUdpSocket mSocket;
     QDtls mDtls;
     bool mConnected;
-
-
-
     unsigned mTimeoutCount;
 };
-
-#endif // DTLSSOCKET_H

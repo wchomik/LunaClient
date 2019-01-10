@@ -5,40 +5,24 @@
 #include <cstdint>
 
 namespace prism {
-    namespace detail {
-        using ColorScalar = float;
-        using Coefficients = Eigen::Matrix<ColorScalar, 4, 1>;
 
-        inline Coefficients lerp(Coefficients const & a, Coefficients const & b, ColorScalar t) {
-            return a * (1.0 - t) + b * t;
-        }
-
-        template<typename T>
-        constexpr const T & clamp(const T & value, const T & minimum, const T & maximum) {
-            return (value < minimum) ? minimum : ((value > maximum) ? maximum : value);
-        }
-        
-        template<typename T>
-        const T modulus(const T value, const T divider) {
-            T integral = std::floor(value / divider);
-            return value - divider * integral;
-        }
-    }
+    using ColorScalar = float;
+    using Coefficients = Eigen::Matrix<ColorScalar, 4, 1>;
 
     struct RGB {
-        detail::Coefficients values;
+        Coefficients values;
     };
 
     struct CieXYZ {
-        detail::Coefficients values;
+        Coefficients values;
     };
 
     struct HSV {
-        detail::Coefficients values;
+        Coefficients values;
     };
     
     struct HSL {
-        detail::Coefficients values;
+        Coefficients values;
     };
 
     HSV toHsv(RGB const & rgb);
@@ -46,7 +30,7 @@ namespace prism {
 
     HSL rgbToHsl(const RGB & rgb);
     RGB fromInteger(uint32_t integer);
-    using CieXY = Eigen::Matrix<detail::ColorScalar, 2, 1>;
+    using CieXY = Eigen::Matrix<ColorScalar, 2, 1>;
 
     enum class RenderingIntent {
         RelativeColorimetric,
@@ -62,7 +46,7 @@ namespace prism {
         CieXYZ transform(RGB const & source) const;
         RGB transform(CieXYZ const & source, RenderingIntent intent = RenderingIntent::RelativeColorimetric) const;
     private:
-        typedef Eigen::Matrix<detail::ColorScalar, 4, 4> Transformation;
+        typedef Eigen::Matrix<ColorScalar, 4, 4> Transformation;
 
         Transformation mRgbToXyz;
         Transformation mXyzToRgb;
@@ -73,5 +57,5 @@ namespace prism {
     RGBColorSpace const & sRGB();
 
     RGB linearizeSRGB(RGB rgb);
-    CieXYZ temperature(detail::ColorScalar kelvins);
+    CieXYZ temperature(ColorScalar kelvins);
 }

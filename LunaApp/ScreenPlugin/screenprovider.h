@@ -2,20 +2,20 @@
 #define LUNASCREENPROVIDER_H
 
 #include <mutex>
-#include <lunacore/provider.h>
+#include <luna/interface/provider.h>
 #include "screencapture.h"
 
-class ScreenProvider : public lunacore::Provider
+class ScreenProvider : public luna::interface::Provider
 {
 public:
     ScreenProvider();
 
-    void getData(std::vector<lunacore::Strand *> &strands) override;
+    void getData(std::vector<luna::interface::Strand *> &strands) override;
 
     void setDepth(int value);
-    void setBrightness(lunacore::ColorScalar value);
-    void setGamma(lunacore::ColorScalar value);
-    void setBlackLevel(lunacore::ColorScalar value);
+    void setBrightness(luna::interface::ColorScalar value);
+    void setGamma(luna::interface::ColorScalar value);
+    void setBlackLevel(luna::interface::ColorScalar value);
 private:
     void makeDepthWeights();
 
@@ -32,9 +32,9 @@ private:
     std::vector<PixelMapping> mMappings;
     Eigen::ArrayXf mDepthWeights;
     int mDepth;
-    lunacore::ColorScalar mBrightness;
-    lunacore::ColorScalar mGamma;
-    lunacore::ColorScalar mBlackLevel;
+    luna::interface::ColorScalar mBrightness;
+    luna::interface::ColorScalar mGamma;
+    luna::interface::ColorScalar mBlackLevel;
     std::mutex mMutex;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

@@ -1,4 +1,4 @@
-#include "hostdiscovery.h"
+#include "HostDiscovery.hpp"
 
 #include <QNetworkInterface>
 

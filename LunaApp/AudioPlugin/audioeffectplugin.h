@@ -2,14 +2,14 @@
 #define AUDIOEFFECTPLUGIN_H
 
 #include <QObject>
-#include <lunaplugin/effectplugin.h>
+#include <luna/interface/effectplugin.h>
 
 #include "audiomodel.h"
 
-class AudioEffectPlugin : public lunacore::EffectPlugin
+class AudioEffectPlugin : public luna::interface::EffectPlugin
 {
 public:
-    std::shared_ptr<lunacore::Provider> createProvider() override;
+    std::shared_ptr<luna::interface::Provider> createProvider() override;
     QString displayName() const override;
     int displayOrder() const override;
     QUrl itemUrl() const override;

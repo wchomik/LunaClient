@@ -3,17 +3,17 @@
 
 #include <QObject>
 
-#include <lunaplugin/lunaplugin.h>
+#include <luna/interface/lunaplugin.h>
 
-class ScreenPlugin : public lunacore::LunaPlugin
+class ScreenPlugin : public luna::interface::LunaPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.luna.screen")
-    Q_INTERFACES(lunacore::LunaPlugin)
+    Q_INTERFACES(luna::interface::LunaPlugin)
 public:
     QString name() const override;
-    void initialize(lunacore::Luna * lunacore) override;
-    void finalize(lunacore::Luna * lunacore) override;
+    void initialize(luna::interface::Luna * lunacore) override;
+    void finalize(luna::interface::Luna * lunacore) override;
 };
 
 #endif // SCREENPLUGIN_H

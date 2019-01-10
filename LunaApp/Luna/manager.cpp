@@ -68,7 +68,11 @@ void Manager::update()
         }
     }
 
-    for (auto && connector : mConnectors) {
+    for (auto & connector : mConnectors) {
         connector->update();
+    }
+
+    if (mActiveProvider) {
+        mActiveProvider->update();
     }
 }

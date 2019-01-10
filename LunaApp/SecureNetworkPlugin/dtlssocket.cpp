@@ -1,10 +1,11 @@
-#include "dtlssocket.h"
+#include "DTLSSocket.hpp"
 
 #include <QSslPreSharedKeyAuthenticator>
 #include <QSslConfiguration>
 #include <QSslCipher>
 #include <QSslEllipticCurve>
 #include <QFile>
+#include <QDebug>
 
 static QByteArray readResource(QString const & path)
 {
@@ -12,8 +13,6 @@ static QByteArray readResource(QString const & path)
     resource.open(QIODevice::ReadOnly);
     return resource.readAll();
 }
-
-#include <QDebug>
 
 DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port) :
     mLocalCertificate(readResource(":/SecureNetwork/own.crt")),

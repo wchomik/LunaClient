@@ -1,11 +1,11 @@
 #ifndef PLASMAEFFECTPLUGIN_H
 #define PLASMAEFFECTPLUGIN_H
 
-#include <lunaplugin/effectplugin.h>
+#include <luna/interface/effectplugin.h>
 
 #include "plasmamodel.h"
 
-class PlasmaEffectPlugin : public lunacore::EffectPlugin
+class PlasmaEffectPlugin : public luna::interface::EffectPlugin
 {
 public:
     PlasmaEffectPlugin();
@@ -13,7 +13,7 @@ public:
     int displayOrder() const override;
     QUrl itemUrl() const override;
     QObject *model() override;
-    std::shared_ptr<lunacore::Provider> createProvider() override;
+    std::shared_ptr<luna::interface::Provider> createProvider() override;
 private:
     std::unique_ptr<PlasmaModel> mModel;
 };

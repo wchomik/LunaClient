@@ -2,6 +2,8 @@
 
 #include "Application.hpp"
 
+#include <QtPlugin>
+
 #include <string>
 
 namespace luna::interface {

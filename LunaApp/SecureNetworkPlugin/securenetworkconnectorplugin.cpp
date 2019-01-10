@@ -1,8 +1,8 @@
-#include "securenetworkconnectorplugin.h"
+#include "SecureNetworkConnectorPlugin.hpp"
 
-#include "securenetworkconnector.h"
+#include "SecureNetworkConnector.hpp"
 
-std::shared_ptr<lunacore::Connector> SecureNetworkConnectorPlugin::createConnector() {
+std::shared_ptr<luna::interface::Connector> SecureNetworkConnectorPlugin::createConnector() {
     return std::make_shared<SecureNetworkConnector>();
 }
 

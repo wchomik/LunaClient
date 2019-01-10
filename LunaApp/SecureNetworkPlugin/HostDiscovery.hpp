@@ -1,5 +1,4 @@
-#ifndef HOSTDISCOVERY_H
-#define HOSTDISCOVERY_H
+#pragma once
 
 #include <QObject>
 #include <QTimer>
@@ -25,5 +24,3 @@ private:
     QTimer mDiscoveryTimer;
     QUdpSocket mSocket;
 };
-
-#endif // HOSTDISCOVERY_H

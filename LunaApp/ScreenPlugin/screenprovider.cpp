@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include <lunacore/colorspace.h>
-#include <lunacore/strand.h>
+#include <luna/interface/colorspace.h>
+#include <luna/interface/strand.h>
 
 using namespace Eigen;
 using namespace lunacore;
@@ -68,13 +68,13 @@ void ScreenProvider::setDepth(int value) {
     makeDepthWeights();
 }
 
-void ScreenProvider::setBrightness(lunacore::ColorScalar value) {
+void ScreenProvider::setBrightness(luna::interface::ColorScalar value) {
     std::lock_guard<std::mutex> lock(mMutex);
     mBrightness = value;
     makeDepthWeights();
 }
 
-void ScreenProvider::setGamma(lunacore::ColorScalar value) {
+void ScreenProvider::setGamma(luna::interface::ColorScalar value) {
     mGamma = value;
 }
 

@@ -1,6 +1,6 @@
 #include "audioprovider.h"
 
-#include <lunacore/strand.h>
+#include <luna/interface/strand.h>
 
 using namespace lunacore;
 
