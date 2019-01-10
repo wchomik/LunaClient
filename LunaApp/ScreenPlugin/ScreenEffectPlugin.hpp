@@ -1,9 +1,8 @@
-#ifndef SCREENEFFECTPLUGIN_H
-#define SCREENEFFECTPLUGIN_H
+#pragma once
 
-#include <luna/interface/effectplugin.h>
+#include "ScreenModel.hpp"
 
-#include "screenmodel.h"
+#include <luna/interface/EffectPlugin.hpp>
 
 class ScreenEffectPlugin : public luna::interface::EffectPlugin
 {
@@ -17,5 +16,3 @@ public:
 private:
     std::unique_ptr<ScreenModel> mModel;
 };
-
-#endif // SCREENEFFECTPLUGIN_H

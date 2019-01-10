@@ -1,5 +1,4 @@
-#ifndef ARRAY2D_H
-#define ARRAY2D_H
+#pragma once
 
 #include <memory>
 
@@ -19,8 +18,6 @@ private:
     std::unique_ptr<T[]> mData;
 };
 
-
-
 template<typename T>
 Array2D<T>::Array2D() :
     mDimensions{0, 0}
@@ -31,6 +28,3 @@ Array2D<T>::Array2D(size_t columns, size_t rows) :
     mDimensions{columns, rows},
     mData(std::make_unique<T[]>(columns * rows))
 {}
-
-
-#endif // ARRAY2D_H

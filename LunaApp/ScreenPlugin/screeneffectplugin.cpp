@@ -1,11 +1,10 @@
-#include "screeneffectplugin.h"
+#include "ScreenEffectPlugin.hpp"
 
-#include "screenprovider.h"
+#include "ScreenProvider.hpp"
 
 ScreenEffectPlugin::ScreenEffectPlugin() :
     mModel(std::make_unique<ScreenModel>())
-{
-}
+{}
 
 std::shared_ptr<luna::interface::Provider> ScreenEffectPlugin::createProvider() {
     auto ret = std::make_shared<ScreenProvider>();

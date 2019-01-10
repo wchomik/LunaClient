@@ -1,7 +1,5 @@
 project(interface)
 
-set(CMAKE_CXX_STANDARD 14)
-
 find_package(Qt5Quick CONFIG REQUIRED)
 set(CMAKE_AUTOMOC ON)
 

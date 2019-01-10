@@ -1,10 +1,9 @@
-#ifndef ScreenModel_H
-#define ScreenModel_H
+#pragma once
+
+#include "ScreenProvider.hpp"
 
 #include <QObject>
 #include <QSettings>
-
-#include "screenprovider.h"
 
 class ScreenModel : public QObject
 {
@@ -14,7 +13,7 @@ class ScreenModel : public QObject
     Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
     Q_PROPERTY(qreal blackLevel READ blackLevel WRITE setBlackLevel NOTIFY blackLevelChanged)
 public:
-    ScreenModel(QObject * parent = nullptr);
+    explicit ScreenModel();
     virtual ~ScreenModel();
     void provider(std::weak_ptr<ScreenProvider> ptr);
 
@@ -24,10 +23,10 @@ public:
     qreal blackLevel() const { return mBlackLevel; }
 
 public slots:
-    void setDepth(const qreal value);
-    void setBrightness(const qreal value);
-    void setGamma(const qreal value);
-    void setBlackLevel(const qreal value);
+    void setDepth(qreal value);
+    void setBrightness(qreal value);
+    void setGamma(qreal value);
+    void setBlackLevel(qreal value);
 
 signals:
     void depthChanged(qreal value);
@@ -48,6 +47,3 @@ private:
     std::weak_ptr<ScreenProvider> mProvider;
     QSettings mSettings;
 };
-
-
-#endif // ScreenModel_H

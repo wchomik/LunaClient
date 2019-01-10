@@ -10,6 +10,6 @@ add_subdirectory(SecureNetworkPlugin)
 add_subdirectory(LightPlugin)
 # add_subdirectory(EffectsPlugin)
 # add_subdirectory(AudioPlugin)
-# add_subdirectory(ScreenPlugin)
+add_subdirectory(ScreenPlugin)
 
 add_subdirectory(Luna)

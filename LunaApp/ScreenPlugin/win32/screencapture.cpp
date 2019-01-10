@@ -1,16 +1,14 @@
-#include "screencapture.h"
-
-#include <iostream>
-#include <algorithm>
-#include <iterator>
+#include "ScreenCapture.hpp"
 
 #include "shaders.h"
 
 #include "win32errorhandling.h"
 
+#include <iostream>
+#include <algorithm>
+#include <iterator>
 
 using namespace Microsoft::WRL;
-using namespace lunacore;
 
 ScreenCapture::ScreenCapture() :
     mHasOutput(false),
@@ -130,7 +128,7 @@ void ScreenCapture::configure(const unsigned width, const unsigned height)
     HRESULT hr;
     if(width != mPixels.columns() || height != mPixels.rows()){
         obtainScreen();
-        mPixels = Array2D<Color>(width, height);
+        mPixels = Array2D<Eigen::Vector4f>(width, height);
 
         D3D11_TEXTURE2D_DESC texDesc{
             width,
@@ -217,7 +215,7 @@ void ScreenCapture::processFrame(ComPtr<IDXGIResource> &desktopResource)
     uint8_t * src = reinterpret_cast<uint8_t *>(resource.pData);
     size_t srcPitch = resource.RowPitch;
     uint8_t * dst = reinterpret_cast<uint8_t *>(mPixels.data());
-    size_t dstPitch = mPixels.columns() * sizeof(Color);
+    size_t dstPitch = mPixels.columns() * sizeof(Eigen::Vector4f);
     if(srcPitch != dstPitch){
         for(size_t i = 0; i < mPixels.rows(); ++i){
             memcpy(dst, src, dstPitch);

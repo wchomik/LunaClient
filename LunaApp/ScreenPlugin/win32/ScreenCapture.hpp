@@ -1,12 +1,13 @@
-#ifndef SCREENCAPTURE_H
-#define SCREENCAPTURE_H
+#pragma once
+
+#include "Array2d.hpp"
+
+#include <Eigen/Dense>
 
 #include <d3d11.h>
 #include <dxgi1_5.h>
 #include <wrl.h>
-
-#include <luna/interface/colorutils.h>
-#include "array2d.h"
+#undef interface
 
 class ScreenCapture
 {
@@ -15,7 +16,7 @@ public:
     ~ScreenCapture();
 
     void configure(const unsigned width, const unsigned height);
-    Array2D<luna::interface::Color> & pixels(){ return mPixels; }
+    Array2D<Eigen::Vector4f> & pixels() { return mPixels; }
     bool getNextFrame();
 private:
     void processFrame(Microsoft::WRL::ComPtr<IDXGIResource> & desktopResource);
@@ -51,10 +52,5 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mCPUTexture;
 
-    Array2D<luna::interface::Color> mPixels;
+    Array2D<Eigen::Vector4f> mPixels;
 };
-
-
-
-
-#endif // SCREENCAPTURE_H

@@ -1,57 +1,58 @@
-#include "screenprovider.h"
+#include "ScreenProvider.hpp"
 
 #include <cstdint>
 
-#include <luna/interface/colorspace.h>
-#include <luna/interface/strand.h>
+#include <prism/Prism.hpp>
+#include <luna/interface/Strand.hpp>
 
 using namespace Eigen;
-using namespace lunacore;
+using namespace luna::interface;
 
-void ScreenProvider::getData(std::vector<Strand *> & strands) {
-    std::lock_guard<std::mutex> lock(mMutex);
-    const bool hasNextFrame = mScreenCapture.getNextFrame();
+void ScreenProvider::getData(Strand & strand)
+{
+    auto lock = std::lock_guard(mMutex);
 
     auto & screenPixels = mScreenCapture.pixels();
 
-    for (auto strand : strands) {
-        const auto & config = strand->config();
-        const uint32_t count = config.count;
-        Color * const pixels = strand->pixels();
-        if ((config.colorChannels & ColorChannels::rgb) != ColorChannels::rgb) {
-            strand->setAll(Color::Zero());
-            continue;
+    auto size = strand.size();
+
+    for (size_t i = 0; i < size; ++i) {
+        auto pixel = strand[i];
+        auto lightPosition = pixel.position();
+        const float x = lightPosition.x();
+        const float y = lightPosition.y();
+
+        const float norm = std::max(std::abs(x), std::abs(y));
+
+        float angle = ((x + y) / norm - 1.0f);
+        if (x < y) {
+            angle = 2.0f - angle;
         }
-        strand->setSpaceConversionColorMode(ColorSpace::sRGB());
+        angle += 8.0f;
 
-        for (uint32_t i = 0; i < count; ++i) {
-            const Vector3f lightPosition = strand->positionOf(i);
-            const float x = lightPosition.x();
-            const float y = lightPosition.y();
+        float integer;
+        angle = std::modf(angle / 8.0f, &integer) * screenPixels.columns();
 
-            const float norm = std::max(std::abs(x), std::abs(y));
+        const auto column = static_cast<int>(angle);
 
-            float angle = ((x + y) / norm - 1.0f);
-            if (x < y) {
-                angle = 2.0f - angle;
-            }
-            angle += 8.0f;
+        Vector4f sum = Vector4f::Zero();
 
-            float integer;
-            angle = std::modf(angle / 8.0f, &integer) * screenPixels.columns();
-
-            const auto column = static_cast<int>(angle);
-
-            Color sum = Color::Zero();
-
-            for (int i = 0; i < mDepth; ++i) {
-                sum += screenPixels(column, i) * mDepthWeights[i];
-            }
-            sum = sum.cwiseMax(Color::Constant(mBlackLevel));
-            sum[3] = 0;
-            pixels[i] = sum;
+        for (int i = 0; i < mDepth; ++i) {
+            sum += screenPixels(column, i) * mDepthWeights[i];
         }
+        sum = sum.cwiseMax(Vector4f::Constant(mBlackLevel));
+        sum[3] = 0;
+
+        prism::RGB rgb;
+        rgb.values = sum;
+
+        pixel.color(prism::sRGB().transform(rgb));
     }
+}
+
+void ScreenProvider::update()
+{
+    mScreenCapture.getNextFrame();
 }
 
 ScreenProvider::ScreenProvider() :
@@ -63,26 +64,26 @@ ScreenProvider::ScreenProvider() :
 }
 
 void ScreenProvider::setDepth(int value) {
-    std::lock_guard<std::mutex> lock(mMutex);
     mDepth = value;
     makeDepthWeights();
 }
 
-void ScreenProvider::setBrightness(luna::interface::ColorScalar value) {
-    std::lock_guard<std::mutex> lock(mMutex);
+void ScreenProvider::setBrightness(float value) {
     mBrightness = value;
     makeDepthWeights();
 }
 
-void ScreenProvider::setGamma(luna::interface::ColorScalar value) {
+void ScreenProvider::setGamma(float value) {
     mGamma = value;
 }
 
-void ScreenProvider::setBlackLevel(ColorScalar value) {
+void ScreenProvider::setBlackLevel(float value) {
     mBlackLevel = value;
 }
 
-void ScreenProvider::makeDepthWeights() {
+void ScreenProvider::makeDepthWeights()
+{
+    std::lock_guard lock(mMutex);
     mDepthWeights = Eigen::ArrayXf::LinSpaced(mDepth, 1.0f, 1.0f / mDepth);
     mDepthWeights = mDepthWeights * (mBrightness / mDepthWeights.sum());
 }
