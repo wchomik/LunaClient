@@ -9,20 +9,16 @@ namespace prism {
     using ColorScalar = float;
     using Coefficients = Eigen::Matrix<ColorScalar, 4, 1>;
 
-    struct RGB {
-        Coefficients values;
+    struct RGB : public Coefficients {
     };
 
-    struct CieXYZ {
-        Coefficients values;
+    struct CieXYZ : public Coefficients {
     };
 
-    struct HSV {
-        Coefficients values;
+    struct HSV : public Coefficients {
     };
     
-    struct HSL {
-        Coefficients values;
+    struct HSL : public Coefficients {
     };
 
     HSV toHsv(RGB const & rgb);

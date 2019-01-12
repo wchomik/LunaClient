@@ -44,7 +44,7 @@ void ScreenProvider::getData(Strand & strand)
         sum[3] = 0;
 
         prism::RGB rgb;
-        rgb.values = sum;
+        static_cast<prism::Coefficients &>(rgb) = sum;
 
         pixel.color(prism::sRGB().transform(rgb));
     }

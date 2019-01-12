@@ -38,6 +38,8 @@ namespace luna::interface {
         size_t size() const { return mColors.size(); }
         Pixel operator[](size_t index) { return Pixel(this, index); }
         
+        Eigen::Vector3f beginPosition() const { return mBeginPosition; }
+        Eigen::Vector3f endPosition() const { return mEndPosition; }
     private:
         std::vector<prism::CieXYZ> mColors;
         Eigen::Vector3f mBeginPosition;

@@ -23,7 +23,7 @@ void LightProvider::update()
 {
     constexpr float smoothScale = 0.04f;
 
-    mCurrentColor.values = mCurrentColor.values * (1 - smoothScale) + mTargetColor.values * smoothScale;
+    static_cast<prism::Coefficients &>(mCurrentColor) = mCurrentColor * (1 - smoothScale) + mTargetColor * smoothScale;
 }
 
 void LightProvider::color(prism::CieXYZ const & value) {

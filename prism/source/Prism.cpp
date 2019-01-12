@@ -24,7 +24,20 @@ namespace prism {
 
     RGB toRgb(HSV const & hsv)
     {
-        return {};
+        ColorScalar i;
+        ColorScalar h6 = std::modf(hsv[0], &i) * 6;
+        ColorScalar sat = clamp(hsv[1], 0.0f, 1.0f);
+        ColorScalar val = clamp(hsv[2], 0.0f, 1.0f);
+
+        RGB rgb;
+        rgb << std::abs(3 - h6) - 1,
+            2 - std::abs(2 - h6),
+            2 - std::abs(4 - h6),
+            0;
+
+        static_cast<Coefficients &>(rgb) = (rgb.cwiseMax(0).cwiseMin(1) * sat + Coefficients::Constant(1 - sat)) * val;
+        rgb[3] = hsv[3];
+        return rgb;
     }
 
     HSL rgbToHsl(const RGB & rgb)
@@ -38,7 +51,9 @@ namespace prism {
         auto g = (integer & 0x0000ff00) >> 8;
         auto b = (integer & 0x00ff0000) >> 16;
         auto a = (integer & 0xff000000) >> 24;
-        return {{r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f}};
+        RGB ret;
+        ret << r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f;
+        return ret;
     }
 
     RGBColorSpace::RGBColorSpace(CieXY const & white, CieXY const & red, CieXY const & green, CieXY const & blue)
@@ -63,12 +78,15 @@ namespace prism {
 
     CieXYZ RGBColorSpace::transform(RGB const & source) const
     {
-        return {mRgbToXyz * source.values};
+        CieXYZ ret;
+        static_cast<Coefficients &>(ret) = mRgbToXyz * source;
+        return ret;
     }
 
     RGB RGBColorSpace::transform(CieXYZ const & source, RenderingIntent intent) const
     {
-        auto ret =  RGB{mXyzToRgb * source.values};
+        RGB ret;
+        static_cast<Coefficients &>(ret) = mXyzToRgb * source;
         // TODO rendering intent
         return ret;
     }
@@ -106,7 +124,7 @@ namespace prism {
     RGB linearizeSRGB(RGB rgb)
     {
         RGB ret;
-        ret.values = rgb.values.array().pow(2.2f).matrix();
+        static_cast<Coefficients &>(ret) = rgb.array().pow(2.2f).matrix();
         return ret;
     }
 
@@ -148,6 +166,8 @@ namespace prism {
                 - 0.37001483f;
         }
 
-        return {{x / y, 1, (1 - x - y) / y, 0}};
+        CieXYZ ret;
+        ret << x / y, 1, (1 - x - y) / y, 0;
+        return ret;
     }
 }

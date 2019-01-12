@@ -77,7 +77,7 @@ prism::CieXYZ ThemeColor::get() {
         0);
 
     auto rgb = prism::linearizeSRGB(prism::fromInteger(color));
-    rgb.values[3] = 0.0f;
+    rgb[3] = 0.0f;
     
     return prism::sRGB().transform(rgb);
 }

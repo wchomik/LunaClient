@@ -79,11 +79,7 @@ void LightModel::notifyProvider()
         case Source::ColorPicker:
             {
                 prism::RGB rgb;
-                auto& v = rgb.values;
-                v[0] = mColor.redF();
-                v[1] = mColor.greenF();
-                v[2] = mColor.blueF();
-                v[3] = mColor.alphaF();
+                rgb << mColor.redF(), mColor.greenF(), mColor.blueF(), mColor.alphaF();
                 rgb = prism::linearizeSRGB(rgb);
                 color = prism::sRGB().transform(rgb);
             }
@@ -95,7 +91,7 @@ void LightModel::notifyProvider()
             color = mThemeColor.get();
             break;
         }
-        color.values *= mBrightness;
+        color *= mBrightness;
 
         p->color(color);
     }
