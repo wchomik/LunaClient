@@ -1,6 +1,3 @@
-#ifndef WIN32ERRORHANDLING_H
-#define WIN32ERRORHANDLING_H
+#pragma once
 
 void testHR(long hr);
-
-#endif // WIN32ERRORHANDLING_H

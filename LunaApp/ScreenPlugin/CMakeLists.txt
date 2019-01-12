@@ -6,26 +6,30 @@ luna_plugin(
     NAME 
         ${PLUGIN_NAME}
     SOURCES
-        "screenprovider.h"
-        "screenmodel.h"
-        "array2d.h"
-        "screenplugin.h"
-        "screeneffectplugin.h"
+        "ScreenProvider.hpp"
+        "ScreenModel.hpp"
+        "Array2d.hpp"
+        "ScreenPlugin.hpp"
+        "ScreenEffectPlugin.hpp"
 
-        "screenprovider.cpp"
-        "screenmodel.cpp"
-        "screenplugin.cpp"
-        "screeneffectplugin.cpp"
+        "ScreenProvider.cpp"
+        "ScreenModel.cpp"
+        "ScreenPlugin.cpp"
+        "ScreenEffectPlugin.cpp"
 
         "qml.qrc"
 )
 
+target_include_directories(${PLUGIN_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
 if(WIN32)
     target_sources(${PLUGIN_NAME} PRIVATE  
-        "win32/screencapture.h"
+        "win32/ScreenCapture.hpp"
         "win32/shaders.h"
         "win32/win32errorhandling.h"
-        "win32/screencapture.cpp"
+        "win32/ScreenCapture.cpp"
         "win32/win32errorhandling.cpp"
     )
     target_include_directories(${PLUGIN_NAME} PRIVATE
