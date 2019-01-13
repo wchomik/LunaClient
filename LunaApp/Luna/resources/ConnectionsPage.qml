@@ -4,5 +4,5 @@ import QtQuick.Layouts 1.3
 
 
 TabPage {
-    tabs: ConnectorsModel
+    model: Connectors
 }

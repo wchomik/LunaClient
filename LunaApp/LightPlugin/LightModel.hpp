@@ -38,6 +38,7 @@ public slots:
     void setTemperature(qreal temperature);
     void setBrightness(qreal value);
     void setSource(int value);
+    void cieXYZ(qreal x, qreal y, qreal z);
 
 signals:
     void colorChanged(QColor color);
@@ -48,7 +49,7 @@ signals:
 private:
     void notifyProvider();
 
-    QColor mColor;
+    prism::CieXYZ mColor;
     qreal mTemperature;
     qreal mBrightness;
 

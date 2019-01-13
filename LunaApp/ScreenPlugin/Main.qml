@@ -23,12 +23,12 @@ Item {
 
             SpinBox {
                 editable: true
-                value: Screen.depth
+                value: Model.depth
                 from: 1
                 to: 30
                 stepSize: 1
                 onValueChanged: {
-                    Screen.depth = value
+                    Model.depth = value
                 }
             }
 
@@ -38,10 +38,10 @@ Item {
 
             Slider {
                 Layout.fillWidth: true
-                value: Screen.brightness
+                value: Model.brightness
                 wheelEnabled: true
                 onValueChanged: {
-                    Screen.brightness = position;
+                    Model.brightness = position;
                 }
             }
 
@@ -51,10 +51,10 @@ Item {
 
             Slider {
                 Layout.fillWidth: true
-                value: Screen.gamma
+                value: Model.gamma
                 wheelEnabled: true
                 onValueChanged: {
-                    Screen.gamma = value;
+                    Model.gamma = value;
                 }
             }
 
@@ -66,10 +66,10 @@ Item {
                 Layout.fillWidth: true
                 from: 0.0
                 to: 0.01
-                value: Screen.blackLevel
+                value: Model.blackLevel
                 wheelEnabled: true
                 onValueChanged: {
-                    Screen.blackLevel = value;
+                    Model.blackLevel = value;
                 }
             }
         }

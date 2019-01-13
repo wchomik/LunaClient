@@ -1,25 +1,23 @@
 #pragma once
 
-#include <QObject>
+#include <QAbstractListModel>
 #include <QQuickItem>
 
-class TabsModel : public QObject
+#include <memory>
+
+class TabsModel : public QAbstractListModel
 {
-    Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<QQuickItem> items READ items NOTIFY itemsChanged)
-    Q_PROPERTY(QStringList names READ names NOTIFY namesChanged)
 public:
-    TabsModel(QObject * parent = nullptr);
-    void addTab(QQuickItem * item, QString & name);
+    int rowCount(QModelIndex const & parent = QModelIndex()) const override;
+    QVariant data(QModelIndex const & index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
-    QQmlListProperty<QQuickItem> items();
-    QStringList & names();
-signals:
-    void tabSelected(int index);
-
-    void itemsChanged();
-    void namesChanged();
+    void add(QString name, std::unique_ptr<QQuickItem> && qml);
 private:
-    QList<QQuickItem *> mItems;
-    QStringList mNames;
+    struct Entry
+    {
+        QString name;
+        std::unique_ptr<QQuickItem> qml;
+    };
+    std::vector<Entry> mEntries;
 };

@@ -4,5 +4,6 @@
         <file>ColorPickerControl.qml</file>
         <file>ColorFromThemeControl.qml</file>
         <file>TemperatureControl.qml</file>
+        <file>CIE1931xy.png</file>
     </qresource>
 </RCC>

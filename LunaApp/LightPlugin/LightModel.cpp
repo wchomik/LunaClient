@@ -21,13 +21,23 @@ void LightModel::provider(std::weak_ptr<LightProvider> ptr)
 
 QColor LightModel::color() const
 {
-    return mColor;
+    auto color = prism::sRGB().transform(mColor);
+    color = prism::compressSRGB(color);
+    static_cast<prism::Coefficients &>(color) = color.array().cwiseMax(0).cwiseMin(1);
+    QColor ret;
+    ret.setRgbF(color.x(), color.y(), color.z());
+    return ret;
 }
 
 void LightModel::setColor(const QColor & value)
 {
-    if (mColor != value) {
-        mColor = value;
+    prism::RGB rgb;
+    rgb << value.redF(), value.greenF(), value.blueF(), 0;
+    rgb = prism::linearizeSRGB(rgb);
+    auto color = prism::sRGB().transform(rgb);
+
+    if ((mColor - color).norm() > 0.001f) {
+        mColor = color;
         colorChanged(value);
         notifyProvider();
     }
@@ -69,6 +79,16 @@ void LightModel::setSource(int value) {
     }
 }
 
+void LightModel::cieXYZ(qreal x, qreal y, qreal z)
+{
+    mColor << x, y, z, 0;
+    mColor /= mColor.maxCoeff();
+
+    colorChanged(color());
+
+    notifyProvider();
+}
+
 void LightModel::notifyProvider()
 {
     if (auto p = mProvider.lock()) {
@@ -77,12 +97,7 @@ void LightModel::notifyProvider()
         prism::CieXYZ color;
         switch (source) {
         case Source::ColorPicker:
-            {
-                prism::RGB rgb;
-                rgb << mColor.redF(), mColor.greenF(), mColor.blueF(), mColor.alphaF();
-                rgb = prism::linearizeSRGB(rgb);
-                color = prism::sRGB().transform(rgb);
-            }
+            color = mColor;
             break;
         case Source::Temperature:
             color = prism::temperature(mTemperature);

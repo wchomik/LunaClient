@@ -3,7 +3,6 @@
 #include <luna/interface/Connector.hpp>
 #include <luna/interface/Strand.hpp>
 
-#include <QDebug>
 #include <QTimer>
 
 #include <chrono>

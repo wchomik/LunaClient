@@ -13,7 +13,6 @@ FlameProvider::FlameProvider() :
     mBrightness(1.0f)
 {}
 
-#include <QDebug>
 void FlameProvider::getData(luna::interface::Strand & strand)
 {
     std::chrono::duration<float> const diff = (clock::now() - mStartTime);
@@ -29,10 +28,7 @@ void FlameProvider::getData(luna::interface::Strand & strand)
 
         auto baseTemperature = mTemperatureNoise.at(position) + 0.5f;
 
-        qDebug() << baseTemperature;
-
         auto smoothTemp = baseTemperature * (mTemperatureHigh - mTemperatureLow) + mTemperatureLow;
-
 
         auto const fadeFactor = std::pow(static_cast<float>(i) / static_cast<float>(strand.size() - 1), 3.0f);
 

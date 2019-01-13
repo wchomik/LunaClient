@@ -1,19 +1,45 @@
 #include "TabsModel.hpp"
 
-TabsModel::TabsModel(QObject *parent)  :
-    QObject(parent)
-{}
+enum
+{
+    nameRole = Qt::UserRole,
+    qmlRole,
+};
 
-void TabsModel::addTab(QQuickItem *item, QString &name) {
-    mItems.append(item);
-    mNames.append(name);
-    namesChanged();
+int TabsModel::rowCount(QModelIndex const & parent) const
+{
+    return static_cast<int>(mEntries.size());
 }
 
-QQmlListProperty<QQuickItem> TabsModel::items() {
-    return QQmlListProperty<QQuickItem>(this, mItems);
+QVariant TabsModel::data(QModelIndex const & index, int const role) const
+{
+    if (!index.isValid() || static_cast<size_t>(index.row()) >= mEntries.size()) {
+        return {};
+    }
+
+    auto const & entry = mEntries[index.row()];
+
+    switch (role) {
+    case nameRole:
+        return entry.name;
+    case qmlRole:
+        return QVariant::fromValue<QQuickItem *>(entry.qml.get());
+    default:
+        return {};
+    }
 }
 
-QStringList & TabsModel::names() {
-    return mNames;
+QHash<int, QByteArray> TabsModel::roleNames() const
+{
+    return {
+        {nameRole, "name"},
+        {qmlRole, "qml"},
+    };
+}
+
+void TabsModel::add(QString name, std::unique_ptr<QQuickItem> && qml)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    mEntries.push_back({name, std::move(qml)});
+    endInsertRows();
 }

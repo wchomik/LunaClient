@@ -26,6 +26,10 @@ public:
     void setup();
     void addEffect(std::unique_ptr<luna::interface::EffectPlugin> && effect) override;
     void addConnector(std::unique_ptr<luna::interface::ConnectorPlugin> && connector) override;
+
+public slots:
+    void selectEffect(int index);
+
 private:
     using PluginPtr = std::unique_ptr<luna::interface::Plugin>;
     using PluginVector = std::vector<PluginPtr>;
@@ -37,8 +41,7 @@ private:
     using ConnectorVector = std::vector<ConnectorPtr>;
 
     void loadDynamicPlugins();
-    void loadStaticPlugins();
-    QQuickItem * instantiateTab(luna::interface::Configurable * plugin);
+    std::unique_ptr<QQuickItem> instantiateTab(luna::interface::Configurable * plugin);
     void instantiateTabs();
 
     QQmlApplicationEngine * mEngine;
@@ -46,10 +49,8 @@ private:
     PluginVector mPlugins;
 
     EffectVector mEffects;
-    TabsModel * mEffectsModel;
+    std::unique_ptr<TabsModel> mEffectsModel;
 
     ConnectorVector mConnectors;
-    TabsModel * mConnectorsModel;
-private slots:
-    void setSelectedIndex(int index);
+    std::unique_ptr<TabsModel> mConnectorsModel;
 };

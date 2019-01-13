@@ -1,6 +1,7 @@
 import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.11
 
 ApplicationWindow {
     id: window
@@ -8,7 +9,6 @@ ApplicationWindow {
     width: 640
     height: 800
     title: qsTr("Luna")
-
 
     Shortcut {
         sequences: ["Esc", "Back"]
@@ -84,12 +84,8 @@ ApplicationWindow {
         id: stackView
         anchors.fill: parent
         initialItem: TabPage {
-            id: modesPage
-            tabs: EffectsModel
-            Connections {
-                target: modesPage
-                onTabSelected: { EffectsModel.tabSelected(index) }
-            }
+            model: Effects
+            onTabSelected: Luna.selectEffect(index)
         }
     }
 }

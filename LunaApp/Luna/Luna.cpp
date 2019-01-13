@@ -11,17 +11,14 @@ using namespace luna::interface;
 
 Luna::Luna() :
     mEngine(new QQmlApplicationEngine(this)),
-    mEffectsModel(new TabsModel(this)),
-    mConnectorsModel(new TabsModel(this))
+    mEffectsModel(new TabsModel()),
+    mConnectorsModel(new TabsModel())
 {
-    QObject::connect(mEffectsModel, &TabsModel::tabSelected,
-        this, &Luna::setSelectedIndex);
 }
 
 Luna::~Luna() = default;
 
 void Luna::setup() {
-    loadStaticPlugins();
     loadDynamicPlugins();
     for (auto & plugin : mPlugins) {
         plugin->initialize(this);
@@ -36,12 +33,13 @@ void Luna::setup() {
     });
 
     auto rootContext = mEngine->rootContext();
-    rootContext->setContextProperty("EffectsModel", mEffectsModel);
-    rootContext->setContextProperty("ConnectorsModel", mConnectorsModel);
+    rootContext->setContextProperty("Luna", this);
+    rootContext->setContextProperty("Effects", mEffectsModel.get());
+    rootContext->setContextProperty("Connectors", mConnectorsModel.get());
 
     mEngine->load(QUrl("qrc:/main.qml"));
 
-    setSelectedIndex(0);
+    selectEffect(0);
 }
 
 void Luna::addEffect(std::unique_ptr<EffectPlugin> && tab) {
@@ -85,14 +83,9 @@ void Luna::loadDynamicPlugins() {
     }
 }
 
-void Luna::loadStaticPlugins() {
-
-}
-
-QQuickItem * Luna::instantiateTab(Configurable * tab) {
+std::unique_ptr<QQuickItem> Luna::instantiateTab(Configurable * tab) {
     auto rootContext = mEngine->rootContext();
 
-    qInfo() << "Loading" << tab->displayName() << tab->itemUrl();
     QQmlComponent component(mEngine, tab->itemUrl());
     if (!component.isReady()) {
         qWarning() << "Error. Failed to load tab";
@@ -101,25 +94,24 @@ QQuickItem * Luna::instantiateTab(Configurable * tab) {
     }
 
     auto context = new QQmlContext(rootContext, mEngine);
-    context->setContextProperty(tab->displayName(), tab->model());
+    context->setContextProperty("Model", tab->model());
 
     auto object = component.create(context);
 
     if (nullptr == object) {
         qWarning() << "Failed to create tab.";
-        delete object;
         return nullptr;
     }
 
     auto quickItem = qobject_cast<QQuickItem *>(object);
     if (nullptr == quickItem) {
         qWarning() << "Created tab is not a QItem.";
-        delete quickItem;
+        delete object;
         return nullptr;
     }
 
     quickItem->setParent(mEngine);
-    return quickItem;
+    return std::unique_ptr<QQuickItem>(quickItem);
 }
 
 void Luna::instantiateTabs() {
@@ -130,11 +122,9 @@ void Luna::instantiateTabs() {
     );
 
     for (auto & effect : mEffects) {
-        auto quickItem = instantiateTab(effect.get());
-
-        if (nullptr == quickItem) continue;
-        QString name = effect->displayName();
-        mEffectsModel->addTab(quickItem, name);
+        if (auto item = instantiateTab(effect.get())) {
+            mEffectsModel->add(effect->displayName(), std::move(item));
+        }
     }
 
 
@@ -145,15 +135,13 @@ void Luna::instantiateTabs() {
     );
 
     for (auto & connector : mConnectors) {
-        auto quickItem = instantiateTab(connector.get());
-
-        if (nullptr == quickItem) continue;
-        QString name = connector->displayName();
-        mConnectorsModel->addTab(quickItem, name);
+        if (auto item = instantiateTab(connector.get())) {
+            mConnectorsModel->add(connector->displayName(), std::move(item));
+        }
     }
 }
 
-void Luna::setSelectedIndex(int index) {
+void Luna::selectEffect(int index) {
     mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
         manager.setProvider(effect->createProvider());
     });

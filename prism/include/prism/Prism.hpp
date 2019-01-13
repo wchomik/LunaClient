@@ -53,5 +53,7 @@ namespace prism {
     RGBColorSpace const & sRGB();
 
     RGB linearizeSRGB(RGB rgb);
+    RGB compressSRGB(RGB rgb);
+
     CieXYZ temperature(ColorScalar kelvins);
 }

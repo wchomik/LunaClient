@@ -58,23 +58,19 @@ namespace prism {
 
     RGBColorSpace::RGBColorSpace(CieXY const & white, CieXY const & red, CieXY const & green, CieXY const & blue)
     {
-        mRgbToXyz << red.x(), green.x(), blue.x(), 0,
-                    red.y(), green.y(), blue.y(), 0,
-                    1 - red.x() - red.y(), 1 - green.x() - green.y(), 1 - blue.x() - blue.y(), 0,
-                    0, 0, 0, 1;
+        Eigen::Matrix<ColorScalar, 3, 3> X;
+        X.col(0) << red, 1 - red.sum();
+        X.col(1) << green, 1 - green.sum();
+        X.col(2) << blue, 1 - blue.sum();
 
+        Eigen::Matrix<ColorScalar, 3, 1> b;
+        b << white.x() / white.y(), 1, (1 - white.x()) / white.y() - 1;
+
+        X = X.array().rowwise() * X.colPivHouseholderQr().solve(b).array().transpose();
+        mRgbToXyz.setIdentity();
+        mRgbToXyz.block<3, 3>(0, 0) = X;
         mXyzToRgb = mRgbToXyz.inverse();
-
-        Coefficients scale;
-        scale << white.x(), white.y(), 1 - white.x() - white.y(), 1;
-        scale = mXyzToRgb * (scale / white.y());
-        scale[3] = 1.0f;
-        Transformation scaleMatrix = Transformation::Zero();
-        scaleMatrix.diagonal() = scale;
-
-        mRgbToXyz = mRgbToXyz * scaleMatrix;
-        mXyzToRgb = mRgbToXyz.inverse();
-    }
+}
 
     CieXYZ RGBColorSpace::transform(RGB const & source) const
     {
@@ -128,6 +124,13 @@ namespace prism {
         return ret;
     }
 
+    RGB compressSRGB(RGB rgb)
+    {
+        RGB ret;
+        static_cast<Coefficients &>(ret) = rgb.array().pow(1.0f / 2.2f).matrix();
+        return ret;
+    }
+
     CieXYZ temperature(ColorScalar t)
     {
         float t2 = t * t;
@@ -167,7 +170,8 @@ namespace prism {
         }
 
         CieXYZ ret;
-        ret << x / y, 1, (1 - x - y) / y, 0;
+        ret << x, y, (1 - x - y), 0;
+        ret /= ret.sum();
         return ret;
     }
 }
