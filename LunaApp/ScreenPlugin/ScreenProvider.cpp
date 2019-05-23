@@ -5,6 +5,7 @@
 #include <prism/Prism.hpp>
 #include <luna/interface/Strand.hpp>
 
+#include <QDebug>
 using namespace Eigen;
 using namespace luna::interface;
 
@@ -34,6 +35,9 @@ void ScreenProvider::getData(Strand & strand)
         angle = std::modf(angle / 8.0f, &integer) * screenPixels.columns();
 
         const auto column = static_cast<int>(angle);
+        if (column > screenPixels.columns()) {
+            qDebug() << "ADAWD";
+        }
 
         Vector4f sum = Vector4f::Zero();
 
@@ -64,11 +68,13 @@ ScreenProvider::ScreenProvider() :
 }
 
 void ScreenProvider::setDepth(int value) {
+    std::lock_guard lock(mMutex);
     mDepth = value;
     makeDepthWeights();
 }
 
 void ScreenProvider::setBrightness(float value) {
+    std::lock_guard lock(mMutex);
     mBrightness = value;
     makeDepthWeights();
 }
@@ -83,7 +89,6 @@ void ScreenProvider::setBlackLevel(float value) {
 
 void ScreenProvider::makeDepthWeights()
 {
-    std::lock_guard lock(mMutex);
     mDepthWeights = Eigen::ArrayXf::LinSpaced(mDepth, 1.0f, 1.0f / mDepth);
     mDepthWeights = mDepthWeights * (mBrightness / mDepthWeights.sum());
 }

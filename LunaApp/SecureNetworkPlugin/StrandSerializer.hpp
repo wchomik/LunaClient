@@ -7,9 +7,8 @@
 
 #include <memory>
 
-class StrandSerializer
+struct StrandSerializer
 {
-public:
     explicit StrandSerializer(std::unique_ptr<luna::interface::Strand> && strand);
     virtual ~StrandSerializer();
     virtual void serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst) = 0;
@@ -18,11 +17,16 @@ protected:
     std::unique_ptr<luna::interface::Strand> mStrand;
 };
 
-class StrandSerializerRGB : public StrandSerializer
+struct StrandSerializerRGB : StrandSerializer
 {
-public:
     explicit StrandSerializerRGB(std::unique_ptr<luna::interface::Strand> && strand, prism::RGBColorSpace colorSpace);
     void serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst) override;
 private:
     prism::RGBColorSpace mColorSpace;
+};
+
+struct StrandSerializerWhite : StrandSerializer
+{
+    using StrandSerializer::StrandSerializer;
+    void serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst) override;
 };
