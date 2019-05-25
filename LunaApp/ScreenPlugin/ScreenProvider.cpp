@@ -64,11 +64,13 @@ ScreenProvider::ScreenProvider() :
 }
 
 void ScreenProvider::setDepth(int value) {
+    std::lock_guard lock(mMutex);
     mDepth = value;
     makeDepthWeights();
 }
 
 void ScreenProvider::setBrightness(float value) {
+    std::lock_guard lock(mMutex);
     mBrightness = value;
     makeDepthWeights();
 }
@@ -83,7 +85,6 @@ void ScreenProvider::setBlackLevel(float value) {
 
 void ScreenProvider::makeDepthWeights()
 {
-    std::lock_guard lock(mMutex);
     mDepthWeights = Eigen::ArrayXf::LinSpaced(mDepth, 1.0f, 1.0f / mDepth);
     mDepthWeights = mDepthWeights * (mBrightness / mDepthWeights.sum());
 }

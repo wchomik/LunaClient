@@ -20,6 +20,8 @@ luna_plugin(
         "qml.qrc"
 )
 
+target_compile_definitions(${PLUGIN_NAME} PUBLIC NOMINMAX)
+
 target_include_directories(${PLUGIN_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )
