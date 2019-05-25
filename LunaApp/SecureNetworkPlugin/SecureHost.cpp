@@ -4,12 +4,21 @@
 #include <luna/proto/Builder.hpp>
 #include <luna/proto/SetColor.hpp>
 #include <luna/proto/Command.hpp>
+#include <luna/proto/Format.hpp>
 
 #include <QDebug>
 
 #include <array>
 #include <algorithm>
 #include <vector>
+
+namespace {
+
+struct FormatTraits {
+    int channelCount;
+};
+
+}
 
 static prism::CieXY fromProto(luna::proto::UV const & uv)
 {
@@ -53,18 +62,22 @@ SecureHost::SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * 
     for (auto & strand : strands) {
         auto colorSpace = fromProto(strand.colorSpace);
 
-        int colorChannels = strand.channels.get();
-
         auto pixels = std::make_unique<luna::interface::Strand>(
             static_cast<uint32_t>(strand.pixelCount),
-            fromProto(strand.begin),
-            fromProto(strand.end)
+            fromProto(strand.location.begin),
+            fromProto(strand.location.end)
         );
 
-        auto serializer = std::make_unique<StrandSerializerRGB>(
-            std::move(pixels),
-            colorSpace
-        );
+        auto serializer = [&]() -> std::unique_ptr<StrandSerializer> {
+            switch (strand.format) {
+            case luna::proto::Format::RGB8:
+                return std::make_unique<StrandSerializerRGB>(std::move(pixels), colorSpace);
+            case luna::proto::Format::White16:
+                return std::make_unique<StrandSerializerWhite>(std::move(pixels));
+            default:
+                return nullptr;
+            }
+        }();
 
         mStrands.emplace_back(std::move(serializer));
     }

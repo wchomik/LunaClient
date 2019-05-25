@@ -34,7 +34,7 @@ ScreenCapture::ScreenCapture() :
         nullptr,//mAdapter.Get(),
         D3D_DRIVER_TYPE_HARDWARE,//D3D_DRIVER_TYPE_UNKNOWN
         nullptr,
-        D3D11_CREATE_DEVICE_DEBUG,//0
+        0,//D3D11_CREATE_DEVICE_DEBUG,//0
         featureLevels,
         4,
         D3D11_SDK_VERSION,

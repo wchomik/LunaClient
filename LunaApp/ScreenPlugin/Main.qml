@@ -25,7 +25,7 @@ Item {
                 editable: true
                 value: Model.depth
                 from: 1
-                to: 30
+                to: 50
                 stepSize: 1
                 onValueChanged: {
                     Model.depth = value

@@ -46,3 +46,30 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
 
     dst.data.set(vector);
 }
+
+
+void StrandSerializerWhite::serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst)
+{
+    prism::ColorScalar error = 0;
+    auto pixelCount = mStrand->size();
+
+    constexpr prism::ColorScalar range = (1 << 16) - 1;
+
+    using namespace luna::proto;
+
+    auto vector = builder.allocate<Array<Scalar<uint16_t>>>();
+    auto values = builder.allocate<Scalar<uint16_t>>(pixelCount);
+    vector->set(values, pixelCount);
+
+    for (size_t i = 0; i < pixelCount; ++i){
+        auto pixel = (*mStrand)[i];
+
+        prism::ColorScalar const corrected = pixel.color()[3] * range + error;
+        prism::ColorScalar const clampedRounded = std::clamp<prism::ColorScalar>(corrected, 0, range);
+        error = corrected - clampedRounded;
+
+        values[i] = uint16_t(clampedRounded);
+    }
+
+    dst.data.set(vector);
+}

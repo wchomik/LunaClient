@@ -5,6 +5,7 @@
 #include <prism/Prism.hpp>
 #include <luna/interface/Strand.hpp>
 
+#include <QDebug>
 using namespace Eigen;
 using namespace luna::interface;
 
@@ -34,6 +35,9 @@ void ScreenProvider::getData(Strand & strand)
         angle = std::modf(angle / 8.0f, &integer) * screenPixels.columns();
 
         const auto column = static_cast<int>(angle);
+        if (column > screenPixels.columns()) {
+            qDebug() << "ADAWD";
+        }
 
         Vector4f sum = Vector4f::Zero();
 
