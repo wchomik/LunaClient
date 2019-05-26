@@ -27,7 +27,7 @@ DtlsSocket::DtlsSocket(QHostAddress const & address, uint16_t port) :
 
     auto configuration = QSslConfiguration::defaultDtlsConfiguration();
 
-//    configuration.setCaCertificates({mCaCertificate});
+    configuration.setCaCertificates({mCaCertificate});
     configuration.setLocalCertificate(mLocalCertificate);
     configuration.setPrivateKey(mPrivateKey);
     configuration.setPeerVerifyMode(QSslSocket::VerifyPeer);
@@ -86,10 +86,13 @@ void DtlsSocket::doHandshake(const QByteArray &buffer)
     if (!mDtls.doHandshake(&mSocket, buffer)) {
         qDebug() << "DTLS Error" << (int) mDtls.dtlsError();
         for (auto & e : mDtls.peerVerificationErrors()){
-            qDebug() << e << e.certificate().digest();
+            if (e.error() == QSslError::HostNameMismatch) {
+                mDtls.ignoreVerificationErrors({e});
+            } else {
+                qDebug() << e;
+            }
         }
 
-        mDtls.ignoreVerificationErrors(mDtls.peerVerificationErrors());
         if (!mDtls.resumeHandshake(&mSocket)) {
             qDebug() << "DTLS Resume error";
         }
