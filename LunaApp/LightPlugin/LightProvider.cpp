@@ -3,6 +3,7 @@
 #include <luna/interface/Strand.hpp>
 
 #include <cstdint>
+#include <QDebug>
 
 using namespace luna::interface;
 
@@ -14,6 +15,7 @@ LightProvider::LightProvider() :
 LightProvider::~LightProvider() = default;
 
 void LightProvider::getData(Strand & strand) {
+    qDebug() << mCurrentColor.x() << mCurrentColor.w();
     for (size_t i = 0; i < strand.size(); ++i) {
         strand[i].color(mCurrentColor);
     }

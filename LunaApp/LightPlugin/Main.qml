@@ -8,12 +8,14 @@ ColumnLayout {
     Settings {
         category: "Light"
         property alias brightness: brightnessSlider.value
+        property alias whiteness: whitenessSlider.value
         property alias source: comboBox.currentIndex
     }
 
     spacing: 20
 
-    RowLayout {
+    GridLayout {
+        columns: 2
         Label {
             text: qsTr("Brightness")
         }
@@ -26,6 +28,22 @@ ColumnLayout {
             value: 1
             onValueChanged: {
                 Model.brightness = value
+            }
+        }
+
+
+        Label {
+            text: qsTr("Whiteness")
+        }
+
+        Slider {
+            id: whitenessSlider
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: 1
+            onValueChanged: {
+                Model.whiteness = Math.pow(value, 2.2);
             }
         }
     }

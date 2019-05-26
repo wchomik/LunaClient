@@ -71,6 +71,11 @@ int LightModel::source() const {
     return mSource;
 }
 
+qreal LightModel::whiteness() const
+{
+    return mWhiteness;
+}
+
 void LightModel::setSource(int value) {
     if (mSource != value) {
         mSource = value;
@@ -87,6 +92,15 @@ void LightModel::cieXYZ(qreal x, qreal y, qreal z)
     colorChanged(color());
 
     notifyProvider();
+}
+
+void LightModel::setWhiteness(qreal value)
+{
+    if (mWhiteness != value) {
+        mWhiteness = value;
+        emit whitenessChanged(whiteness());
+        notifyProvider();
+    }
 }
 
 void LightModel::notifyProvider()
@@ -107,6 +121,7 @@ void LightModel::notifyProvider()
             break;
         }
         color *= mBrightness;
+        color[3] = mWhiteness;
 
         p->color(color);
     }
