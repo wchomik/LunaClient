@@ -1,6 +1,5 @@
 #include "StrandSerializer.hpp"
 
-
 StrandSerializer::StrandSerializer(std::unique_ptr<luna::interface::Strand> && strand) :
     mStrand(std::move(strand))
 {}
@@ -67,7 +66,6 @@ void StrandSerializerWhite::serialize(luna::proto::Builder & builder, luna::prot
         prism::ColorScalar const corrected = pixel.color()[3] * range + error;
         prism::ColorScalar const clampedRounded = std::clamp<prism::ColorScalar>(corrected, 0, range);
         error = corrected - clampedRounded;
-
         values[i] = uint16_t(clampedRounded);
     }
 

@@ -142,7 +142,9 @@ void Luna::instantiateTabs() {
 }
 
 void Luna::selectEffect(int index) {
-    mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
-        manager.setProvider(effect->createProvider());
-    });
+    if (index >= 0 && index < mEffects.size()) {
+        mManager.postToThread([effect = mEffects[index].get()](Manager & manager){
+            manager.setProvider(effect->createProvider());
+        });
+    }
 }
