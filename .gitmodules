@@ -4,3 +4,6 @@
 [submodule "lunaProto"]
 	path = lunaProto
 	url = git@github.com:romanchom/lunaProto.git
+[submodule "prism"]
+	path = prism
+	url = git@github.com:romanchom/prism.git
