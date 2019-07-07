@@ -51,7 +51,7 @@ DtlsSocket::~DtlsSocket()
     mDtls.shutdown(&mSocket);
 }
 
-void DtlsSocket::write(uint8_t const * data, size_t dataSize)
+void DtlsSocket::write(std::byte const * data, size_t dataSize)
 {
     if (mDtls.isConnectionEncrypted()) {
         auto buffer = QByteArray::fromRawData(

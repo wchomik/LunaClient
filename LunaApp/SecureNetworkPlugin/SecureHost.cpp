@@ -95,7 +95,7 @@ QHostAddress SecureHost::address() const noexcept
 
 void SecureHost::send()
 {
-    uint8_t storage[1024];
+    std::byte storage[1024];
     auto builder = luna::proto::Builder(storage);
     auto command = builder.allocate<luna::proto::Command>();
     auto setColorCommand = builder.allocate<luna::proto::SetColor>();
@@ -143,7 +143,7 @@ void SecureHost::onHeartbeat()
 {
     ++mHeartbeatsSkipped;
     if (mShouldSendAck) {
-        uint8_t buffer[16];
+        std::byte buffer[16];
         luna::proto::Builder builder(buffer);
         auto command = builder.allocate<luna::proto::Command>();
         command->id = nextAckId();

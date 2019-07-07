@@ -21,9 +21,10 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
 
     using namespace luna::proto;
 
-    auto vector = builder.allocate<Array<RGB>>();
-    auto vec = builder.allocate<RGB>(pixelCount);
-    vector->set(vec, pixelCount);
+    auto vec = builder.allocate<std::byte>(pixelCount * 3);
+    dst.rawBytes.set(vec, pixelCount * 3);
+
+    auto rgbDest = reinterpret_cast<Eigen::Matrix<uint8_t, 3, 1> *>(vec);
 
     for (size_t i = 0; i < pixelCount; ++i){
         auto pixel = (*mStrand)[i];
@@ -36,14 +37,8 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
         prism::Coefficients const clampedRounded = corrected.array().max(0).min(range).round().matrix();
         error = corrected - clampedRounded;
 
-        Eigen::Matrix<uint8_t, 4, 1> rgb8 = clampedRounded.cast<uint8_t>();
-
-        vec[i].r = rgb8.x();
-        vec[i].g = rgb8.y();
-        vec[i].b = rgb8.z();
+        rgbDest[i] = clampedRounded.cast<uint8_t>().head<3>();
     }
-
-    dst.data.set(vector);
 }
 
 
@@ -56,9 +51,9 @@ void StrandSerializerWhite::serialize(luna::proto::Builder & builder, luna::prot
 
     using namespace luna::proto;
 
-    auto vector = builder.allocate<Array<Scalar<uint16_t>>>();
-    auto values = builder.allocate<Scalar<uint16_t>>(pixelCount);
-    vector->set(values, pixelCount);
+    auto vec = builder.allocate<std::byte>(pixelCount * 2);
+    dst.rawBytes.set(vec, pixelCount * 2);
+    auto values = reinterpret_cast<Scalar<uint16_t> *>(vec);
 
     for (size_t i = 0; i < pixelCount; ++i){
         auto pixel = (*mStrand)[i];
@@ -68,6 +63,4 @@ void StrandSerializerWhite::serialize(luna::proto::Builder & builder, luna::prot
         error = corrected - clampedRounded;
         values[i] = uint16_t(clampedRounded);
     }
-
-    dst.data.set(vector);
 }
