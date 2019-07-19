@@ -27,4 +27,10 @@ template<typename T>
 Array2D<T>::Array2D(size_t columns, size_t rows) :
     mDimensions{columns, rows},
     mData(std::make_unique<T[]>(columns * rows))
-{}
+{
+    for (size_t i = 0; i < this->columns(); ++i) {
+        for (size_t j = 0; j < this->rows(); ++j) {
+            (*this)(i, j).setZero();
+        }
+    }
+}

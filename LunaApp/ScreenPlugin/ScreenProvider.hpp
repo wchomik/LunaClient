@@ -20,24 +20,18 @@ public:
     void setBrightness(float value);
     void setGamma(float value);
     void setBlackLevel(float value);
+    void smoothness(float value);
 private:
     void makeDepthWeights();
 
     ScreenCapture mScreenCapture;
+    Array2D<Eigen::Vector4f> mFilteredScreen;
 
-    struct PixelMapping{
-        int startPixel;
-        int endPixel;
-        int begin;
-        int stride;
-        int depthStride;
-    };
-
-    std::vector<PixelMapping> mMappings;
     Eigen::ArrayXf mDepthWeights;
     int mDepth;
     float mBrightness;
     float mGamma;
     float mBlackLevel;
+    float mSmoothness;
     std::mutex mMutex;
 };

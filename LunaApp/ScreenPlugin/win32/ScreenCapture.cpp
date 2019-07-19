@@ -83,14 +83,14 @@ ScreenCapture::ScreenCapture() :
         D3D11_COMPARISON_NEVER,
         {0.0f, 0.0f, 0.0f, 0.0f},
         0.0f,
-        100.0f
+        D3D11_FLOAT32_MAX
     };
 
     hr = mDevice->CreateSamplerState(&samplerDesc, mPointSampler.GetAddressOf());
     testHR(hr);
 
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    hr = mDevice->CreateSamplerState(&samplerDesc, mMipSampler.GetAddressOf());
+    hr = mDevice->CreateSamplerState(&samplerDesc, mMipSampler.ReleaseAndGetAddressOf());
     testHR(hr);
 
     D3D11_RASTERIZER_DESC rasterizerDesc{
@@ -169,7 +169,7 @@ bool ScreenCapture::getNextFrame()
 
     if(mHasOutput){
         DXGI_OUTDUPL_FRAME_INFO frameInfo;
-        hr = mOutputDuplication->AcquireNextFrame(100, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
+        hr = mOutputDuplication->AcquireNextFrame(17, &frameInfo, desktopResource.ReleaseAndGetAddressOf());
         if(DXGI_ERROR_WAIT_TIMEOUT == hr){
             acquired = false;
         }else if(FAILED(hr)){
@@ -290,7 +290,7 @@ bool ScreenCapture::obtainScreen()
     }else{
         DXGI_OUTDUPL_DESC  desc;
         mOutputDuplication->GetDesc(&desc);
-        mOutputWidth = desc.ModeDesc.Width,
+        mOutputWidth = desc.ModeDesc.Width;
         mOutputHeight = desc.ModeDesc.Height;
         auto index = std::find(supportedFormats, supportedFormats + formatCount, desc.ModeDesc.Format)
                 - supportedFormats;

@@ -85,4 +85,17 @@ void ScreenModel::setBlackLevel(qreal const value)
     blackLevelChanged(value);
 }
 
+void ScreenModel::setSmoothness(qreal value)
+{
+    if (mSmoothness == value) {
+        return;
+    }
+
+    mSmoothness = value;
+    if (auto p = mProvider.lock()) {
+        p->smoothness(mSmoothness);
+    }
+    smoothnessChanged(mSmoothness);
+}
+
 
