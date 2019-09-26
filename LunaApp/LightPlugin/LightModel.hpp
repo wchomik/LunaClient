@@ -1,7 +1,9 @@
 #pragma once
 
 #include "LightProvider.hpp"
+#if _WIN32
 #include "ThemeColor.hpp"
+#endif
 
 #include <QObject>
 #include <QColor>
@@ -60,5 +62,7 @@ private:
 
     std::weak_ptr<LightProvider> mProvider;
     int mSource;
+#if _WIN32
     ThemeColor mThemeColor;
+#endif
 };

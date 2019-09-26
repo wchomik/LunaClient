@@ -117,7 +117,11 @@ void LightModel::notifyProvider()
             color = prism::temperature(mTemperature);
             break;
         case Source::Theme:
+#if _WIN32
             color = mThemeColor.get();
+#else
+            color = mColor;
+#endif
             break;
         }
         color *= mBrightness;

@@ -12,7 +12,7 @@ luna_plugin(
         "LightProvider.cpp"
         "LightModel.cpp"
         "LightPlugin.cpp"
-        "LightEffectplugin.cpp"
+        "LightEffectPlugin.cpp"
         
         "qml.qrc"
 )

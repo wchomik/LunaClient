@@ -9,7 +9,9 @@ add_subdirectory(SecureNetworkPlugin)
 
 add_subdirectory(LightPlugin)
 add_subdirectory(EffectsPlugin)
-add_subdirectory(AudioPlugin)
-add_subdirectory(ScreenPlugin)
+if(WIN32)
+    add_subdirectory(AudioPlugin)
+    add_subdirectory(ScreenPlugin)
+endif()
 
 add_subdirectory(Luna)
