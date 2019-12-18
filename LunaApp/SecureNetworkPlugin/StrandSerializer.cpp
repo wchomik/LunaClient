@@ -26,9 +26,11 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
 
     auto rgbDest = reinterpret_cast<Eigen::Matrix<uint8_t, 3, 1> *>(vec);
 
+    auto transformation = prism::RGBColorSpaceTransformation(mColorSpace);
+
     for (size_t i = 0; i < pixelCount; ++i){
         auto pixel = (*mStrand)[i];
-        auto rgb = mColorSpace.transform(pixel.color(), prism::RenderingIntent::RelativeColorimetric);
+        auto rgb = transformation.transform(pixel.color());
         auto const maximum = rgb.maxCoeff();
         if (maximum > 1) {
             rgb /= maximum;

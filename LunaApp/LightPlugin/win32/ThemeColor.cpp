@@ -66,7 +66,7 @@ ThemeColor::~ThemeColor()
 
 prism::CieXYZ ThemeColor::get() {
     if(!mLoaded) {
-        return prism::CieXYZ({{1.0, 0.0, 1.0, 0.0}});
+        return prism::CieXYZ(1.0, 0.0, 1.0, 0.0);
     }
 
     unsigned int userColorSet = GetImmersiveUserColorSetPreference(false, false);
@@ -79,7 +79,7 @@ prism::CieXYZ ThemeColor::get() {
     auto rgb = prism::linearizeSRGB(prism::fromInteger(color));
     rgb[3] = 0.0f;
     
-    return prism::sRGB().transform(rgb);
+    return prism::RGBColorSpaceTransformation(prism::sRGB()).transform(rgb);
 }
 
 

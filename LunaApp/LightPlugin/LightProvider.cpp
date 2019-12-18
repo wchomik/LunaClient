@@ -7,8 +7,8 @@
 using namespace luna::interface;
 
 LightProvider::LightProvider() :
-    mCurrentColor({{0, 0, 0, 0}}),
-    mTargetColor({{0, 0, 0, 0}})
+    mCurrentColor(0, 0, 0, 0),
+    mTargetColor(0, 0, 0, 0)
 {}
 
 LightProvider::~LightProvider() = default;

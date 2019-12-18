@@ -46,6 +46,8 @@ void ScreenProvider::getData(Strand & strand)
 
     auto const size = strand.size();
 
+    auto transformation = prism::RGBColorSpaceTransformation(prism::sRGB());
+
     for (size_t i = 0; i < size; ++i) {
         auto pixel = strand[i];
 
@@ -77,7 +79,7 @@ void ScreenProvider::getData(Strand & strand)
         prism::RGB rgb;
         static_cast<prism::Coefficients &>(rgb) = sum;
 
-        pixel.color(prism::sRGB().transform(rgb));
+        pixel.color(transformation.transform(rgb));
     }
 }
 

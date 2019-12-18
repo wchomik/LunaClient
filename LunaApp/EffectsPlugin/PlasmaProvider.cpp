@@ -25,7 +25,7 @@ void PlasmaProvider::getData(luna::interface::Strand & strand)
         float hue = mNoise.at(position.x(), position.y(), position.z());
         prism::HSV hsv;
         hsv << hue + t * mHueChangeRate + 5, 1, 1.0f, 0;
-        pixel.color(prism::rec2020().transform(prism::toRgb(hsv)));
+        pixel.color(prism::RGBColorSpaceTransformation(prism::rec2020()).transform(prism::toRgb(hsv)));
     }
 }
 

@@ -24,12 +24,13 @@ AudioChannelProcessor::AudioChannelProcessor(const AudioChannelConfig & config) 
         mIndices[i] = index;
         lastIndex = index;
     }
+    auto transformation = prism::RGBColorSpaceTransformation(prism::rec2020());
 
     for(size_t i = 0; i < mCount; ++i){
         float f = step * i;
         prism::HSV hsv;
         hsv << f, 1, 1, 0;
-        mBaseColors[i] = prism::rec2020().transform(prism::toRgb(hsv));
+        mBaseColors[i] = transformation.transform(prism::toRgb(hsv));
     }
 
     mFilter.setZero();

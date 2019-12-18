@@ -21,7 +21,9 @@ void LightModel::provider(std::weak_ptr<LightProvider> ptr)
 
 QColor LightModel::color() const
 {
-    auto color = prism::sRGB().transform(mColor);
+    auto linear = linearizeSRGB(mColor);
+    auto transformation = prism::RGBColorSpaceTransformation(prism::sRGB());
+    auto color = transformation.transform(mColor);
     color = prism::compressSRGB(color);
     static_cast<prism::Coefficients &>(color) = color.array().cwiseMax(0).cwiseMin(1);
     QColor ret;
@@ -34,7 +36,9 @@ void LightModel::setColor(const QColor & value)
     prism::RGB rgb;
     rgb << value.redF(), value.greenF(), value.blueF(), 0;
     rgb = prism::linearizeSRGB(rgb);
-    auto color = prism::sRGB().transform(rgb);
+
+    auto transformation = prism::RGBColorSpaceTransformation(prism::sRGB());
+    auto color = transformation.transform(mColor);
 
     if ((mColor - color).norm() > 0.001f) {
         mColor = color;
