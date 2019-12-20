@@ -14,7 +14,7 @@ AudioCapture::~AudioCapture() {
     CoUninitialize();
 }
 
-void AudioCapture::configure(unsigned outputChannels) {
+void AudioCapture::configure() {
     HRESULT hr;
     hr = CoCreateInstance(
          __uuidof(MMDeviceEnumerator),
@@ -37,10 +37,6 @@ void AudioCapture::configure(unsigned outputChannels) {
     mFormat = formatPtr_t(tempFormat);
     testHR(hr);
 
-    // TODO add channel mixing
-    if (mFormat->nChannels != outputChannels) {
-        throw std::runtime_error("Number of channels different from expected");
-    }
     // TODO support non floating point formats
     if (mFormat->wFormatTag != WAVE_FORMAT_IEEE_FLOAT) {
         if (mFormat->wFormatTag != WAVE_FORMAT_EXTENSIBLE) {
@@ -66,6 +62,11 @@ void AudioCapture::configure(unsigned outputChannels) {
 
     hr = mAudioClient->Start();
     testHR(hr);
+}
+
+size_t AudioCapture::channels() const
+{
+	return mFormat->nChannels;
 }
 
 uint32_t AudioCapture::sampleRate() const {

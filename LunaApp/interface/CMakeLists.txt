@@ -1,6 +1,5 @@
 project(interface)
 
-find_package(Qt5Quick CONFIG REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
 add_library(${PROJECT_NAME} INTERFACE)

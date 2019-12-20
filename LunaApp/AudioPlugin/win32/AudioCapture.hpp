@@ -14,7 +14,8 @@ public:
     AudioCapture();
     ~AudioCapture();
 
-    void configure(unsigned outputChannels);
+    void configure();
+	size_t channels() const;
     uint32_t sampleRate() const;
     uint32_t readSamples(SampleBuffer * buffer);
 private:

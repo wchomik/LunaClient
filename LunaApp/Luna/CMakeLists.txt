@@ -1,7 +1,5 @@
 project(Luna)
 
-
-find_package(Qt5Quick CONFIG REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -23,3 +21,5 @@ target_link_libraries(${PROJECT_NAME}
         Qt5::Quick
         "interface"
 )
+
+configure_file("qt.conf" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qt.conf")

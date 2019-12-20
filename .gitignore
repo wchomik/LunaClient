@@ -4,3 +4,6 @@ build*/
 *.dll
 *.lib
 *.user
+*.crt
+*.key
+.vscode

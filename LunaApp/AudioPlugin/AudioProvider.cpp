@@ -6,8 +6,8 @@ AudioProvider::AudioProvider() :
     mFFT(1 << 13, FFT::magnitude)
 {
     const uint32_t channelCount = 2;
-    mBuffer = std::make_unique<SampleBuffer>(1 << 13, channelCount);
-    mAudioCapture.configure(channelCount);
+    mAudioCapture.configure();
+	mBuffer = std::make_unique<SampleBuffer>(1 << 13, mAudioCapture.channels());
 }
 
 AudioProvider::~AudioProvider() = default;

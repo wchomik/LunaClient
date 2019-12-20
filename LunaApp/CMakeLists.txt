@@ -3,6 +3,7 @@ project(LunaApp)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
+find_package(Qt5Quick CONFIG REQUIRED)
 add_subdirectory(interface)
 
 add_subdirectory(SecureNetworkPlugin)
