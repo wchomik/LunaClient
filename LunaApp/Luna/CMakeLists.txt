@@ -23,3 +23,10 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 configure_file("qt.conf" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qt.conf")
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+
+install(CODE "
+execute_process(COMMAND \"${CONAN_QT_ROOT}/bin/windeployqt.exe\" \"${CMAKE_INSTALL_PREFIX}/bin/Luna.exe\" --qmldir=\"${CMAKE_CURRENT_SOURCE_DIR}/..\")
+")
+# install(FILES "qt.conf" DESTINATION bin)

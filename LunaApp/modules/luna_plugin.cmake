@@ -14,4 +14,6 @@ macro(luna_plugin)
         "interface"
         prism
     )
+
+    install(TARGETS ${PLUGIN_NAME} DESTINATION lib)
 endmacro()

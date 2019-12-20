@@ -14,9 +14,10 @@ class LunaConanfile(ConanFile):
         "qt:qtquickcontrols" : True,
         "qt:qtquickcontrols2" : True,
         "qt:qtdeclarative" : True,
-        "qt:qtwinextras" : True,
         "qt:multiconfiguration" : True,
         "qt:qtimageformats" : True,
+        "qt:qttools" : True,
+
     }
 
     def imports(self):
@@ -25,8 +26,3 @@ class LunaConanfile(ConanFile):
     def requirements(self):
         if self.settings.os == "Linux":
             self.requires("libalsa/1.1.5@conan/stable")
-
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()

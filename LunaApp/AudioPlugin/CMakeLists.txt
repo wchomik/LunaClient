@@ -52,3 +52,5 @@ if(WIN32)
         # ole32
     )
 endif()
+
+install(FILES "${CMAKE_BINARY_DIR}/bin/fftw3f.dll" DESTINATION lib)
