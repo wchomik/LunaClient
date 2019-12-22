@@ -44,13 +44,14 @@ private:
     std::unique_ptr<QQuickItem> instantiateTab(luna::interface::Configurable * plugin);
     void instantiateTabs();
 
-    QQmlApplicationEngine * mEngine;
     Manager mManager;
     PluginVector mPlugins;
 
     EffectVector mEffects;
-    std::unique_ptr<TabsModel> mEffectsModel;
+    TabsModel mEffectsModel;
 
     ConnectorVector mConnectors;
-    std::unique_ptr<TabsModel> mConnectorsModel;
+    TabsModel mConnectorsModel;
+
+    QQmlApplicationEngine mEngine;
 };

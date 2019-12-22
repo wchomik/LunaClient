@@ -5,13 +5,6 @@ import QtQuick.Dialogs 1.2
 import Qt.labs.settings 1.0
 
 ColumnLayout {
-    Settings {
-        category: "Light"
-        property alias brightness: brightnessSlider.value
-        property alias whiteness: whitenessSlider.value
-        property alias source: comboBox.currentIndex
-    }
-
     spacing: 20
 
     GridLayout {
@@ -25,7 +18,7 @@ ColumnLayout {
             Layout.fillWidth: true
             from: 0
             to: 1
-            value: 1
+            value: Model.brightness
             onValueChanged: {
                 Model.brightness = value
             }
@@ -41,9 +34,9 @@ ColumnLayout {
             Layout.fillWidth: true
             from: 0
             to: 1
-            value: 1
+            value: Model.whiteness
             onValueChanged: {
-                Model.whiteness = Math.pow(value, 2.2);
+                Model.whiteness = value;
             }
         }
     }
@@ -73,6 +66,7 @@ ColumnLayout {
         model: modes
         textRole: "name"
         displayText: qsTr(currentText)
+        currentIndex: Model.source
         onCurrentIndexChanged: {
             Model.source = model.get(currentIndex).source
         }
@@ -97,4 +91,3 @@ ColumnLayout {
         Layout.fillHeight: true
     }
 }
-

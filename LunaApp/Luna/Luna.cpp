@@ -9,11 +9,26 @@
 
 using namespace luna::interface;
 
+Q_DECLARE_METATYPE(prism::CieXYZ)
+
+QDataStream& operator<<(QDataStream& out, const prism::CieXYZ& v) {
+    for (int i = 0; i < 4; ++i) {
+        out << v[i];
+    }
+    return out;
+}
+
+QDataStream& operator>>(QDataStream& in, prism::CieXYZ& v) {
+    for (int i = 0; i < 4; ++i) {
+        in >> v[i];
+    }
+    return in;
+}
+
 Luna::Luna() :
-    mEngine(new QQmlApplicationEngine(this)),
-    mEffectsModel(new TabsModel()),
-    mConnectorsModel(new TabsModel())
+    mEngine(this)
 {
+    qRegisterMetaTypeStreamOperators<prism::CieXYZ>("CieXYZ");
 }
 
 Luna::~Luna() = default;
@@ -32,12 +47,12 @@ void Luna::setup() {
         }
     });
 
-    auto rootContext = mEngine->rootContext();
+    auto rootContext = mEngine.rootContext();
     rootContext->setContextProperty("Luna", this);
-    rootContext->setContextProperty("Effects", mEffectsModel.get());
-    rootContext->setContextProperty("Connectors", mConnectorsModel.get());
+    rootContext->setContextProperty("Effects", &mEffectsModel);
+    rootContext->setContextProperty("Connectors", &mConnectorsModel);
 
-    mEngine->load(QUrl("qrc:/main.qml"));
+    mEngine.load(QUrl("qrc:/main.qml"));
 
     selectEffect(0);
 }
@@ -84,16 +99,16 @@ void Luna::loadDynamicPlugins() {
 }
 
 std::unique_ptr<QQuickItem> Luna::instantiateTab(Configurable * tab) {
-    auto rootContext = mEngine->rootContext();
+    auto rootContext = mEngine.rootContext();
 
-    QQmlComponent component(mEngine, tab->itemUrl());
+    QQmlComponent component(&mEngine, tab->itemUrl());
     if (!component.isReady()) {
         qWarning() << "Error. Failed to load tab";
         qWarning() << component.errorString();
         return nullptr;
     }
 
-    auto context = new QQmlContext(rootContext, mEngine);
+    auto context = new QQmlContext(rootContext, &mEngine);
     context->setContextProperty("Model", tab->model());
 
     auto object = component.create(context);
@@ -110,7 +125,6 @@ std::unique_ptr<QQuickItem> Luna::instantiateTab(Configurable * tab) {
         return nullptr;
     }
 
-    quickItem->setParent(mEngine);
     return std::unique_ptr<QQuickItem>(quickItem);
 }
 
@@ -123,7 +137,7 @@ void Luna::instantiateTabs() {
 
     for (auto & effect : mEffects) {
         if (auto item = instantiateTab(effect.get())) {
-            mEffectsModel->add(effect->displayName(), std::move(item));
+            mEffectsModel.add(effect->displayName(), std::move(item));
         }
     }
 
@@ -136,7 +150,7 @@ void Luna::instantiateTabs() {
 
     for (auto & connector : mConnectors) {
         if (auto item = instantiateTab(connector.get())) {
-            mConnectorsModel->add(connector->displayName(), std::move(item));
+            mConnectorsModel.add(connector->displayName(), std::move(item));
         }
     }
 }

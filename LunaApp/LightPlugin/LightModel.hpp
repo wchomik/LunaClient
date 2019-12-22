@@ -5,6 +5,9 @@
 #include "ThemeColor.hpp"
 #endif
 
+#include <luna/interface/SettingsGroup.hpp>
+#include <luna/interface/Property.hpp>
+
 #include <QObject>
 #include <QColor>
 #include <QSettings>
@@ -53,15 +56,18 @@ signals:
     void whitenessChanged(qreal whiteness);
 
 private:
+    void cieXYZ(prism::CieXYZ);
     void notifyProvider();
 
-    prism::CieXYZ mColor;
-    qreal mTemperature;
-    qreal mBrightness;
-    qreal mWhiteness;
+    QSettings mSettings;
+    luna::interface::SettingsGroup mGroup;
+    luna::interface::Property<prism::CieXYZ> mColor;
+    luna::interface::Property<qreal> mTemperature;
+    luna::interface::Property<qreal> mBrightness;
+    luna::interface::Property<qreal> mWhiteness;
+    luna::interface::Property<int> mSource;
 
     std::weak_ptr<LightProvider> mProvider;
-    int mSource;
 #if _WIN32
     ThemeColor mThemeColor;
 #endif

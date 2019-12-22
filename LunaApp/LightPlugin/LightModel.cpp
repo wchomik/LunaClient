@@ -4,11 +4,15 @@
 
 using namespace luna::interface;
 
+Q_DECLARE_METATYPE(prism::CieXYZ)
+
 LightModel::LightModel() :
-    mColor(),
-    mTemperature(5500.0),
-    mBrightness(1.0),
-    mSource(0)
+    mGroup(&mSettings, "Light"),
+    mColor(&mSettings, "color", prism::temperature(6500)),
+    mTemperature(&mSettings, "temperature", 5500.0),
+    mBrightness(&mSettings, "brightness", 1.0),
+    mWhiteness(&mSettings, "whiteness", 1.0),
+    mSource(&mSettings, "source", 0)
 {}
 
 LightModel::~LightModel() = default;
@@ -21,7 +25,6 @@ void LightModel::provider(std::weak_ptr<LightProvider> ptr)
 
 QColor LightModel::color() const
 {
-    auto linear = linearizeSRGB(mColor);
     auto transformation = prism::RGBColorSpaceTransformation(prism::sRGB());
     auto color = transformation.transform(mColor);
     color = prism::compressSRGB(color);
@@ -40,11 +43,7 @@ void LightModel::setColor(const QColor & value)
     auto transformation = prism::RGBColorSpaceTransformation(prism::sRGB());
     auto color = transformation.transform(mColor);
 
-    if ((mColor - color).norm() > 0.001f) {
-        mColor = color;
-        colorChanged(value);
-        notifyProvider();
-    }
+    cieXYZ(color);
 }
 
 qreal LightModel::temperature() const {
@@ -88,13 +87,30 @@ void LightModel::setSource(int value) {
     }
 }
 
+bool validCie(qreal v)
+{
+    return !std::isnan(v) && !std::isinf(v) && v > 0;
+}
+
 void LightModel::cieXYZ(qreal x, qreal y, qreal z)
 {
-    mColor << x, y, z, 0;
-    mColor /= mColor.maxCoeff();
+    if (!(validCie(x) && validCie(y) && validCie(z))) {
+        return;
+    }
 
+    prism::CieXYZ value(x, y, z, 0);
+    value /= value.maxCoeff();
+    cieXYZ(value);
+}
+
+void LightModel::cieXYZ(prism::CieXYZ value)
+{
+    if ((mColor.get() - value).norm() < 0.001f) {
+        return;
+    }
+
+    mColor = value;
     colorChanged(color());
-
     notifyProvider();
 }
 
@@ -102,7 +118,7 @@ void LightModel::setWhiteness(qreal value)
 {
     if (mWhiteness != value) {
         mWhiteness = value;
-        emit whitenessChanged(whiteness());
+        whitenessChanged(whiteness());
         notifyProvider();
     }
 }
@@ -110,7 +126,7 @@ void LightModel::setWhiteness(qreal value)
 void LightModel::notifyProvider()
 {
     if (auto p = mProvider.lock()) {
-        auto source = static_cast<Source>(mSource);
+        auto source = static_cast<Source>(mSource.get());
         
         prism::CieXYZ color;
         switch (source) {
@@ -129,7 +145,7 @@ void LightModel::notifyProvider()
             break;
         }
         color *= mBrightness;
-        color[3] = mWhiteness;
+        color[3] = std::pow(mWhiteness, 2.2);
 
         p->color(color);
     }

@@ -1,14 +1,8 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
-import Qt.labs.settings 1.0
 
 ColumnLayout {
-    Settings {
-        category: "Light"
-//        property alias color: colorDialog.color
-    }
-
     Rectangle {
         id: colorButton
         height: 80
@@ -32,8 +26,7 @@ ColumnLayout {
                 var y = (0.9 - (mouseY / height)) / 0.87 * 0.9;
                 var X = x / y;
                 var Z = (1 - x - y) / y;
-                var sum = X + 1 + Z;
-                Model.cieXYZ(X / sum, 1 / sum, Z / sum);
+                Model.cieXYZ(X, 1, Z);
                 mouse.accepted = true;
             }
 
