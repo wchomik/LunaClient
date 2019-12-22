@@ -3,7 +3,7 @@ project(Luna)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME} WIN32
     "main.cpp"
     "Manager.cpp"
     "Luna.cpp"
@@ -12,12 +12,14 @@ add_executable(${PROJECT_NAME}
     "Manager.hpp"
     "Luna.hpp"
     "TabsModel.hpp"
-    
+
     "resources/qml.qrc"
+
+    "luna.rc"
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC 
+    PUBLIC
         Qt5::Quick
         "interface"
 )
