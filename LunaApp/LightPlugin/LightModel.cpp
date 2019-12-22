@@ -87,7 +87,7 @@ void LightModel::setSource(int value) {
     }
 }
 
-bool validCie(qreal v)
+static bool validCie(qreal v)
 {
     return !std::isnan(v) && !std::isinf(v) && v > 0;
 }

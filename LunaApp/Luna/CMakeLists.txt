@@ -14,8 +14,7 @@ add_executable(${PROJECT_NAME} WIN32
     "TabsModel.hpp"
 
     "resources/qml.qrc"
-
-    "luna.rc"
+    "resources/luna.rc"
 )
 
 target_link_libraries(${PROJECT_NAME}

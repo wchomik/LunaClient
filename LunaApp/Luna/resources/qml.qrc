@@ -25,6 +25,7 @@
         <file>images/menu@2x.png</file>
         <file>images/menu@3x.png</file>
         <file>images/menu@4x.png</file>
+        <file>luna.ico</file>
         <file>qtquickcontrols2.conf</file>
         <file>TabPage.qml</file>
         <file>ConnectionsPage.qml</file>
