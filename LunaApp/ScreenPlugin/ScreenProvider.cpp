@@ -1,6 +1,7 @@
 #include "ScreenProvider.hpp"
 
 #include <cstdint>
+#include <cmath>
 
 #include <prism/Prism.hpp>
 #include <luna/interface/Strand.hpp>
@@ -36,6 +37,7 @@ T lerp(T a, T b, U t)
     return a * (U(1) - t) + b * t;
 }
 
+using Clock = std::chrono::steady_clock;
 }
 
 void ScreenProvider::getData(Strand & strand)
@@ -86,12 +88,20 @@ void ScreenProvider::getData(Strand & strand)
 void ScreenProvider::update()
 {
     mScreenCapture.getNextFrame();
+    auto const now = Clock::now();
+    std::chrono::duration<float> difference = now - mLastUpdate;
+    mLastUpdate = now;
+    auto const period = difference.count();
+
+    auto const meanLifetime = mSmoothness / std::log(2.0f);
+
+    auto const decay = std::exp(-period / meanLifetime);
 
     auto & screenPixels = mScreenCapture.pixels();
 
     for (size_t i = 0; i < mFilteredScreen.columns(); ++i) {
         for (size_t j = 0; j < mFilteredScreen.rows(); ++j) {
-            mFilteredScreen(i, j) = mFilteredScreen(i, j) * mSmoothness + screenPixels(i, j) * (1.0f - mSmoothness);
+            mFilteredScreen(i, j) = mFilteredScreen(i, j) * decay + screenPixels(i, j) * (1.0f - decay);
         }
     }
 }
@@ -100,7 +110,8 @@ ScreenProvider::ScreenProvider() :
     mFilteredScreen(256, 64),
     mBrightness(1.0f),
     mGamma(1.0f),
-    mSmoothness(0.95f)
+    mSmoothness(0.95f),
+    mLastUpdate(Clock::now())
 {
     setDepth(20);
     mScreenCapture.configure(256, 64);

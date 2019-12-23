@@ -7,6 +7,7 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <mutex>
+#include <chrono>
 
 class ScreenProvider : public luna::interface::Provider
 {
@@ -34,4 +35,5 @@ private:
     float mBlackLevel;
     float mSmoothness;
     std::mutex mMutex;
+    std::chrono::steady_clock::time_point mLastUpdate;
 };

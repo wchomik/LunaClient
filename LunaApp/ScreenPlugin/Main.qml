@@ -10,7 +10,7 @@ ColumnLayout {
 
     GridLayout {
         Layout.fillWidth: true
-        columns: 2
+        columns: 3
 
         Label {
             id: depthLabel
@@ -18,6 +18,7 @@ ColumnLayout {
         }
 
         SpinBox {
+            Layout.columnSpan: 2
             editable: true
             value: Model.depth
             from: 1
@@ -27,6 +28,7 @@ ColumnLayout {
                 Model.depth = value
             }
         }
+
 
         Label {
             text: qsTr("Brightness")
@@ -42,6 +44,11 @@ ColumnLayout {
         }
 
         Label {
+            text: Model.brightness.toFixed(2)
+        }
+
+
+        Label {
             text: qsTr("Gamma")
         }
 
@@ -53,6 +60,11 @@ ColumnLayout {
                 Model.gamma = value;
             }
         }
+
+        Label {
+            text: Model.gamma.toFixed(2)
+        }
+
 
         Label {
             text: qsTr("Black level")
@@ -70,6 +82,11 @@ ColumnLayout {
         }
 
         Label {
+            text: (Model.blackLevel * 100).toFixed(2)
+        }
+
+
+        Label {
             text: qsTr("Smoothness")
         }
 
@@ -83,6 +100,10 @@ ColumnLayout {
             onValueChanged: {
                 Model.smoothness = value;
             }
+        }
+
+        Label {
+            text: Model.smoothness.toFixed(2)
         }
     }
 

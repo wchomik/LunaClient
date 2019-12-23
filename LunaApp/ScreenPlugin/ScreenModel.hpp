@@ -2,30 +2,33 @@
 
 #include "ScreenProvider.hpp"
 
+#include <luna/interface/Property.hpp>
+#include <luna/interface/SettingsGroup.hpp>
+
 #include <QObject>
 #include <QSettings>
 
 class ScreenModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal depth READ depth WRITE setDepth NOTIFY depthChanged)
+    Q_PROPERTY(int depth READ depth WRITE setDepth NOTIFY depthChanged)
     Q_PROPERTY(qreal brightness READ brightness WRITE setBrightness NOTIFY brightnessChanged)
     Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
     Q_PROPERTY(qreal blackLevel READ blackLevel WRITE setBlackLevel NOTIFY blackLevelChanged)
     Q_PROPERTY(qreal smoothness READ smoothness WRITE setSmoothness NOTIFY smoothnessChanged)
 public:
     explicit ScreenModel();
-    virtual ~ScreenModel();
+    ~ScreenModel() override;
     void provider(std::weak_ptr<ScreenProvider> ptr);
 
-    qreal depth() const { return mDepth; }
+    int depth() const { return mDepth; }
     qreal brightness() const { return mBrightness; }
     qreal gamma() const { return mGamma; }
     qreal blackLevel() const { return mBlackLevel; }
     qreal smoothness() const { return mSmoothness; }
 
 public slots:
-    void setDepth(qreal value);
+    void setDepth(int value);
     void setBrightness(qreal value);
     void setGamma(qreal value);
     void setBlackLevel(qreal value);
@@ -33,7 +36,7 @@ public slots:
     void setSmoothness(qreal smoothness);
 
 signals:
-    void depthChanged(qreal value);
+    void depthChanged(int value);
     void brightnessChanged(qreal value);
     void gammaChanged(qreal value);
     void blackLevelChanged(qreal value);
@@ -45,12 +48,13 @@ private:
     void applyBrightness();
     void applyGamma();
 
-    qreal mDepth;
-    qreal mBrightness;
-    qreal mGamma;
-    qreal mBlackLevel;
+    QSettings mSettings;
+    luna::interface::SettingsGroup mGroup;
+    luna::interface::Property<int> mDepth;
+    luna::interface::Property<qreal> mBrightness;
+    luna::interface::Property<qreal> mGamma;
+    luna::interface::Property<qreal> mBlackLevel;
+    luna::interface::Property<qreal> mSmoothness;
 
     std::weak_ptr<ScreenProvider> mProvider;
-    QSettings mSettings;
-    qreal mSmoothness;
 };
