@@ -1,99 +1,92 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Layouts 1.14
 import Qt.labs.settings 1.0
 
-Item {
+ColumnLayout {
     Settings {
         property alias smoothness: smoothnessSlider.value
     }
 
-    ColumnLayout {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
+    GridLayout {
+        Layout.fillWidth: true
+        columns: 2
 
-        anchors.rightMargin: 20
-        anchors.leftMargin: 20
-        anchors.topMargin: 20
+        Label {
+            id: depthLabel
+            text: qsTr("Depth")
+        }
 
-        GridLayout {
+        SpinBox {
+            editable: true
+            value: Model.depth
+            from: 1
+            to: 50
+            stepSize: 1
+            onValueChanged: {
+                Model.depth = value
+            }
+        }
+
+        Label {
+            text: qsTr("Brightness")
+        }
+
+        Slider {
             Layout.fillWidth: true
-            columns: 2
-
-            Label {
-                id: depthLabel
-                text: qsTr("Depth")
+            value: Model.brightness
+            wheelEnabled: true
+            onValueChanged: {
+                Model.brightness = position;
             }
+        }
 
-            SpinBox {
-                editable: true
-                value: Model.depth
-                from: 1
-                to: 50
-                stepSize: 1
-                onValueChanged: {
-                    Model.depth = value
-                }
+        Label {
+            text: qsTr("Gamma")
+        }
+
+        Slider {
+            Layout.fillWidth: true
+            value: Model.gamma
+            wheelEnabled: true
+            onValueChanged: {
+                Model.gamma = value;
             }
+        }
 
-            Label {
-                text: qsTr("Brightness")
+        Label {
+            text: qsTr("Black level")
+        }
+
+        Slider {
+            Layout.fillWidth: true
+            from: 0.0
+            to: 0.01
+            value: Model.blackLevel
+            wheelEnabled: true
+            onValueChanged: {
+                Model.blackLevel = value;
             }
+        }
 
-            Slider {
-                Layout.fillWidth: true
-                value: Model.brightness
-                wheelEnabled: true
-                onValueChanged: {
-                    Model.brightness = position;
-                }
-            }
+        Label {
+            text: qsTr("Smoothness")
+        }
 
-            Label {
-                text: qsTr("Gamma")
-            }
-
-            Slider {
-                Layout.fillWidth: true
-                value: Model.gamma
-                wheelEnabled: true
-                onValueChanged: {
-                    Model.gamma = value;
-                }
-            }
-
-            Label {
-                text: qsTr("Black level")
-            }
-
-            Slider {
-                Layout.fillWidth: true
-                from: 0.0
-                to: 0.01
-                value: Model.blackLevel
-                wheelEnabled: true
-                onValueChanged: {
-                    Model.blackLevel = value;
-                }
-            }
-
-            Label {
-                text: qsTr("Smoothness")
-            }
-
-            Slider {
-                id: smoothnessSlider
-                Layout.fillWidth: true
-                from: 0.0
-                to: 1.0
-                value: Model.smoothness
-                wheelEnabled: true
-                onValueChanged: {
-                    Model.smoothness = value;
-                }
+        Slider {
+            id: smoothnessSlider
+            Layout.fillWidth: true
+            from: 0.0
+            to: 1.0
+            value: Model.smoothness
+            wheelEnabled: true
+            onValueChanged: {
+                Model.smoothness = value;
             }
         }
     }
-}
 
+    Item {
+        Layout.fillHeight: true
+    }
+}

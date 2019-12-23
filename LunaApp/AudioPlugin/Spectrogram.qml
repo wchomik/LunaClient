@@ -1,4 +1,4 @@
-import QtQuick 2.9
+import QtQuick 2.14
 import QtCharts 2.1
 
 ChartView {

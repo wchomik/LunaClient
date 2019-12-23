@@ -1,7 +1,6 @@
-import QtQuick 2.2
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtQml 2.12
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Layouts 1.14
 
 Page {
     id: root
@@ -16,23 +15,20 @@ Page {
 
         onCurrentIndexChanged: root.tabSelected(currentIndex)
 
-        Instantiator {
+        Repeater {
             model: root.model
-            delegate: QtObject {
-                property var obj: qml
-            }
-
-            onObjectAdded: {
-                 swipeView.insertItem(index, object.obj)
-
-            }
-            onObjectRemoved: {
-                swipeView.takeItem(index)
+            delegate: Item {
+                id: container
+                children: [qml]
+                Component.onCompleted: {
+                    qml.anchors.fill = container;
+                    qml.anchors.margins = 15;
+                }
             }
         }
     }
 
-    footer: TabBar {
+    header: TabBar {
         id: bar
         currentIndex: swipeView.currentIndex
         Repeater {
