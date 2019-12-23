@@ -90,9 +90,10 @@ ApplicationWindow {
         }
     }
 
-    onClosing: {
-        close.accepted = false;
-        window.visible = false;
+    onVisibilityChanged: {
+        if (visibility === Window.Minimized) {
+            window.visibility = Window.Hidden;
+        }
     }
 
     SystemTrayIcon {
@@ -100,7 +101,12 @@ ApplicationWindow {
         icon.source: "qrc:/luna.ico"
         onActivated: {
             if (reason === SystemTrayIcon.Trigger) {
-                window.visible = !window.visible
+                if (window.visibility === Window.Hidden) {
+                    window.visibility = Window.Windowed;
+                    window.requestActivate();
+                } else {
+                    window.visibility = Window.Hidden;
+                }
             }
         }
         menu: Menu {
