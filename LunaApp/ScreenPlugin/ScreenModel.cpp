@@ -24,6 +24,7 @@ void ScreenModel::provider(std::weak_ptr<ScreenProvider> ptr)
         p->setBrightness(mBrightness);
         p->setGamma(mGamma);
         p->setBlackLevel(mBlackLevel);
+        p->smoothness(mSmoothness);
     }
 }
 

@@ -139,7 +139,6 @@ void ScreenProvider::setBlackLevel(float value) {
 
 void ScreenProvider::smoothness(float value)
 {
-    std::lock_guard lock(mMutex);
     mSmoothness = value;
 }
 
