@@ -36,10 +36,12 @@ ColumnLayout {
 
         Slider {
             Layout.fillWidth: true
+            from: 0
+            to: 5
             value: Model.brightness
             wheelEnabled: true
             onValueChanged: {
-                Model.brightness = position;
+                Model.brightness = value;
             }
         }
 

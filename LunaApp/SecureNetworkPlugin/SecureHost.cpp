@@ -11,6 +11,7 @@
 #include <array>
 #include <algorithm>
 #include <vector>
+#include <memory>
 
 namespace {
 
@@ -71,15 +72,19 @@ SecureHost::SecureHost(QHostAddress hostAddress, luna::proto::Discovery const * 
         auto serializer = [&]() -> std::unique_ptr<StrandSerializer> {
             switch (strand.format) {
             case luna::proto::Format::RGB8:
-                return std::make_unique<StrandSerializerRGB>(std::move(pixels), colorSpace);
+				return std::make_unique<StrandSerializerRGB<uint8_t>>(std::move(pixels), colorSpace, std::vector{ Channel::red, Channel::green, Channel::blue });
             case luna::proto::Format::White16:
                 return std::make_unique<StrandSerializerWhite>(std::move(pixels));
+			case luna::proto::Format::RGBW16:
+				return std::make_unique<StrandSerializerRGB<uint16_t>>(std::move(pixels), colorSpace, std::vector{ Channel::red, Channel::green, Channel::blue, Channel::white });
             default:
                 return nullptr;
             }
         }();
 
-        mStrands.emplace_back(std::move(serializer));
+		if (serializer) {
+			mStrands.emplace_back(std::move(serializer));
+		}
     }
 
     mHeartbeat.setInterval(2000);

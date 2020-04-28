@@ -1,31 +1,37 @@
 #include "StrandSerializer.hpp"
 
+#include <limits>
+#include <QDebug>
+
 StrandSerializer::StrandSerializer(std::unique_ptr<luna::interface::Strand> && strand) :
     mStrand(std::move(strand))
 {}
 
 StrandSerializer::~StrandSerializer() = default;
 
-
-StrandSerializerRGB::StrandSerializerRGB(std::unique_ptr<luna::interface::Strand> && strand, prism::RGBColorSpace colorSpace) :
+template<typename T>
+StrandSerializerRGB<T>::StrandSerializerRGB(std::unique_ptr<luna::interface::Strand> && strand, prism::RGBColorSpace colorSpace, std::vector<Channel> channels) :
     StrandSerializer(std::move(strand)),
+	mChannels(std::move(channels)),
     mColorSpace(colorSpace)
 {}
 
-void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst)
+template<typename T>
+void StrandSerializerRGB<T>::serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst)
 {
     prism::Coefficients error = prism::Coefficients::Zero();
     auto pixelCount = mStrand->size();
 
-    constexpr prism::ColorScalar range = (1 << 8) - 1;
+    constexpr prism::ColorScalar range = std::numeric_limits<T>::max();
 
     using namespace luna::proto;
 
-    auto vec = builder.allocate<std::byte>(pixelCount * 3);
-    dst.rawBytes.set(vec, pixelCount * 3);
+	auto const byteSize = pixelCount * mChannels.size() * sizeof(T);
+    auto vec = builder.allocate<std::byte>(byteSize);
+    dst.rawBytes.set(vec, byteSize);
 
-    auto rgbDest = reinterpret_cast<Eigen::Matrix<uint8_t, 3, 1> *>(vec);
-
+	auto dest = reinterpret_cast<T *>(vec);
+    
     auto transformation = prism::RGBColorSpaceTransformation(mColorSpace);
 
     for (size_t i = 0; i < pixelCount; ++i){
@@ -39,10 +45,17 @@ void StrandSerializerRGB::serialize(luna::proto::Builder & builder, luna::proto:
         prism::Coefficients const clampedRounded = corrected.array().max(0).min(range).round().matrix();
         error = corrected - clampedRounded;
 
-        rgbDest[i] = clampedRounded.cast<uint8_t>().head<3>();
+		Eigen::Matrix<T, 4, 1> casted = clampedRounded.cast<T>();
+		for (auto channel : mChannels) {
+			*dest = casted[channel];
+			++dest;
+		}
     }
 }
 
+template class StrandSerializerRGB<uint8_t>;
+
+template class StrandSerializerRGB<uint16_t>;
 
 void StrandSerializerWhite::serialize(luna::proto::Builder & builder, luna::proto::StrandData & dst)
 {

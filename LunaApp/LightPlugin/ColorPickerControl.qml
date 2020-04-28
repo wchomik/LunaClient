@@ -27,6 +27,8 @@ ColumnLayout {
                 var X = x / y;
                 var Z = (1 - x - y) / y;
                 Model.cieXYZ(X, 1, Z);
+                console.log(x, y);
+                console.log(X, 1, Z);
                 mouse.accepted = true;
             }
 
