@@ -1,6 +1,8 @@
 # LunaClient
 Companion App for https://github.com/romanchom/lunaEsp32Template
 
+[![Demo video](http://img.youtube.com/vi/SQb9sJlfIpk/0.jpg)](http://www.youtube.com/watch?v=SQb9sJlfIpk)
+
 LunaClient allows you controlling your wireless LED strands. Available modes include:
 * Light: any reproducible color, black body radiation, system theme color.
 * Screen: capture your desktop in realtime and control your lights based on screen contents.
